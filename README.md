@@ -1,0 +1,1 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/aa94fbce-4e3a-4b51-9b4c-c7a2174ad745/deploy-status)](https://app.netlify.com/sites/peaceful-austin-c426e5/deploys)
