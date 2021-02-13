@@ -1,0 +1,79 @@
+baseURL = "https://punitnaran.com/"
+languageCode = "en"
+defaultContentLanguage = "en"
+title = "Punit Naran"
+theme = "dream"
+
+copyright = '<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.'
+
+# googleAnalytics = ""
+
+# disqusShortname = ""
+
+enableRobotsTXT = true
+
+[params]
+  background = "#f7f7f7"
+  # backgroundImage = "/me/background.jpg"
+  # linkColor = "seagreen"
+
+  # dark mode
+  defaultDark = true
+  backgroundDark = "grey"
+  # backgroundImageDark = "/me/background-dark.jpg"
+  darkLinkColor = "darkseagreen"
+  darkNav = true
+  dark404 = true
+
+  images = [""]
+
+  author = "Punit Naran"
+  # description = "Software Engineer"
+  avatar = "/img/avatar.jpg"
+  headerTitle = "Punit Naran"
+  motto = "Motto"
+  # categoriesLimitInHeader = 6 # deprecated
+  # headerBottomText = "" # deprecated
+
+  # footerBottomText = ""
+
+  rss = true
+
+  # utterancesRepo = ""
+
+  # valine = true
+  # LEANCLOUD_APP_ID = ""
+  # LEANCLOUD_APP_KEY = ""
+
+  email = "contact@punitnaran.com"
+  # twitter = ""
+  # facebook = ""
+  # instagram = ""
+  # mastodon = ""
+  # linkedin = ""
+  # github = ""
+  # stackoverflow = ""
+  # codepen = ""
+
+  siteStartYear = 2021
+
+  favicon = "/favicon.ico"
+
+  highlightjs = true
+  # highlightjsCDN = "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"
+  highlightjsExtraLanguages = ["ocaml"]
+  highlightjsTheme = "gruvbox-light"
+  highlightjsThemeDark = "gruvbox-dark"
+
+  # search
+  enableSearch = true
+
+  # options
+  showSummaryCoverInPost = true
+  # hasTwitterEmbed = true
+
+  # [params.advanced]
+  #   customCSS = ["css/custom.css"]
+  #   customJS = []
+  [outputs]
+    home = ["HTML", "RSS", "JSON"]
