@@ -8,14 +8,14 @@ Hi, my name is Punit Naran.
 
 This is my blog.
 
-I am a passionate software engineer with many years of experiance.
+I am a passionate software engineer with many years of experience.
 
 Go is my main programming language of choice. I also enjoy working alongside C++ and Python. 
 
-Everyday is a new learning oppertunity. 
+Every day is a new learning opportunity. 
 
 Understanding new programming techniques, microservices, serverless, tests (unit, system and integration tests), managing systems workflows, scripting and much more!
 
 This website is my brain dump!
 
-I'll be posting "how to's", programming techniques, what I have learn't, and sharing example code.
+I'll be posting "how to's", programming techniques, and things I have learned. I will aim to share example code whenever possible.

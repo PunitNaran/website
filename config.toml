@@ -14,13 +14,13 @@ enableRobotsTXT = true
 
 [params]
   background = "#f7f7f7"
-  # backgroundImage = "/me/background.jpg"
-  # linkColor = "seagreen"
+  backgroundImage = "/me/background.jpg"
+  linkColor = "seagreen"
 
   # dark mode
   defaultDark = true
   backgroundDark = "grey"
-  # backgroundImageDark = "/me/background-dark.jpg"
+  backgroundImageDark = "/me/background-dark.jpg"
   darkLinkColor = "darkseagreen"
   darkNav = true
   dark404 = true
@@ -37,7 +37,7 @@ enableRobotsTXT = true
 
   # footerBottomText = ""
 
-  rss = true
+  # rss = true
 
   # utterancesRepo = ""
 
@@ -46,12 +46,12 @@ enableRobotsTXT = true
   # LEANCLOUD_APP_KEY = ""
 
   email = "contact@punitnaran.com"
-  # twitter = ""
-  # facebook = ""
-  # instagram = ""
+  twitter = "https://twitter.com/PunitNaran"
+  facebook = "https://www.facebook.com/punit.naran/"
+  instagram = "https://www.instagram.com/punitnaran/"
   # mastodon = ""
-  # linkedin = ""
-  # github = ""
+  linkedin = "https://uk.linkedin.com/public-profile/in/punit-naran-48a08a73"
+  github = "https://github.com/PunitNaran"
   # stackoverflow = ""
   # codepen = ""
 
