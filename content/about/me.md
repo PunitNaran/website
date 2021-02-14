@@ -1,8 +1,8 @@
 ---
-draft: true
+draft: false
 title: About Me
-date: 2021-02-13T22:58:24.356Z
-lastmod: 2021-02-13T22:58:24.412Z
+date: 2021-02-14T13:35:13.378Z
+lastmod: 2021-02-14T13:35:14.505Z
 ---
 
 Hi, my name is Punit Naran.
