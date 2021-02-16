@@ -93,9 +93,6 @@ package = "netlify-plugin-image-optim"
 [[plugins]]
 package = "netlify-plugin-is-website-vulnerable"
 
-[build]
-  publish = "public"
-
 [[plugins]]
   package = "netlify-plugin-submit-sitemap"
 
