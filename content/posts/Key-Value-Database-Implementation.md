@@ -17,15 +17,15 @@ tags:
 
 # Simple (KVDB) Key-Value Database Implementation
 
-For this post I will be showing you how to implement a Database interface, this will be a simple key-value database implementation.
+For this post I will be showing you how to implement a Database interface. This will be a simple Key-Value Database.
 
-- This will support the minimum interface for a KVDB
-  - Get, Put and Delete operations
+- The database should have at least a minimum interface for a KVDB
+  - Get, Set and Delete operations
   - Close Database connection
 
-First lets create a `database.go` file, we can call this package `database`.
+First lets create a `database.go` file. We can call it a `database` package.
 
-We want to implement a Database instance, the code below shows the minimum required calls (operations) needed for a Key-Value Database.
+Now we need to implement a Database instance. The code below shows the minimum required calls (operations) needed for a Key-Value Database.
 
 ```go
 
@@ -66,13 +66,11 @@ func (n *NotFoundError) Error() string {
 
 ```
 
-Now we can select our key-value database, we can even have in-memory store.
+Now we can select our Key-Value Database. From this interface implementation we could also link an in-memory store database, however for this post we will just focus on using redis. 
 
-In this example I'll be creating a Redis Database. 
+Assuming that you have created a go file, given the file a package name like `redis` and imported the `go-redis` repository.
 
-Assuming that you have created a go file, given it a package name like `redis` and imported `go-redis` the required repository.
-
-We can: 
+We can now do the following: 
 
 ```go
 import (
@@ -80,6 +78,7 @@ import (
   // path to your database.go file
   "github.com/punitnaran/example/database"
 )
+
 // RedisDatabase wraps the redis client so we can now expose it to
 // our application
 type RedisDatabase struct {
