@@ -1,19 +1,18 @@
 ---
-title: Buy Me A Coffee
-date: 2021-02-03T14:21:26+08:00
-lastmod: 2021-02-03T14:21:26+08:00
+draft: false
+title: Implememt a KVDB Key-Value Database effectively using Interfaces
+date: 2021-02-15T23:57:07.239Z
+lastmod: 2021-02-15T23:57:09.579Z
 author: Punit Naran
-#avatar: /me/yy.jpg
-#cover: /img/Buy-Me-A-Coffee.jpg
-images:
-  #- /img/Buy-Me-A-Coffee.jpg
+cover: /img/database-1954920_640.jpg
+images: null
+weight: 1
 categories:
   - Database
 tags:
   - Database
   - Interface
   - Redis
-weight: 1
 ---
 
 # Simple (KVDB) Key-Value Database Implementation
