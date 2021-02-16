@@ -28,3 +28,88 @@ HUGO_VERSION = "0.80.0"
 
 [context.next.environment]
 HUGO_ENABLEGITINFO = "true"
+
+[[plugins]]
+package = "netlify-plugin-checklinks"
+
+  [plugins.inputs]
+  # An array of glob patterns for pages on your site
+  # Recursive traversal will start from these
+  entryPoints = [
+    "*.html",
+  ]
+
+  # Recurse through all the links and asset references on your page, starting
+  # at the entrypoints
+  recursive = true
+
+  # Checklinks outputs TAP (https://testanything.org/tap-version-13-specification.html)
+  # by default. Enabling pretty mode makes the output easier on the eyes.
+  pretty = true
+
+  # You can mark some check as skipped, which will block checklinks
+  # from ever attempting to execute them.
+  # skipPatterns is an array of strings you can match against failing reports
+  skipPatterns = []
+
+  # You can mark some check as todo, which will execute the check, but allow failures.
+  # todoPatterns is an array of strings you can match against failing reports
+  todoPatterns = []
+
+  # Report on all broken links to external pages.
+  # Enabling this will make your tests more brittle, since you can't control
+  # external pages.
+  checkExternal = false
+
+  # Enable to check references to source maps, source map sources etc.
+  # Many build tools don't emit working references, so this is disabled by default
+  followSourceMaps = false
+
+[[plugins]]
+  package = "netlify-plugin-inline-source"
+
+  # All inputs are optional, so you can omit this section.
+  # Defaults are shown below.
+  # You can also refer to the `inline-source` documentation: https://github.com/popeindustries/inline-source#usage.
+  [plugins.inputs]
+    # Attribute used to parse sources. All tags will be parsed if set to `false`.
+    attribute = "inline"
+
+    # Enable/disable compression of inlined content.
+    compress = true
+
+    # Maintain leading whitespace when `compress` is `false`.
+    pretty = false
+
+    # Disable inlining based on tag, type, and/or format.
+    ignore = []
+
+    # Convert `<img inline src="*.svg" />` to `<img>` and not `<svg>`.
+    svgAsImage = false
+
+[[plugins]]
+package = "netlify-plugin-image-optim"
+
+[[plugins]]
+package = "netlify-plugin-is-website-vulnerable"
+
+[build]
+  publish = "public"
+
+[[plugins]]
+  package = "netlify-plugin-submit-sitemap"
+
+	[plugins.inputs]
+
+	# The base url of your site (optional, default = main URL set in Netlify)
+	baseUrl = "https://example.com"
+
+	# Path to the sitemap URL (optional, default = /sitemap.xml)
+	sitemapPath = "/sitemap.xml"
+
+	# Enabled providers to submit sitemap to (optional, default = 'google', 'bing', 'yandex'). Possible providers are currently only 'google', 'bing', 'yandex'.
+	providers = [
+		"google",
+		"bing",
+		"yandex"
+	]
