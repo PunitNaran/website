@@ -8,7 +8,7 @@ copyright = '<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.
 
 # googleAnalytics = ""
 
-# disqusShortname = ""
+disqusShortname = "punitnaran"
 
 enableRobotsTXT = true
 
@@ -28,7 +28,7 @@ enableRobotsTXT = true
   images = [""]
 
   author = "Punit Naran"
-  # description = "Software Engineer"
+  description = "Software Engineer"
   avatar = "/img/avatar.jpg"
   headerTitle = "Punit Naran"
   motto = "“If you want to find the secrets of the universe, think in terms of energy, frequency and vibration.” ~ N. Tesla"
