@@ -11,6 +11,7 @@ tags:
   - Configurable
   - Go
   - YAML
+  - Beginner
 ---
 # Go Configurable
 
