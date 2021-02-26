@@ -20,7 +20,7 @@ Lets get to it!
 
 For this post I'm going to create a YAML file which contains User Details. You can use any human-readable data language of your choice.
 
-The User Details will store detail information about a user, lets assume a user signs up to a dating platform or any other social networking website some details mentioned in the `user` package might need to be obtained to register the user and authenticate them.
+The User Details will store detailed information about a user. Lets assume a user signs up to a dating platform or any other social networking website some details mentioned in the `user` package might need to be obtained to register and setup the user, as well as to authenticate the user. 
 
 ```go
 package user
@@ -31,7 +31,7 @@ type User struct {
 	Gender      Gender    `yaml:"gender"`
 	Ethnicity   Ethnicity `yaml:"ethnicity"`
 	Country     string    `yaml:"country"`
-	Religon     Religon   `yaml:"religon"`
+	Religion     Religion   `yaml:"religion"`
 	Personality []string  `yaml:"personality"` // tags of words
 	Age         Age       `yaml:"age"`
 	Height      int       `yaml:"height"` // Height in CM
@@ -53,12 +53,12 @@ type Gender struct {
 
 // Ethnicity the users ethnicity
 type Ethnicity struct {
-	ethnicGroup map[string]string `yaml:"ethnic_group"`
+	EthnicGroup map[string]string `yaml:"ethnic_group"`
 	/*
 		White
 			English / Welsh / Scottish / Northern Irish / British
 			Irish
-			Gypsy or Irish Traveller
+			Gypsy or Irish Traveler
 			Any other White background
 		Mixed / Multiple ethnic groups
 			White and Black Caribbean
@@ -81,8 +81,8 @@ type Ethnicity struct {
 	*/
 }
 
-// Religon the users religon
-type Religon struct {
+// Religion the users Religion
+type Religion struct {
 	Any          bool      `yaml:"any"`
 	Christian    Christian `yaml:"christian"`
 	Islam        Islam     `yaml:"islam"`
@@ -146,38 +146,39 @@ type Sexuality struct {
 }
 ```
 
-Here I have created a number of structures, the `User` is the main structure consisting of a `Profile`, `Gender`, `Ethnicity`, `Country`, `Religion`, `Personality`, `Age`, `Height` and `Sexuality`
+Here I have created a number of structures, the `User` is the main structure consisting of a `Profile`, `Gender`, `Ethnicity`, `Country`, `Religion`, `Personality`, `Age`, `Height` and `Sexuality`. The nested strcutures will be identified by YAML when unmarshalling and marshalling.
 
 - Profile has:
     - An avatar name so the users name will be kept hidden
-    - Initals of the user
+    - Initials of the user
     - Verification another structure that will be the users login details
 
 - Gender has:
     - Specifies the users Gender
 
 - Ethnicity has:
-    - A map, this is quite vaige but in this map we can specify any string if we are not too careful. However, it can be expected that we store something like `Key: 'mixed' = 'Black Caribbean'`  
+    - A map, this is quite vague but in this map we can specify any string if we are not too careful. However, it can be expected that we store something like `Key: 'mixed' = 'Black Caribbean'`  
 
-- Religon has:
-    - A number of religions some are more detailed and some are just `true` and `false`. 
+- Religion has:
+    - A number of religions a user selects some are structures containing a string of religions views this can be something like `catholic` and some are just `true` and `false` values. 
 
-```go
-func main() {
-	// get Current working directory
-	cwdir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-	// read the new users profile
-	testdata := cwdir + "/../lib/user/testdata/user.yaml"
-	userdata := readYamlFile(testdata)
-	userDetails := readUserProfile(data)
-// ....... Other code
-}
-```
+- Age has:
+    - Users date of birth
 
-In the code above, I've specified where my user details yaml file exists. Its good to use `os.Getwd()` because if run your application in another system or as a docker container it will always point to the current working directory specific to the system.
+- Verification has:
+    - Stores the users login credentials
+    - Number of incorrect logins (Can use used in the source code for triggering a forgot user login)
+
+- Sexuality has:
+    - Users sexuality
+
+As you could see we need to specify flags like `yaml:"encrypted_email"`, we could even have more tags in our flags like `yaml:"hinduism,omitempty"` or more flags with tags like `yaml:"religion", xml:"religion,attr" json:"religion"`
+
+The `omitempty` is the "" for a string. For maps, slices and pointers it’s would be a `nil`.
+
+Additional flags would allow you to read in different human-readable data languages, but you'd also need to implement the marshaling and unmarishaling in your source code shown similarly below for only YAML.
+
+Now lets implement a reader. The reader would read in a file and convert it into bytes. After we have read in our file we want check if the file is correctly formatted the YAML go package `gopkg.in/yaml.v2` already has a unmarshaller which we can use this will decode the data to populate our variable `userDetails` of type `User`.
 
 ```go
 func readYamlFile(path string) []byte {
@@ -196,4 +197,90 @@ func readUserProfile(yamlFile []byte) *user.User {
 	}
 	return userDetails
 }
+```
+
+By calling the `readYamlFile` and passing in a file path we return a raw data which is represented as bytes. 
+
+Note: I've call a `log.Printf` when there is an error, this can be a `log.Fatal`.
+
+Next we can pass in our raw data into our `readUserProfile` function. If YAML file is formatted correctly we are able to populate our User Details.
+
+We can marshal this by calling `myData, err := yaml.Marshal(userDetails)`. `myData` then can be written to file.
+
+```go
+func main() {
+	// get Current working directory
+	cwdir, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+	// read the new users profile
+	testdata := cwdir + "/../lib/user/testdata/user.yaml"
+	userdata := readYamlFile(testdata)
+	userDetails := readUserProfile(data)
+// ....... Other code
+}
+```
+
+In the code above, I've specified where my user details YAML file exists. Its good to use `os.Getwd()` because if run the application in another system or in a docker container it will always point to the current working directory specific to the system.
+
+Finally we are done! We read in what we need to and now we can do something with our data.
+
+I've used this example as it may be quite easier to understand for beginners. If needed to optimize our source code like using a number of Channels (Workers), and Go routines (Stages), have a buffer pool size, create a server with a timeouts or tls configurations and more. We can do this by creating a configurable file and running our application which will read the configurations and scale our application as needed.
+
+An example of what our YAML file would look like: 
+```yaml
+profile:
+  avatar_name: dean
+  initals: pn
+  verification:
+      encrypted_email: chocolates@punitnaran.com
+      encrypted_mobile_number: +44712345678
+      encrypted_pass: panipuri
+      incorrect_counts: 0
+gender:
+  male: true
+  female: false
+ethnicity:
+  ethnic_group:
+    asian:
+      - Indian
+    black:
+    mixed:
+    white:
+    other:
+country: "United Kingdom"
+religion:
+  any: true
+  christian:
+    community:
+  islam:
+    community:
+  agnostic: false
+  nonreligious: false
+  hinduism:
+    community: 
+  confucianism: false
+  taoism: false
+  buddhism:
+    community:
+  sikhism: false
+  juche: false
+  spiritism: false
+  judaism: false
+  bahai: false
+  jainism: false
+  shinto: false
+  caoDai: false
+  other: false
+personality: ['developer', 'foodie', 'sleepy']
+age:
+  day: 1
+  month: 11
+  year: 1993
+height: 181
+sexuality:
+  heterosexual: true
+  homosexual: false
+  bisexual: false
 ```
