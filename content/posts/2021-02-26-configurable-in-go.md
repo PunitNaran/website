@@ -2,7 +2,7 @@
 draft: false
 title: Configurable in Go
 date: 2021-02-26T14:18:54.530Z
-lastmod: 2021-02-26T14:18:55.178Z
+lastmod: 2021-02-26T14:30:13.478Z
 author: Punit Naran
 cover: /img/witch-learning.svg
 categories:
@@ -15,13 +15,15 @@ tags:
 ---
 # Go Configurable
 
-This mostly relates to Go Design Patterns, a simple organized approach in making an application run smoothly. I would recommend this to everyone that has been `hardcoding` values in their source code. For example, when you need to pass in an address to connect to a database, or when you need to pass in user details, or some metadata in to an application, you can do this easily without affecting your code. The biggest advantage for this is, when you need to unit test your source code all you'd need to do is read in your test file and start testing. These configurable file can be used for unit tests, system tests and integration tests, and have may more advantages!
+This relates to Go Design Patterns, a simple organized approach in making an application run smoothly. I would recommend this to everyone that has been `hardcoding` values into their source code. For example, when you need to pass in an address to connect to a database, or when you need to pass in some metadata into an application, you can do this easily without affecting your code. The biggest advantage for this is, allowing your application to have scalablility and unit testing your source code. 
 
-Lets get to it!
+All you'd need to do is read in your test file and start testing. Configurable files can be used for unit tests, system tests and integration tests, this has a lot advantages!
+
+Right, lets get to it!
 
 For this post I'm going to create a YAML file which contains User Details. You can use any human-readable data language of your choice.
 
-The User Details will store detailed information about a user. Lets assume a user signs up to a dating platform or any other social networking website some details mentioned in the `user` package might need to be obtained to register and setup the user, as well as to authenticate the user. 
+The User Details will store detailed information about a user. Lets assume a user signs up to a dating platform or a social networking website some details mentioned in the `user` package might need to be obtained to register and setup the user, as well as to authenticate the user. 
 
 ```go
 package user
