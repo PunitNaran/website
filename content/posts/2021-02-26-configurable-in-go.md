@@ -174,7 +174,7 @@ Here I have created a number of structures, the `User` is the main structure con
 
   * Users sexuality
 
-As you could see we need to specify flags like `yaml:"encrypted_email"`, we could even have more tags in our flags like `yaml:"hinduism,omitempty"` or more flags with tags like `yaml:"religion", xml:"religion,attr" json:"religion"`
+As you could see we need to specify flags like `yaml:"encrypted_email"`, we could even have more tags in our flags like `yaml:"hinduism,omitempty"` or more flags with tags like `yaml:"religion", xml:"religion,attr", json:"religion"`
 
 The `omitempty` is the "" for a string. For maps, slices and pointers it’s would be a `nil`.
 
