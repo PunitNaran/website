@@ -149,11 +149,11 @@ type Sexuality struct {
 }
 ```
 
-Here I have created a number of structures, the `User` is the main structure consisting of a `Profile`, `Gender`, `Ethnicity`, `Country`, `Religion`, `Personality`, `Age`, `Height` and `Sexuality`. The nested structures will be identified by YAML when unmarshalling and marshaling.
+Here I have created a number of structures, the `User` is the main structure consisting of a `Profile`, `Gender`, `Ethnicity`, `Country`, `Religion`, `Personality`, `Age`, `Height` and `Sexuality`. The nested structures will be identified by YAML when unmarshalling and marshaling, thanks to the use of flags.
 
 * Profile has:
 
-  * An avatar name so the users name will be kept hidden
+  * An avatar name so the users name will be kept hidden and allias name `avatar` is used
   * Initials of the user
   * Verification another structure that will be the users login details
 * Gender has:
@@ -164,7 +164,7 @@ Here I have created a number of structures, the `User` is the main structure con
   * A map, this is quite vague but in this map we can specify any string if we are not too careful. However, it can be expected that we store something like `Key: 'mixed' = 'Black Caribbean'`  
 * Religion has:
 
-  * A number of religions a user selects some are structures containing a string of religions views this can be something like `catholic` and some are just `true` and `false` values. 
+  * Are a number of religions a user selects some are structures containing a string of religions views this can be something like `catholic` and some are just `true` and `false` values. 
 * Age has:
 
   * Users date of birth
