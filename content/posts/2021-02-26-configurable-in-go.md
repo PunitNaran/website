@@ -146,31 +146,32 @@ type Sexuality struct {
 }
 ```
 
-Here I have created a number of structures, the `User` is the main structure consisting of a `Profile`, `Gender`, `Ethnicity`, `Country`, `Religion`, `Personality`, `Age`, `Height` and `Sexuality`. The nested strcutures will be identified by YAML when unmarshalling and marshalling.
+Here I have created a number of structures, the `User` is the main structure consisting of a `Profile`, `Gender`, `Ethnicity`, `Country`, `Religion`, `Personality`, `Age`, `Height` and `Sexuality`. The nested structures will be identified by YAML when unmarshalling and marshaling.
 
-- Profile has:
-    - An avatar name so the users name will be kept hidden
-    - Initials of the user
-    - Verification another structure that will be the users login details
+* Profile has:
 
-- Gender has:
-    - Specifies the users Gender
+  * An avatar name so the users name will be kept hidden
+  * Initials of the user
+  * Verification another structure that will be the users login details
+* Gender has:
 
-- Ethnicity has:
-    - A map, this is quite vague but in this map we can specify any string if we are not too careful. However, it can be expected that we store something like `Key: 'mixed' = 'Black Caribbean'`  
+  * Specifies the users Gender
+* Ethnicity has:
 
-- Religion has:
-    - A number of religions a user selects some are structures containing a string of religions views this can be something like `catholic` and some are just `true` and `false` values. 
+  * A map, this is quite vague but in this map we can specify any string if we are not too careful. However, it can be expected that we store something like `Key: 'mixed' = 'Black Caribbean'`  
+* Religion has:
 
-- Age has:
-    - Users date of birth
+  * A number of religions a user selects some are structures containing a string of religions views this can be something like `catholic` and some are just `true` and `false` values. 
+* Age has:
 
-- Verification has:
-    - Stores the users login credentials
-    - Number of incorrect logins (Can use used in the source code for triggering a forgot user login)
+  * Users date of birth
+* Verification has:
 
-- Sexuality has:
-    - Users sexuality
+  * Stores the users login credentials
+  * Number of incorrect logins (Can use used in the source code for triggering a forgot user login)
+* Sexuality has:
+
+  * Users sexuality
 
 As you could see we need to specify flags like `yaml:"encrypted_email"`, we could even have more tags in our flags like `yaml:"hinduism,omitempty"` or more flags with tags like `yaml:"religion", xml:"religion,attr" json:"religion"`
 
@@ -229,6 +230,7 @@ Finally we are done! We read in what we need to and now we can do something with
 I've used this example as it may be quite easier to understand for beginners. If needed to optimize our source code like using a number of Channels (Workers), and Go routines (Stages), have a buffer pool size, create a server with a timeouts or tls configurations and more. We can do this by creating a configurable file and running our application which will read the configurations and scale our application as needed.
 
 An example of what our YAML file would look like: 
+
 ```yaml
 profile:
   avatar_name: dean
