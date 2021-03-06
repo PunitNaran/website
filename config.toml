@@ -46,12 +46,12 @@ enableRobotsTXT = true
   # LEANCLOUD_APP_KEY = ""
 
   email = "contact@punitnaran.com"
-  twitter = "https://twitter.com/PunitNaran"
-  facebook = "https://www.facebook.com/punit.naran/"
-  instagram = "https://www.instagram.com/punitnaran/"
+  twitter = "PunitNaran"
+  facebook = "punit.naran/"
+  instagram = "punitnaran/"
   # mastodon = ""
-  linkedin = "https://uk.linkedin.com/public-profile/in/punit-naran-48a08a73"
-  github = "https://github.com/PunitNaran"
+  linkedin = "punit-naran-48a08a73"
+  github = "PunitNaran"
   # stackoverflow = ""
   # codepen = ""
 
