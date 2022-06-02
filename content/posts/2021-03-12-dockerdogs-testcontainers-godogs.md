@@ -15,4 +15,4 @@ tags:
 ---
 I've always been fond of Behavior-Driven Development (**BDD**)
 
-GoDog is a BDD **Given-When-Then** framework - It helps to breakdown your test using
+GoDog is a BDD **Given-When-Then** framework -
