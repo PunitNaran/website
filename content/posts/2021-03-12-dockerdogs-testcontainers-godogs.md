@@ -1,5 +1,5 @@
 ---
-draft: true
+draft: false
 title: DockerDogs - TestContainers + GoDogs
 date: 2021-03-12T23:26:51.517Z
 lastmod: 2021-03-12T23:26:51.701Z
@@ -15,4 +15,4 @@ tags:
 ---
 I've always been fond of Behavior-Driven Development (**BDD**)
 
-GoDog is a BDD **Given-When-Then** framework - It helps to breakdown your test using
+GoDog is a BDD **Given-When-Then** framework -
