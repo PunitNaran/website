@@ -53,6 +53,3 @@ HUGO_ENABLEGITINFO = "true"
 
 [[plugins]]
 package = "netlify-plugin-image-optim"
-
-[[plugins]]
-package = "netlify-plugin-is-website-vulnerable"
