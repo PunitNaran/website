@@ -1,0 +1,56 @@
+<nav x-data="{ isSticky: false }" x-init="window.addEventListener('scroll', () => { isSticky = window.scrollY > 30 })"
+    class="sticky top-0 z-30 flex items-center justify-between py-4 px-6 transition-all duration-300 backdrop-blur-md bg-white/70 dark:bg-black/50 border-b border-gray-200 dark:border-gray-800"
+    :class="{ 'shadow-lg': isSticky }">
+
+    <!-- Left: Avatar / Logo -->
+    <div class="flex items-center" style="gap: 1rem;">
+        <div class="avatar cursor-pointer hover:scale-110 transition-transform" @click="flip = !flip"
+            title="Flip to About Me">
+            <div class="h-10 w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                <img src="{{ site.Params.avatar | relURL }}" alt="{{ site.Params.headerTitle }}" />
+            </div>
+        </div>
+        <div class="flex flex-col">
+            <a href="{{ site.BaseURL }}"
+                class="text-xl font-bold font-heading text-primary hover:opacity-80 transition-opacity">
+                {{ site.Params.headerTitle }}
+            </a>
+            <span class="text-xs text-gray-500 dark:text-gray-400 opacity-70 hidden sm:block">{{ site.Params.motto
+                }}</span>
+        </div>
+    </div>
+
+    <!-- Right: Navigation Items - STRICT SPACING -->
+    <div class="flex items-center" style="gap: 1.5rem;">
+        <a href="{{ site.BaseURL }}" style="margin-right: 1.5rem;" class="nav-link">Home</a>
+        <a href="/posts" style="margin-right: 1.5rem;" class="nav-link">Posts</a>
+        <a href="/categories" style="margin-right: 1.5rem;" class="nav-link">Categories</a>
+        <a href="/tags" style="margin-right: 1.5rem;" class="nav-link">Tags</a>
+
+        <!-- About Toggles the Flip -->
+        <button @click="flip = !flip" style="margin-right: 1.5rem;" class="nav-link focus:outline-none">
+            About
+        </button>
+
+        <!-- Settings Trigger -->
+        <!-- Settings Trigger -->
+        <button onclick="window.toggleSettings();" class="btn btn-ghost btn-circle btn-sm" title="Settings"
+            style="margin-right: 0.5rem;">
+            <ion-icon name="options-outline" class="text-xl"></ion-icon>
+        </button>
+
+        <!-- Theme Switcher -->
+        <button class="btn btn-ghost btn-circle btn-sm hover:rotate-12 transition-transform"
+            style="margin-right: 0.5rem;" @click="$store.darkMode.toggle($store.darkMode.isDark() ? 'n' : 'y')">
+            <span class="text-xl" x-show="$store.darkMode.isDark()">◑</span>
+            <span class="text-xl" x-show="!$store.darkMode.isDark()">☀</span>
+        </button>
+
+        <!-- Search Focus -->
+        <button
+            onclick="if(document.getElementById('post-search')){document.getElementById('post-search').focus(); window.scrollTo({top:0, behavior:'smooth'});}else{window.location.href='/';}"
+            class="btn btn-ghost btn-circle btn-sm" title="Search">
+            <ion-icon name="search" class="text-xl"></ion-icon>
+        </button>
+    </div>
+</nav>

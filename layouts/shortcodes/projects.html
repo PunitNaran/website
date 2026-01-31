@@ -1,0 +1,82 @@
+<div class="projects-grid">
+    <style>
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .project-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            /* Slightly brighter hover */
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.15);
+            border-color: var(--accent-color);
+        }
+
+        .project-icon {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+
+        .project-title {
+            font-weight: 800;
+            color: #111;
+            /* Default Light Mode */
+            margin-bottom: 10px;
+            display: block;
+            font-size: 1.1rem;
+            line-height: 1.3;
+        }
+
+        .dark .project-title {
+            color: #fff;
+            /* Dark Mode */
+        }
+
+        .project-desc {
+            font-size: 0.95rem;
+            color: #4b5563;
+            /* Gray-600 Light Mode */
+            line-height: 1.6;
+        }
+
+        .dark .project-desc {
+            color: #cbd5e1;
+            /* Slate-300 Dark Mode */
+        }
+
+        /* Added Tags for SRE/Etc */
+        .project-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6366f1;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+    </style>
+
+    {{ range site.Data.projects }}
+    <a href="{{ .url | default " #" }}" class="project-card">
+        <div class="project-icon">{{ .icon }}</div>
+        {{ if .tag }}<span class="project-tag">{{ .tag }}</span>{{ end }}
+        <span class="project-title">{{ .title }}</span>
+        <div class="project-desc">{{ .description | markdownify }}</div>
+    </a>
+    {{ end }}
+</div>

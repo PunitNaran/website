@@ -1,0 +1,60 @@
+<div class="dream-grid-about" style="max-width: 1000px; margin: 0 auto; padding: 2rem 1rem;">
+
+    <!-- ABOUT CONTENT -->
+    {{ with site.GetPage "/about" }}
+    {{ $aboutPages := .Resources.ByType "page" }}
+    <!-- If there are sub-pages (like me.md), we render them. Usually it's just one main content. -->
+    <!-- Check if the About section has content itself or subpages -->
+
+    <div class="dream-column w-full" style="width: 100%; margin-bottom: 2rem;">
+        <article
+            class="card bg-base-100 shadow-xl dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-2xl p-8">
+            <div class="card-body">
+                <!-- If we have multiple sub-pages, we display them all in one flow -->
+                {{ if gt (len $aboutPages) 0 }}
+                {{ range (sort $aboutPages "Date" "asc") }}
+                <h2 class="text-3xl font-bold mb-6 border-b pb-2 dark:border-zinc-700">{{ .Title }}</h2>
+                <div
+                    class="prose dark:prose-invert max-w-none text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+                    {{ .Content | emojify }}
+                </div>
+                <div class="divider my-12"></div>
+                {{ end }}
+                {{ else }}
+                <!-- Fallback if no subpages, maybe just _index.md content -->
+                <div
+                    class="prose dark:prose-invert max-w-none text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+                    {{ .Content | emojify }}
+                </div>
+                {{ end }}
+            </div>
+        </article>
+    </div>
+    {{ end }}
+
+    <!-- SOCIALS -->
+    {{ if (fileExists "data/socials.toml") }}
+    <div class="dream-column w-full mb-8">
+        <article
+            class="card bg-base-100 shadow-xl dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-2xl p-8">
+            <div class="card-body text-center">
+                <div class="card-title text-xl font-bold mb-4">{{ T "socialLinks" }}</div>
+                <div class="flex justify-center flex-wrap gap-4 text-2xl">
+                    {{ partialCached "socials.html" . }}
+                </div>
+            </div>
+        </article>
+    </div>
+    {{ end }}
+
+    <!-- DISQUS -->
+    {{ if and site.Config.Services.Disqus.Shortname .IsHome }}
+    <div class="dream-column w-full">
+        <article class="card bg-base-100 shadow-xl dark:bg-zinc-900 rounded-2xl p-6">
+            <div class="card-body">
+                {{ partial "disqus.html" (dict "Context" . "Identifier" "/") }}
+            </div>
+        </article>
+    </div>
+    {{ end }}
+</div>

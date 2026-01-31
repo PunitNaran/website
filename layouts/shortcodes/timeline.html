@@ -1,0 +1,79 @@
+<div class="timeline-container">
+    <style>
+        .timeline-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            border-left: 2px solid var(--glass-border);
+            padding-left: 20px;
+        }
+
+        .timeline-item {
+            margin-bottom: 40px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -29px;
+            /* Adjust to center on border */
+            top: 5px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+        }
+
+        .timeline-date {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #6366f1;
+            /* Indigo */
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .timeline-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            color: inherit;
+            /* Inherit form parent (handled by enhanced.css) */
+        }
+
+        .timeline-desc {
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        /* Dark Mode Override (Explicit) */
+        .dark .timeline-date {
+            color: #818cf8;
+            /* Light Indigo */
+        }
+
+        .dark .timeline-title {
+            color: #fff !important;
+        }
+
+        .dark .timeline-desc {
+            color: #cbd5e1;
+        }
+    </style>
+
+    {{ range site.Data.timeline }}
+    <div class="timeline-item">
+        <div class="timeline-date">{{ .date }}</div>
+        <div class="timeline-title">{{ .role }} <span style="font-weight:400; opacity:0.8;">@ {{ .company }}</span>
+        </div>
+        <div class="timeline-desc">{{ .description | markdownify }}</div>
+    </div>
+    {{ end }}
+
+</div>

@@ -492,7 +492,7 @@
 }
 
 .markdown-body .pl-mi2 {
-  color: #f6f8fa;
+  color: #333333;
   background-color: #005cc5;
 }
 
@@ -769,7 +769,7 @@
 }
 
 .markdown-body table tr:nth-child(2n) {
-  background-color: #f6f8fa;
+  background-color: #333333;
 }
 
 .markdown-body img {
@@ -823,7 +823,7 @@
   overflow: auto;
   font-size: 85%;
   line-height: 1.45;
-  background-color: #f6f8fa;
+  background-color: #333333;
   border-radius: 3px;
 }
 

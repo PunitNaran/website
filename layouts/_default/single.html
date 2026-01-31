@@ -1,0 +1,330 @@
+{{ define "title" }}{{ .Title }}{{ end }}
+
+{{ define "css" }}
+
+{{ if site.Params.customSyntaxHighlighting }}
+<link rel="stylesheet" data-custom-syntax-highlighting />
+<style>
+  .chroma {
+    padding: 1em;
+    background-color: var(--dream-pre-bg, #f5f5f5);
+    border-radius: .5em;
+    overflow: auto;
+  }
+
+  html.dark .chroma {
+    background-color: var(--dream-pre-bg-dark, #262626);
+  }
+</style>
+{{ else }}
+<style>
+  pre {
+    padding: 1em;
+    overflow: auto;
+  }
+</style>
+{{ end }}
+
+{{ partialCached "commentSystemHeads.html" . }}
+
+{{ end }}
+
+{{ define "main" }}
+<!-- LARK-STYLE LAYOUT: Sidebar + Content -->
+<div class="flex justify-center w-full max-w-[1440px] mx-auto relative group/layout" x-data="tocResize()"
+  @mousemove.window="performResize($event)" @mouseup.window="stopResize()">
+
+  <!-- LEFT SIDEBAR TOC (Desktop: lg+) -->
+  {{ if .TableOfContents }}
+  <aside id="DesktopSidebar"
+    class="hidden lg:block sticky top-24 h-[calc(100vh-6rem)] shrink-0 border-r border-gray-100/50 dark:border-white/5"
+    :style="`width: ${tocWidth}px`">
+
+    <div class="h-full relative px-6 pt-14 pb-4">
+      <!-- Minimalist Header -->
+      <h3
+        class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-6 flex items-center gap-2">
+        Contents
+      </h3>
+
+      <!-- TOC Content -->
+      <nav id="TableOfContents" class="text-sm space-y-1">
+        {{ .TableOfContents }}
+      </nav>
+
+      <!-- Resize Handle -->
+      <div class="absolute top-0 right-0 bottom-0 w-1 cursor-col-resize hover:bg-indigo-500/50 transition-colors z-10"
+        @mousedown.prevent="startResize($event)" title="Drag to Resize"></div>
+    </div>
+  </aside>
+  {{ end }}
+
+  <!-- CENTER: Main Content -->
+  <main class="flex-1 min-w-0" :style="`max-width: calc(100% - ${tocWidth}px)`">
+    <div class="max-w-[850px] mx-auto px-6 py-8">
+
+      <article
+        class="glass-panel prose prose-zinc dark:prose-invert max-w-none prose-headings:scroll-mt-24 prose-headings:font-heading prose-headings:font-bold p-8 md:p-12 !border-0"
+        id="dream-single-post-main" itemscope itemtype="http://schema.org/Article">
+        {{ template "_internal/schema.html" . }}
+        <!-- rest of article... -->
+        {{ template "_internal/schema.html" . }}
+
+        <header class="mb-10 not-prose">
+          <h1 itemprop="headline"
+            class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-gray-900 dark:text-white">{{ .Title }}
+          </h1>
+          <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+
+            {{ if site.Params.Experimental.jsDate }}
+            <span class="flex items-center gap-1"><ion-icon name="calendar-outline"></ion-icon> <span
+                data-format="luxon">{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}</span></span>
+            {{ else }}
+            <span class="flex items-center gap-1"><ion-icon name="calendar-outline"></ion-icon> {{ .Date | time.Format
+              "Jan 2, 2006" }}</span>
+            {{ end }}
+
+            <span class="flex items-center gap-1"><ion-icon name="time-outline"></ion-icon> {{ .ReadingTime }}{{ T
+              "minuteRead" .ReadingTime }}</span>
+
+            {{ if ne .Params.nolastmod true }}
+            <span class="flex items-center gap-1"><ion-icon name="sync-outline"></ion-icon> Upd. {{ .Lastmod |
+              time.Format "Jan 2, 2006" }}</span>
+            {{ end }}
+          </div>
+
+          {{ $hasAuthor := or .Params.author site.Params.author }}
+          {{ if $hasAuthor }}
+          <div class="mt-6 flex items-center justify-between border-b border-gray-100 dark:border-white/5 pb-6">
+            {{ partial "author.html" (dict "Params" .Params "template" "single") }}
+            {{ partial "share.html" . }}
+          </div>
+          {{ end }}
+        </header>
+
+        <section id="dream-single-post-content" itemprop="articleBody">
+          {{ if and .Params.Cover site.Params.showSummaryCoverInPost }}
+          <figure class="mb-10 -mx-6 md:-mx-0">
+            <img class="w-full rounded-xl shadow-sm" src="{{ .Params.Cover }}" alt="{{ .Title }}" />
+            {{ with .Params.covercaption }}
+            <figcaption class="text-sm italic text-center mt-2 text-gray-500">{{ . }}</figcaption>
+            {{ end }}
+          </figure>
+          {{ end }}
+
+          {{ .Content | emojify }}
+
+          {{ if fileExists "layouts/partials/adsense-post-bottom.html" }}
+          <div class="dream-adsense-post-bottom mt-10">
+            {{ partialCached "adsense-post-bottom.html" . }}
+          </div>
+          {{ end }}
+        </section>
+
+      </article>
+
+      <!-- Prev/Next Navigation -->
+      {{ if site.Params.showPrevNextPost }}
+      <div class="mt-16 pt-8 border-t border-gray-100 dark:border-white/5">
+        <div class="flex flex-col md:flex-row justify-between gap-6">
+          {{ with .NextInSection }}
+          <a class="group flex items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-white/10 hover:border-indigo-500 dark:hover:border-indigo-500 transition-colors w-full md:w-1/2"
+            href="{{ .RelPermalink }}">
+            <ion-icon name="arrow-back"
+              class="text-2xl text-gray-400 group-hover:text-indigo-500 transition-colors"></ion-icon>
+            <div>
+              <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Previous</div>
+              <div
+                class="font-bold text-gray-900 dark:text-white line-clamp-2 group-hover:text-indigo-500 transition-colors">
+                {{ .LinkTitle }}</div>
+            </div>
+          </a>
+          {{ else }}
+          <div class="hidden md:block w-1/2"></div>
+          {{ end }}
+
+          {{ with .PrevInSection }}
+          <a class="group flex items-center justify-end gap-4 p-4 rounded-xl border border-gray-200 dark:border-white/10 hover:border-indigo-500 dark:hover:border-indigo-500 transition-colors w-full md:w-1/2 text-right"
+            href="{{ .RelPermalink }}">
+            <div>
+              <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Next</div>
+              <div
+                class="font-bold text-gray-900 dark:text-white line-clamp-2 group-hover:text-indigo-500 transition-colors">
+                {{ .LinkTitle }}</div>
+            </div>
+            <ion-icon name="arrow-forward"
+              class="text-2xl text-gray-400 group-hover:text-indigo-500 transition-colors"></ion-icon>
+          </a>
+          {{ else }}
+          <div class="hidden md:block w-1/2"></div>
+          {{ end }}
+        </div>
+      </div>
+      {{ end }}
+
+      {{ if or site.Config.Services.Disqus.Shortname site.Params.utterancesRepo site.Params.valine site.Params.waline
+      site.Params.twikoo.enabled }}
+      <div class="mt-16 pt-8 border-t border-gray-100 dark:border-white/5">
+        <section class="space-y-4">
+          {{ partialCached "commentSystems.html" . .RelPermalink }}
+        </section>
+      </div>
+      {{ end }}
+
+    </div>
+  </main>
+
+  <!-- Mobile Floating Button (lg-) -->
+  {{ if .TableOfContents }}
+  <div id="MobileTOC" class="lg:hidden fixed bottom-6 right-6 z-50" x-data="{ open: false }">
+    <div x-show="open" @click.outside="open = false"
+      class="mb-4 p-4 rounded-xl shadow-2xl bg-white/95 dark:bg-zinc-800/95 backdrop-blur-md border border-gray-200 dark:border-white/10 max-h-[50vh] overflow-y-auto w-72 origin-bottom-right"
+      x-transition>
+      <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-100 dark:border-white/10">
+        <span class="font-bold text-xs uppercase text-gray-500">On This Page</span>
+        <button @click="open = false"><ion-icon name="close"></ion-icon></button>
+      </div>
+      <nav id="TableOfContents-Mobile" class="text-sm">
+        {{ .TableOfContents }}
+      </nav>
+    </div>
+    <button @click="open = !open"
+      class="h-14 w-14 rounded-full shadow-xl bg-indigo-600 text-white flex items-center justify-center hover:scale-105 transition-transform"
+      aria-label="Table of Contents">
+      <ion-icon name="list" class="text-2xl"></ion-icon>
+    </button>
+  </div>
+  {{ end }}
+
+</div>
+
+<!-- Alpine Logic & Scrollspy -->
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('tocResize', () => ({
+      tocWidth: 260, // Default width
+      resizing: false,
+      startX: 0,
+      startWidth: 0,
+
+      startResize(e) {
+        this.resizing = true;
+        this.startX = e.clientX;
+        this.startWidth = this.tocWidth;
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+      },
+      performResize(e) {
+        if (!this.resizing) return;
+        const diff = e.clientX - this.startX;
+        this.tocWidth = Math.max(200, Math.min(450, this.startWidth + diff));
+      },
+      stopResize() {
+        this.resizing = false;
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      }
+    }));
+  });
+
+  // Scrollspy Logic
+  document.addEventListener('DOMContentLoaded', () => {
+    const tocContainer = document.querySelector('aside .custom-scrollbar'); // Target the specific scrollable div
+    if (!tocContainer) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          if (!id) return;
+
+          // 1. Reset all links
+          document.querySelectorAll('#TableOfContents a').forEach(link => {
+            link.classList.remove('text-indigo-600', 'dark:text-indigo-400', 'font-bold', 'border-l-2', 'border-indigo-600', 'pl-2');
+            link.classList.add('text-gray-600', 'dark:text-gray-400');
+            link.style.backgroundColor = '';
+          });
+
+          // 2. Highlight active link
+          const activeLink = document.querySelector(`#TableOfContents a[href="#${id}"]`);
+          if (activeLink) {
+            activeLink.classList.remove('text-gray-600', 'dark:text-gray-400');
+            activeLink.classList.add('text-indigo-600', 'dark:text-indigo-400', 'font-bold', 'border-l-2', 'border-indigo-600', 'pl-2');
+
+            // 3. Safe Scroll (Container Only) - Prevents Page Jumping
+            const linkRect = activeLink.getBoundingClientRect();
+            const containerRect = tocContainer.getBoundingClientRect();
+
+            // If link is above visible area
+            if (linkRect.top < containerRect.top) {
+              tocContainer.scrollTop -= (containerRect.top - linkRect.top + 10);
+            }
+            // If link is below visible area
+            else if (linkRect.bottom > containerRect.bottom) {
+              tocContainer.scrollTop += (linkRect.bottom - containerRect.bottom + 10);
+            }
+          }
+        }
+      });
+    }, { rootMargin: '-10% 0px -80% 0px' }); // Tighter focus zone (top 10-20% of screen)
+
+    // Track headers
+    document.querySelectorAll('article h1, article h2, article h3, article h4').forEach((section) => {
+      observer.observe(section);
+    });
+  });
+</script>
+{{ end }}
+
+{{ define "js" }}
+
+{{ if site.Params.Experimental.jsDate }}
+{{ partial "luxon.html" . }}
+{{ end }}
+
+{{ if site.Params.customSyntaxHighlighting }}
+{{- $syntaxLightCSS := resources.Get "css/syntax-light.css" | minify -}}
+{{- $syntaxDarkCSS := resources.Get "css/syntax-dark.css" | minify -}}
+
+<script>
+  window.customSyntaxHighlighting = {
+    light: {{ $syntaxLightCSS.RelPermalink }},
+  dark: { { $syntaxDarkCSS.RelPermalink } }
+    }
+
+  document.addEventListener('alpine:initialized', () => {
+    var isDark = Alpine.store('darkMode').isDark()
+    var customSyntaxHighlightingUrl = isDark ? window.customSyntaxHighlighting.dark : window.customSyntaxHighlighting.light
+
+    document
+      .querySelector('link[data-custom-syntax-highlighting]')
+      .setAttribute('href', customSyntaxHighlightingUrl)
+  })
+</script>
+{{ end }}
+
+{{ $tocJs := resources.Get "js/toc.js" }}
+{{ if hugo.IsProduction }}
+{{ $tocJs = $tocJs | minify }}
+{{ end }}
+<script src="{{ $tocJs.RelPermalink }}"></script>
+
+{{ if site.Params.imageZoomableInPost }}
+{{ if fileExists "layouts/partials/medium-zoom.html" }}
+{{ partialCached "medium-zoom.html" . }}
+{{ else }}
+<script type="module">
+  import mediumZoom from 'https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/+esm';
+  mediumZoom('#dream-single-post-content img', {
+    background: 'oklch(var(--b1))',
+    margin: 24,
+  })
+</script>
+{{ end }}
+{{ end }}
+
+{{ if .Params.math }}
+{{ .Page.Store.Set "hasMathjax" true }}
+{{ end }}
+
+{{ end }}

@@ -1,1 +1,17 @@
-"use strict";function initGrid(){var n=$(".dream-grid").masonry({itemSelector:".dream-column"});n.imagesLoaded().progress(function(){return n.masonry("layout")}),window.hasTwitterEmbed&&window.twttr.ready(function(r){return r.events.bind("loaded",function(){return n.masonry("layout")})})}$(document).ready(initGrid);
+"use strict";
+
+function initGrid() {
+  document.querySelectorAll('.dream-grid').forEach(function (grid) {
+    var msnry = new Masonry(grid, {
+      itemSelector: '.dream-column'
+    });
+    if (grid.classList.contains('dream-grid-about')) {
+      window.aboutMasonry = msnry;
+    }
+    imagesLoaded(grid, function () {
+      grid.style.opacity = 1;
+      msnry.layout();
+    });
+  });
+}
+initGrid();
