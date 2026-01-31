@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>{{ block "title" . }} {{- T "home" -}} {{ end }} | {{ .Site.Title }}</title>
+
+  {{ partial "head.html" . }}
+
+  {{ block "css" . }} {{ end }}
+
+  {{ range .Site.Params.Advanced.customCSS }}
+  <link rel="stylesheet" href="{{ . | relURL }}" />
+  {{ end }}
+
+</head>
+
+<body class="default">
+  <div id="reading-progress-bar"
+    style="position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(90deg, #6366f1, #a855f7); z-index: 9999; width: 0%;">
+  </div>
+  {{ partial "nav.html" . }}
+  <div class="flip-container">
+    <div class="flipper">
+      <section class="front">
+        <div class="dream-max-width">
+          {{ block "main" . }} {{ end }}
+
+          <footer class="ui basic center aligned segment" style="background-color: transparent;">
+            <a href="https://nowpayments.io/donation?api_key=2SS3XYW-J3GMEMQ-N33WNQB-SHY4Q53" target="_blank">
+              <img src="https://nowpayments.io/images/embeds/donation-button-white.svg" style="width: 9%; height: 9%"
+                alt="Cryptocurrency & Bitcoin donation button by NOWPayments">
+            </a>
+            {{ if .Site.Params.siteStartYear }}
+            <p>© {{ if eq now.Year .Site.Params.siteStartYear }}{{ now.Year }}{{ else }}{{ .Site.Params.siteStartYear }}
+              - {{ now.Year }}{{ end }} {{ .Site.Title }}</p>
+            {{ else }}
+            <p>© {{ now.Year }} {{ .Site.Title }}</p>
+            {{ end }}
+
+            <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a
+                href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+            {{ if .Site.Params.footerBottomText }}
+            <p>{{ .Site.Params.footerBottomText | safeHTML }}</p>
+            {{ end }}
+          </footer>
+        </div>
+      </section>
+      <section class="back">
+        <div class="dream-max-width">
+          {{ partial "back.html" . }}
+        </div>
+      </section>
+    </div>
+  </div>
+
+  {{ partial "footer.html" . }}
+  {{ block "js" . }} {{ end }}
+
+
+
+  {{ range .Site.Params.Advanced.customJS }}
+  <script src="{{ . | relURL }}"></script>
+  {{ end }}
+
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</body>
+
+</html>

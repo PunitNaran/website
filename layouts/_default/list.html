@@ -1,0 +1,65 @@
+{{ define "main" }}
+<!-- Explicit Pure CSS Layout -->
+<div class="premium-container">
+    <div class="premium-canvas">
+
+        <!-- Header -->
+        <div
+            style="text-align: center; margin-bottom: 2rem; border-bottom: 1px solid rgba(128,128,128,0.2); padding-bottom: 2rem;">
+            <h1
+                style="font-size: 3rem; font-weight: 900; margin-bottom: 1rem; color: inherit; font-family: var(--font-heading);">
+                {{ .Title }}</h1>
+            {{ if .Description }}
+            <p style="font-size: 1.25rem; opacity: 0.7;">{{ .Description }}</p>
+            {{ end }}
+        </div>
+
+        <!-- Grid -->
+        <div class="premium-grid">
+            {{ range .Paginator.Pages }}
+            <article class="premium-card">
+
+                <a href="{{ .RelPermalink }}" style="display: block; overflow: hidden;">
+                    {{ if .Params.cover }}
+                    <img src="{{ .Params.cover }}" alt="{{ .Title }}" class="premium-card-image">
+                    {{ else }}
+                    <div class="premium-card-image"
+                        style="background: linear-gradient(135deg, #eee, #ddd); display: flex; align-items: center; justify-content: center;">
+                        <span style="font-size: 2rem; opacity: 0.3;">📝</span>
+                    </div>
+                    {{ end }}
+                </a>
+
+                <div class="premium-card-content">
+                    <h2 class="premium-title">
+                        <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+                    </h2>
+
+                    <p class="premium-summary">
+                        {{ .Summary | plainify }}
+                    </p>
+
+                    <div class="premium-meta">
+                        <span>{{ .Date.Format "Jan 02, 2006" }}</span>
+                        <a href="{{ .RelPermalink }}" style="color: var(--accent-color); text-decoration: none;">Read
+                            More &rarr;</a>
+                    </div>
+                </div>
+
+            </article>
+            {{ end }}
+        </div>
+
+        <!-- Pagination (Simple) -->
+        <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 3rem;">
+            {{ if .Paginator.HasPrev }}
+            <a href="{{ .Paginator.Prev.URL }}" class="premium-pill">← Previous</a>
+            {{ end }}
+            {{ if .Paginator.HasNext }}
+            <a href="{{ .Paginator.Next.URL }}" class="premium-pill">Next Page →</a>
+            {{ end }}
+        </div>
+
+    </div>
+</div>
+{{ end }}

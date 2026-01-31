@@ -1,0 +1,179 @@
+{{ define "main" }}
+
+<div class="dashboard-container" style="max-width: 1200px; margin: 0 auto; padding: 2rem 1rem;">
+
+    <!-- TOP FILTER SECTION -->
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <h1 class="font-heading text-gray-900 dark:text-white text-4xl md:text-5xl font-extrabold mb-2">{{
+            site.Params.headerTitle }}</h1>
+        <p class="text-lg italic text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            <span class="opacity-60">“</span> {{ site.Params.motto }} <span class="opacity-60">”</span>
+        </p>
+    </div>
+
+    <section class="filter-bar"
+        style="margin-bottom: 2rem; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05);">
+
+        <!-- Search & Sort Row -->
+        <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+            <!-- Search Input -->
+            <div style="position: relative; flex: 1;">
+                <input type="text" id="post-search" placeholder="Type filters (e.g. 'go testing') or search titles..."
+                    style="width: 100%; padding: 12px 45px 12px 15px; border-radius: 8px; border: 1px solid #ddd; background: rgba(255,255,255,0.9); font-size: 1rem;">
+                <div style="position: absolute; right: 15px; top: 12px; opacity: 0.5;">
+                    <ion-icon name="search" style="font-size: 1.2rem;"></ion-icon>
+                </div>
+            </div>
+
+            <!-- Sort Buttons -->
+            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; align-items: center;">
+                <span class="filter-label" style="margin-right: 8px;">Sort:</span>
+                <button onclick="sortPosts('newest')" class="sort-btn active">Newest</button>
+                <button onclick="sortPosts('oldest')" class="sort-btn">Oldest</button>
+            </div>
+        </div>
+
+        <!-- Horizontal Tags Cloud & Additional Filters -->
+        <div class="filter-controls" style="display: flex; flex-direction: column; gap: 1rem;">
+
+            <!-- Primary Filters (Always Visible) -->
+            <div class="primary-filters"
+                style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
+
+                <!-- Tag Cloud (Compact) -->
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; flex: 1;">
+                    <span class="filter-label" style="margin-right: 4px;">Tags:</span>
+                    <button onclick="filterByTag('all')" class="tag-filter active" data-tag="all">All</button>
+                    {{ range first 8 site.Taxonomies.tags.ByCount }}
+                    <button onclick="filterByTag('{{ .Page.Title | lower }}')" class="tag-filter"
+                        data-tag="{{ .Page.Title | lower }}">{{ .Page.Title }}</button>
+                    {{ end }}
+                </div>
+
+                <!-- Advanced Toggle -->
+                <button onclick="toggleAdvancedFilters()" id="adv-filter-btn"
+                    class="text-xs font-bold px-3 py-1.5 bg-transparent border border-gray-300 dark:border-white/20 rounded-md cursor-pointer flex items-center gap-1.5 text-gray-700 dark:text-gray-200 hover:border-indigo-500 dark:hover:border-indigo-500 transition-colors">
+                    <ion-icon name="options"></ion-icon> Filters +
+                </button>
+            </div>
+
+            <!-- Advanced Filters (Collapsible) -->
+            <div id="advanced-filters"
+                style="display: none; background: rgba(0,0,0,0.02); padding: 1rem; border-radius: 8px; border: 1px solid rgba(0,0,0,0.05);">
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+
+                    <!-- Reading Time -->
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <span class="filter-label">Reading Time</span>
+                        <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                            <button onclick="filterByTime('all')" class="time-filter active tag-filter"
+                                data-time="all">Any</button>
+                            <button onclick="filterByTime('short')" class="time-filter tag-filter"
+                                data-time="short">Short (&lt;5m)</button>
+                            <button onclick="filterByTime('medium')" class="time-filter tag-filter"
+                                data-time="medium">Medium (5-10m)</button>
+                            <button onclick="filterByTime('long')" class="time-filter tag-filter" data-time="long">Long
+                                (&gt;10m)</button>
+                        </div>
+                    </div>
+
+                    <!-- Year -->
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <span class="filter-label">Year</span>
+                        <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                            <button onclick="filterByYear('all')" class="year-filter active tag-filter"
+                                data-year="all">Any</button>
+                            {{ range (site.RegularPages.GroupByDate "2006") }}
+                            <button onclick="filterByYear('{{ .Key }}')" class="year-filter tag-filter"
+                                data-year="{{ .Key }}">{{ .Key }}</button>
+                            {{ end }}
+                        </div>
+                    </div>
+
+                    <!-- All Tags (Expanded) -->
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <span class="filter-label">All Categories</span>
+                        <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                            {{ range site.Taxonomies.categories }}
+                            <button onclick="filterByCategory('{{ .Page.Title | lower }}')"
+                                class="category-filter tag-filter" data-cat="{{ .Page.Title | lower }}">{{ .Page.Title
+                                }}</button>
+                            {{ end }}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- POST GRID -->
+    <main>
+        <div id="posts-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
+            {{ range where site.RegularPages "Type" "posts" }}
+            {{ $readTime := .ReadingTime }}
+            {{ if eq $readTime 0 }} {{ $readTime = 1 }} {{ end }} <!-- Safety Default -->
+            <article class="post-card"
+                style="background: white; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); transition: transform 0.2s; display: flex; flex-direction: column;"
+                data-title="{{ .Title | lower }}" data-date="{{ .Date.Unix }}" data-year="{{ .Date.Format " 2006" }}"
+                data-tags="{{ range .Params.tags }}{{ . | lower }} {{ end }}"
+                data-categories="{{ range .Params.categories }}{{ . | lower }} {{ end }}"
+                data-readtime="{{ $readTime }}" data-summary="{{ .Summary | plainify | lower }}">
+
+                <a href="{{ .RelPermalink }}"
+                    style="display: flex; flex-direction: column; height: 100%; text-decoration: none; color: inherit;">
+                    {{ if .Params.cover }}
+                    <div style="position: relative; height: 200px; overflow: hidden;">
+                        <img src="{{ .Params.cover }}" alt="{{ .Title }}"
+                            style="width: 100%; height: 100%; object-fit: cover;">
+                        <div
+                            style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">
+                            {{ .Date.Format "Jan 02, 2006" }}
+                        </div>
+                    </div>
+                    {{ end }}
+
+                    <div class="content" style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column;">
+                        <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px;">
+                            {{ range first 3 .Params.tags }}
+                            <span
+                                style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: #6366f1; background: rgba(99, 102, 241, 0.1); padding: 2px 8px; border-radius: 4px;">{{
+                                . }}</span>
+                            {{ end }}
+                        </div>
+
+                        <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3;">{{
+                            .Title }}</h2>
+                        <p style="font-size: 0.9rem; color: #666; line-height: 1.6; margin-bottom: 1rem; flex: 1;">{{
+                            .Summary | plainify | truncate 120 }}</p>
+
+                        <div style="font-size: 0.8rem; color: #999; display: flex; align-items: center; gap: 5px;">
+                            <ion-icon name="time-outline"></ion-icon> {{ .ReadingTime }} min read
+                        </div>
+                    </div>
+                </a>
+            </article>
+            {{ end }}
+        </div>
+
+        <!-- No Results -->
+        <div id="no-results" class="hidden" style="text-align: center; padding: 4rem; opacity: 0.6; display: none;">
+            <p style="font-size: 1.2rem; font-weight: bold;">No posts match your filters.</p>
+            <button onclick="resetFilters()"
+                style="margin-top: 1rem; padding: 0.5rem 1.5rem; background: #6366f1; color: white; border: none; border-radius: 6px; cursor: pointer;">Clear
+                Filters</button>
+        </div>
+    </main>
+</div>
+
+{{ end }}
+
+{{ define "js" }}
+{{ if site.Params.Experimental.jsDate }}
+{{ partial "luxon.html" . }}
+{{ end }}
+{{ end }}

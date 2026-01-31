@@ -12,6 +12,11 @@ disqusShortname = "punitnaran"
 
 enableRobotsTXT = true
 
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
 [params]
   background = "#f7f7f7"
   backgroundImage = "/me/background.jpg"
@@ -50,7 +55,7 @@ enableRobotsTXT = true
   facebook = "punit.naran/"
   instagram = "punitnaran/"
   # mastodon = ""
-  linkedin = "punit-naran-48a08a73"
+  linkedin = "punit-n-48a08a73"
   github = "PunitNaran"
   # stackoverflow = ""
   # codepen = ""
@@ -72,8 +77,8 @@ enableRobotsTXT = true
   showSummaryCoverInPost = true
   # hasTwitterEmbed = true
 
-  # [params.advanced]
-  #   customCSS = ["css/custom.css"]
-  #   customJS = []
+  [params.advanced]
+    customCSS = ["css/enhanced.css", "css/dashboard.css"]
+    customJS = ["js/dashboard.js"]
   [outputs]
     home = ["HTML", "RSS", "JSON"]

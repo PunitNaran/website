@@ -1,0 +1,22 @@
+{{ define "main" }}
+<div class="premium-container">
+    <div class="premium-canvas">
+
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h1 style="font-size: 3.5rem; font-weight: 900; margin-bottom: 1rem; font-family: var(--font-heading);">{{
+                .Title }}</h1>
+            <p style="font-size: 1.5rem; opacity: 0.7;">Explore {{ len .Data.Terms }} topics</p>
+        </div>
+
+        <div class="premium-pill-grid">
+            {{ range .Data.Terms.ByCount }}
+            <a href="{{ .Page.RelPermalink }}" class="premium-pill">
+                <span>{{ .Page.Title }}</span>
+                <span class="premium-pill-count">{{ .Count }}</span>
+            </a>
+            {{ end }}
+        </div>
+
+    </div>
+</div>
+{{ end }}
