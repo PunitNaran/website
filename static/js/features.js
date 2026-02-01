@@ -41,12 +41,10 @@ document.addEventListener('DOMContentLoaded', (() => {
                             <!-- Typography -->
                             <div class="settings-group">
                                 <label class="settings-label">Typography</label>
-                                <div class="settings-options mb-2">
+                                <div class="settings-options" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;">
                                     <div class="settings-opt-btn active" data-font="sans">Inter</div>
-                                    <div class="settings-opt-btn" data-font="serif" style="font-family: 'Merriweather', serif;">Merriweather</div>
-                                </div>
-                                <div class="settings-options">
-                                     <div class="settings-opt-btn" data-font="dyslexic">Dyslexic</div>
+                                    <div class="settings-opt-btn" data-font="serif" style="font-family: 'Merriweather', serif;">Serif</div>
+                                    <div class="settings-opt-btn" data-font="dyslexic">Dyslexic</div>
                                 </div>
                             </div>
 
@@ -73,7 +71,7 @@ document.addEventListener('DOMContentLoaded', (() => {
                                 <label class="settings-label">Quick Access</label>
                                 <div class="settings-options">
                                     <div class="settings-opt-btn" onclick="window.location.href='/admin'">Admin (CMS)</div>
-                                    <div class="settings-opt-btn" onclick="window.location.href='/#about'">About Me</div>
+    <div class="settings-opt-btn" onclick="window.dispatchEvent(new CustomEvent('toggle-about')); window.toggleSettings();">About Me</div>
                                 </div>
                             </div>
 
@@ -164,17 +162,11 @@ document.addEventListener('DOMContentLoaded', (() => {
             };
 
             const toggleTheme = (wantDark) => {
-                // Trigger the Alpine.js Logic via standard click if possible, or force class
-                const btn = document.querySelector('[x-data] button[style*="margin-right: 0.5rem"]');
-                // This selector is flaky. Let's just use document class.
                 const isDark = document.documentElement.classList.contains('dark');
                 if (wantDark !== isDark) {
-                    // Find the toggle button in nav and click it
-                    // It has @click="$store.darkMode.toggle..."
-                    // We can try dispatching a custom event or just relying on users clicking the main toggle for now?
-                    // Let's send a click to the nav button.
-                    const navToggle = document.querySelector('nav button .text-xl').parentNode;
-                    if (navToggle) navToggle.click();
+                    if (window.Alpine && window.Alpine.store('darkMode')) {
+                        window.Alpine.store('darkMode').toggle(wantDark ? 'y' : 'n');
+                    }
                 }
                 setTimeout(updateThemeUI, 100);
             };

@@ -34,8 +34,8 @@
 
         <!-- Settings Trigger -->
         <!-- Settings Trigger -->
-        <button onclick="window.toggleSettings();" class="btn btn-ghost btn-circle btn-sm" title="Settings"
-            style="margin-right: 0.5rem;">
+        <button onclick="if(window.toggleSettings) window.toggleSettings();" class="btn btn-ghost btn-circle btn-sm"
+            title="Settings" style="margin-right: 0.5rem;">
             <ion-icon name="options-outline" class="text-xl"></ion-icon>
         </button>
 

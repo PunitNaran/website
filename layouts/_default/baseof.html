@@ -49,7 +49,9 @@
     integrity="sha256-Rmqrc5SKeSLTSnQ9shSKWmJco1ks8c1hLI8UG2Np03M=" crossorigin="anonymous"></script>
 </head>
 
-<body x-data="{ flip: false }">
+<body x-data="{
+    flip: false,
+  }" x-on:toggle-about.window="flip = !flip">
   <div id="dream-global-bg"></div>
 
   {{ partial "nav.html" . }}
@@ -103,7 +105,7 @@
     integrity="sha256-/IFmi82bIhdYWctu0UddSlJqpnzWm7Vh2C4CM32wF/k=" crossorigin="anonymous"></script>
   <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"
     integrity="sha256-mr7eJMX3VC3F7G32mk4oWp1C6a2tlMYxUdptfT7uKI8=" crossorigin="anonymous"></script>
-  <script src="{{ " js/features.js" | relURL }}"></script>
+  <script src="/js/features.js?v=absolute"></script> <!-- HARDCODED FIX -->
 
   <!-- COMMAND PALETTE MODAL -->
   <div id="command-palette" class="hidden fixed inset-0 z-[100] items-start justify-center pt-[20vh]">
