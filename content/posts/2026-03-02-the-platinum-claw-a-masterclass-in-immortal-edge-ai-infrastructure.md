@@ -5,9 +5,15 @@ summary: How to build a self-healing, hardware-aware AI cluster that survives th
 date: 2026-03-02T22:44:00
 cover: /img/Gemini_Generated_Image_hy6zyvhy6zyvhy6z.png
 categories:
-  - Edge Computing,  Cybersecurity,  Artificial Intelligence
+  - Edge Computing
+  - Cybersecurity
+  - Artificial Intelligence
 tags:
-  - Kubernetes, Edge-AI, DevOps, Cybersecurity, Linux-Kernel
+  - Kubernetes
+  - Edge-AI
+  - DevOps
+  - Cybersecurity
+  - Linux-Kernel
 ---
 
 ## 🧩 Part 1: The Anatomy of the Platinum Claw
