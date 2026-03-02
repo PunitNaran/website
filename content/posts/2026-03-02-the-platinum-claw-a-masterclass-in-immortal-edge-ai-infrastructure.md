@@ -223,7 +223,225 @@ EOF
 done
 ```
 
+For your **Lenovo m700q**, the setup is unique because it serves as the **Master Brain** of the Platinum Claw. It doesn't just run software; it manages the entire distributed "nervous system" of your cluster.
+
+Here is the exact step-by-step execution path for the Lenovo:
+
+
+
+
+### 🟢 Step 1: Phase 1 - Bare Metal Hardening
+
+Run this first to prepare the Linux kernel for high-performance Kubernetes orchestration.
+
+1. **Execute:** `sudo ./platinum_claw.sh`
+2. **Select:** `1) Hardening: Bare Metal Kernel Tuning`
+3. **The Hostname:** When prompted, enter a strong name like `claw-master`. (This ensures the RPi5 knows exactly who its boss is).
+4. **The NVMe Prompt:** \* If you have **ONLY ONE** drive (where Linux is installed): **Type `n`**.
+    - If you have a **SECOND** dedicated SSD: **Type `y`** (ensure it's already mounted at `/mnt/nvme3`).
+5. **Hailo Drivers:** Since the NPU is going in the Pi, **Type `n`** on the Lenovo (unless you have a second NPU for the Lenovo).
+6. **The Reboot:** The script will finish and say "Hardening Complete." **You MUST reboot now.**
+
+**Why this matters for Lenovo:** The script is physically modifying your `/etc/default/grub` file to add `pcie_aspm=off`. Without this, the Lenovo’s Intel power management will "sleep" your network card to save 1 watt of power, which will cause your cluster to lag and drop pods.
+
+
+
+
+### 🟢 Step 2: Phase 2 - Bootstrap Master Node
+
+After the reboot, it’s time to turn the Lenovo into a Kubernetes Master.
+
+1. **Execute:** `sudo ./platinum_claw.sh`
+2. **Select:** `2) Brain: Bootstrap Master Node`
+3. **LAN IP:** Enter the Lenovo’s local IP (e.g., `192.168.1.50`).
+    - _Pro-Tip:_ Make sure this IP is "Static" in your router settings so it never changes.
+4. **The Wait:** The script will now install:
+    - **K3s:** The core orchestrator.
+    - **Cilium:** The eBPF network "superhighway."
+    - **Longhorn:** The distributed storage engine.
+    - **ArgoCD:** Your web-based GitOps dashboard.
+
+
+
+
+### 🟢 Step 3: Capture the "Keys to the Kingdom"
+
+When Phase 2 finishes, your terminal will display a **Green Box**. **Do not clear your screen.** You need two pieces of information for the rest of your life:
+
+- **The Join Token:** A long string starting with `K10...`. You will paste this into the **RPi5** later to connect it.
+- **ArgoCD Password:** A temporary password to log into your cluster's visual dashboard.
+
+
+
+
+### 🟢 Step 4: Verification (The "Pulse" Check)
+
+Before moving to the Raspberry Pi 5, ensure the Lenovo is healthy.
+
+1. **Select:** `5) Pulse: Cluster Health Check`
+2. **What to look for:**
+    - One node named `claw-master` with status `Ready`.
+    - A list of `longhorn-system` pods all saying `Running`.
+
+
+
+
+### 🛠️ Summary of the Lenovo "Master" Specs
+
+By the time you finish these steps, your Lenovo will have:
+
+- **Disabled ASPM:** Maximum PCIe performance.
+- **ARP Expansion:** The kernel can now handle 4,000+ simultaneous network paths.
+- **SystemD Unchained:** K3s is now allowed to open 1 million files simultaneously.
+- **eBPF Active:** High-speed internal networking is ready.
+
+For your **Raspberry Pi 5**, the Platinum Claw protocol shifts from "Management Mode" to **"Acceleration Mode."** The Pi 5 is the "Muscle" of your cluster—this is where the Hailo-8 NPU lives and where the heavy AI crunching happens.
+
+Follow these steps precisely to bind your Pi 5 to the Lenovo Master.
+
+
+
+
+### 🟡 Step 1: Phase 1 - Bare Metal Hardening
+
+This is the most important step for the Pi. It prepares the ARM64 kernel and installs the specialized NPU drivers.
+
+1. **Execute:** `sudo ./platinum_claw.sh`
+2. **Select:** `1) Hardening: Bare Metal Kernel Tuning`
+3. **The Hostname:** Enter a unique worker name like `claw-worker-01`.
+4. **The NVMe Prompt:** **Type `y`**.
+    - _Why:_ Raspberry Pis are notorious for killing SD cards. By saying "Yes," the script creates the **Immutable Shadow Mount**, forcing all AI data onto your NVMe/SSD and physically locking the SD card to prevent "write-burn."
+5. **Hailo Drivers:** **Type `y`**.
+    - This will trigger a DKMS build. It compiles the Hailo PCIe driver specifically for your Pi's current kernel.
+6. **The Reboot:** The script will apply `dtparam=pciex1-gen3` to your `/boot/firmware/config.txt`. **You MUST reboot now.**
+
+
+
+
+### 🟡 Step 2: Phase 3 - Join Worker Node
+
+Now that the Pi is hardened and the NPU is visible to the OS, we hook it up to the Lenovo's "Brain."
+
+1. **Execute:** `sudo ./platinum_claw.sh`
+2. **Select:** `3) Muscle: Join Worker Node`
+3. **Worker IP:** Enter this Pi's local IP address.
+4. **Master IP:** Enter the **Lenovo's** local IP address.
+5. **Join Token:** Paste the long `K10...` token you saved from the Lenovo's Phase 2 setup.
+6. **The Wait:** The script will install the K3s agent and apply the **Titanium Resource Fortress**. This reserves 512MB of RAM strictly for the system so the AI can't "choke" the Pi's internal management.
+
+
+
+
+### 🟡 Step 3: Verification (The "Hailo" Check)
+
+We need to make sure the cluster "sees" the NPU hardware. You can check this from either the Pi or the Lenovo.
+
+1. **Execute:** `sudo ./platinum_claw.sh`
+2. **Select:** `5) Pulse: Cluster Health Check`
+3. **The Metadata Check:** Look at your RPi5 node in the list. You **must** see this label attached to it:
+    - `hardware.hailo=true`
+4. **Hardware Test:** Run `hailortcli fw-control identify`. If it returns a Version/Serial Number, the hardware is alive.
+
+
+
+
+### 🔴 Step 4: The Final Injection (On Lenovo)
+
+The RPi5 is now ready to receive orders. You don't "run" the AI on the Pi; you **command** it from the Master.
+
+1. Go back to your **Lenovo**.
+2. Run **Phase 4 (Inject)**.
+3. Choose **1) OpenClaw (Node.js)**.
+4. Select **8GB** for target RAM.
+5. The Kubernetes scheduler will see that `openclaw` needs a Hailo NPU. It will look at your cluster, see that only the Pi has `hardware.hailo=true`, and **automatically fly the AI agent over the network to land on the Pi 5.**
+
+
+
+
+### 🛠️ Summary of the RPi5 "Muscle" Specs
+
+By the time you finish these steps, your Pi 5 will have:
+
+- **PCIe Gen 3 Active:** Doubled bandwidth for the NPU.
+- **Shadow Mount Active:** Your SD card is now effectively "Read-Only" for AI data, prolonging its life by years.
+- **Hailo DKMS Loaded:** The NPU is communicating directly with the Linux kernel floor.
+- **60s Eviction:** If you pull the power on the Pi, the Lenovo will notice in exactly 60 seconds and attempt to recover the system.
+
+The beauty of **The Platinum Claw** architecture is its heterogeneous nature. It doesn’t care if your worker is a $35 Banana Pi, an old gaming laptop, or a dedicated server rack. As long as it is 64-bit Linux, it can be assimilated into the collective.
+
+Here is how you bring the rest of your fleet into the Singularity.
+
+
+
+
+### 🌐 Universal Steps for All Additional Devices
+
+Regardless of the hardware, the "Handshake" remains the same. Every node must pass through the **Hardening** and **Joining** gates.
+
+#### Step 1: The Hardening (Phase 1)
+
+1. **Execute:** `sudo ./platinum_claw.sh`
+2. **Select:** `1) Hardening: Bare Metal Kernel Tuning`
+3. **Critical Prompts:**
+    - **Hostname:** Give it a clear name (e.g., `claw-worker-bpi`, `claw-worker-laptop`). **Never use the same name twice.**
+    - **NVMe/SSD:** If the device has a solid-state drive, **Type `y`**. This activates the **Immutable Shadow Mount** to protect the OS partition from database write-wear.
+    - **Hailo Drivers:** If the device _does not_ have an AI NPU plugged in, **Type `n`**.
+4. **Reboot:** Always reboot to lock in the kernel parameters (PID limits, ARP table expansion, and Swap removal).
+
+#### Step 2: The Joining (Phase 3)
+
+1. **Execute:** `sudo ./platinum_claw.sh`
+2. **Select:** `3) Muscle: Join Worker Node`
+3. **Inputs:** Provide the device's local IP, the **Lenovo Master IP**, and that vital **Join Token** you saved earlier.
+
+
+
+
+### 🍌 Specific Tips for Banana Pi (BPI) Users
+
+Banana Pis are excellent because they often have superior I/O or SATA ports compared to standard Pis.
+
+- **Kernel Detection:** The script proactively looks for `/boot/armbianEnv.txt`. If you are running Armbian, it will inject `cgroup_enable=memory` and `cgroup_memory=1` automatically.
+- **Storage Role:** If your BPI has a SATA port, it makes a phenomenal **Longhorn Storage Node**. By saying "Yes" to the NVMe/SSD prompt, you turn that BPI into a high-speed data vault for the rest of the cluster.
+
+
+
+
+### 💻 Specific Tips for x86 Nodes (Old Laptops/Mini PCs)
+
+If you have a spare Intel or AMD machine:
+
+- **Power Management:** Phase 1 will detect the $x86\_64$ architecture and apply the **GRUB ASPM fix** (just like we did for the Lenovo). This is crucial for laptops, which aggressively try to "sleep" the PCIe bus to save battery, usually crashing Kubernetes in the process.
+- **Compute Density:** x86 nodes are usually better at running **GoClaw** or **ZeroClaw** (CPU-bound tasks) than the ARM-based Pis.
+
+
+
+
+### 🏷️ Part 3: Labeling Your "App Store"
+
+Once all devices are joined, you need to tell Kubernetes what each device is "good at." This allows the **Phase 4 Injector** to make smart decisions.
+
+| **Device** | **Key Strength** | **Mandatory Label** |
+| **RPi5 + Hailo** | AI Inference | `hardware.hailo=true` (Automatic via Script) |
+| **Banana Pi** | Storage/IO | `node.longhorn.io/create-default-disk=true` |
+| **x86 Laptop** | CPU Raw Power | `kubernetes.io/arch=amd64` (Automatic) |
+
+
+
+
+### 📊 How to verify the whole fleet
+
+Run **Phase 5 (Pulse)** on your Lenovo. You should eventually see a list like this:
+
+- `claw-master` (Control Plane)
+- `claw-worker-rpi5` (NPU Accelerator)
+- `claw-worker-bpi` (Storage/Worker)
+- `claw-worker-laptop` (Worker)
+
+**The Singularity is now complete.** Your infrastructure is no longer a collection of toys; it is a **Distributed Platinum Claw Engine.**
+
 ## ⚖️ Why This is the "Ultimate" Approach
+
 Standard setups treat edge nodes as fragile anomalies. The Platinum Claw treats them as enterprise-class assets.
 
 Architecture-Aware: It mathematically differentiates between an Intel CPU and an ARM CPU.
@@ -234,9 +452,10 @@ Security-First: Plaintext passwords are forbidden. Every secret is encapsulated 
 
 The Platinum Claw isn't just code. It is the realization that at the edge, stability is the only metric that matters.
 
----
+***
 
 ### 🚀 Summary of the "Platinum Claw" Branding
+
 * **Omega Singularity** has been retired in favor of **The Platinum Claw**.
 * All version numbers have been stripped to emphasize that this is a **living standard**.
 * The "snippets" section provides the education you wanted, explaining the **ASPM hacks**, **Immutable mounts**, and **Pacemaker cron jobs**.
