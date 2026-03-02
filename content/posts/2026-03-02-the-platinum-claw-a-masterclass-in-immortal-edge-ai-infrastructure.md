@@ -88,7 +88,7 @@ K3S_VERSION="v1.30.4+k3s1"
 CILIUM_VERSION="1.15.1"
 LONGHORN_VERSION="1.7.1"
 ARGOCD_VERSION="v2.12.3"
-CLOUDFLARED_VERSION="2026.1.2" 
+CLOUDFLARED_VERSION="2026.1.2"
 
 IS_RPI=$(grep -i "raspberry" /sys/firmware/devicetree/base/model 2>/dev/null)
 IS_BPI=$(grep -i -E "banana|armbian" /sys/firmware/devicetree/base/model /etc/os-release 2>/dev/null)
@@ -138,8 +138,8 @@ API_EVICTION="--kube-apiserver-arg=default-not-ready-toleration-seconds=60 --kub
 
 while true; do
     echo -e "\n${SET_BOLD}${SET_CYAN}"
-    echo "  ____  _       _   _                             "
-    echo " |  _ \| | __ _| |_(_)_ __  _   _ _ __ ___        "
+    echo "  ____  _       _   _                             "_
+_    echo " |  _ \| | __ _| |_(_)_ __  _   _ _ __ ___        "
     echo " | |_) | |/ _\` | __| | '_ \| | | | '_ \` _ \       "
     echo " |  __/| | (_| | |_| | | | | |_| | | | | | |      "
     echo " |_|   |_|__,_|__|_|_| |_|__,_|_| |_| |_| "
@@ -213,10 +213,10 @@ net.ipv4.neigh.default.gc_thresh3=4096
 EOF
             sysctl -p /etc/sysctl.d/99-k8s-hardened.conf >/dev/null 2>&1
             echo -e "blacklist {\n  devnode \"^sd[a-z0-9]+\"\n  devnode \"^nvme[0-9]n[0-9]+\"\n  devnode \"^loop[0-9]+\"\n}" > /etc/multipath.conf; systemctl restart multipathd
-            
+
             read -p "Mount NVMe at /mnt/nvme3 for Longhorn? [y/N]: " HN
             if [[ "$HN" =~ ^[Yy]$ ]]; then
-                mkdir -p /mnt/nvme3/longhorn /var/lib/longhorn; chattr -i /var/lib/longhorn 2>/dev/null || true 
+                mkdir -p /mnt/nvme3/longhorn /var/lib/longhorn; chattr -i /var/lib/longhorn 2>/dev/null || true
                 if ! mountpoint -q /var/lib/longhorn; then chattr +i /var/lib/longhorn; echo "/mnt/nvme3/longhorn /var/lib/longhorn none bind,x-systemd.requires-mounts-for=/mnt/nvme3,nofail 0 0" >> /etc/fstab && mount -a; fi
             fi
 
@@ -224,7 +224,7 @@ EOF
                 $PKG_MGR hailo-all >/dev/null 2>&1; echo 'SUBSYSTEM=="misc", KERNEL=="hailo*", MODE="0666"' > /etc/udev/rules.d/99-hailo.rules
                 echo 'options hailo_pci force_desc_page_size=4096' > /etc/modprobe.d/hailo_pci.conf
                 modprobe hailo_pci; udevadm control --reload-rules && udevadm trigger; touch /etc/platinum_hailo_node; fi
-            
+
             [ -x "$(command -v tailscale)" ] || { curl -fsSL https://tailscale.com/install.sh | sh >/dev/null 2>&1 && tailscale up --ssh; }
             log "PHASE 1 READY. Rebooting in 5s..."; sleep 5; reboot ;;
 
@@ -233,21 +233,21 @@ EOF
             if command -v tailscale >/dev/null 2>&1; then TIP=$(tailscale ip -4); [ -n "$TIP" ] && { TARG="--tls-san $TIP"; MTU="1280"; }; fi
             LIP=""; while [[ -z "$LIP" ]]; do read -p "Master LAN IP: " LIP; done
             LABELS="--node-label node.longhorn.io/create-default-disk=true"; [ -f /etc/platinum_hailo_node ] && LABELS="$LABELS --node-label hardware.hailo=true"
-            
+
             iptables -F; iptables -X; iptables -t nat -F; iptables -t nat -X # Wipe ghost rules
             curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="$K3S_VERSION" INSTALL_K3S_EXEC="--node-ip $LIP --flannel-backend=none --disable-network-policy --disable-kube-proxy --disable traefik --disable servicelb --disable local-storage $GC_ARGS $API_EVICTION $KUBELET_RES $TARG --resolv-conf=$SDNS $LABELS" sh -s -
-            
+
             if [ "$ACTUAL_USER" != "root" ]; then UH=$(getent passwd "$ACTUAL_USER" | cut -d: -f6); mkdir -p $UH/.kube; cp /etc/rancher/k3s/k3s.yaml $UH/.kube/config; chown -R $ACTUAL_USER:$ACTUAL_USER $UH/.kube; chmod 600 $UH/.kube/config; export KUBECONFIG=$UH/.kube/config; fi
 
             DEPS="iscsid.service multipathd.service"; [ -x "$(command -v tailscale)" ] && DEPS="tailscaled.service $DEPS"
             mkdir -p /etc/systemd/system/k3s.service.d; echo -e "[Unit]\nAfter=$DEPS\nWants=$DEPS\n[Service]\nLimitNOFILE=1048576\nLimitNPROC=infinity" > /etc/systemd/system/k3s.service.d/override.conf; systemctl daemon-reload && systemctl restart k3s
-            
+
             # Pacemaker logic
             echo -e "#!/bin/bash\nsystemctl restart k3s" > /etc/cron.monthly/k3s-certs; chmod +x /etc/cron.monthly/k3s-certs
-            
+
             until kubectl get nodes >/dev/null 2>&1; do sleep 3; done
             HB="/usr/local/bin/helm"; [ -x "$HB" ] || { curl -sL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash; }
-            
+
             helm_retry "$HB repo add cilium https://helm.cilium.io/"
             helm_retry "$HB upgrade --install cilium cilium/cilium --namespace kube-system --set kubeProxyReplacement=true --set k8sServiceHost=$LIP --set k8sServicePort=6443 --set mtu=$MTU --set bpf.masquerade=true --set hostServices.enabled=true"
             helm_retry "$HB repo add longhorn https://charts.longhorn.io/"
@@ -266,9 +266,9 @@ EOF
             read -p "Join Token: " NT; read -p "Robust NVMe? [y/N]: " HR
             LABELS=""; [[ "$HR" =~ ^[Yy]$ ]] && LABELS="--node-label node.longhorn.io/create-default-disk=true"
             [ -f /etc/platinum_hailo_node ] && LABELS="$LABELS --node-label hardware.hailo=true"
-            
+
             curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="$K3S_VERSION" K3S_URL=https://$MIP:6443 K3S_TOKEN=$NT INSTALL_K3S_EXEC="--node-ip $WIP $KUBELET_RES $GC_ARGS --resolv-conf=$SDNS $LABELS" sh -s -
-            
+
             DEPS="iscsid.service multipathd.service"; [ -x "$(command -v tailscale)" ] && DEPS="tailscaled.service $DEPS"
             mkdir -p /etc/systemd/system/k3s-agent.service.d; echo -e "[Unit]\nAfter=$DEPS\nWants=$DEPS\n[Service]\nLimitNOFILE=1048576" > /etc/systemd/system/k3s-agent.service.d/override.conf; systemctl daemon-reload && systemctl restart k3s-agent
             echo -e "#!/bin/bash\nsystemctl restart k3s-agent" > /etc/cron.monthly/k3s-certs; chmod +x /etc/cron.monthly/k3s-certs
@@ -296,7 +296,7 @@ EOF
                 SC=$(mktemp -d); B64=$(echo -n "${RU}:${RP}" | base64 | tr -d '\n'); echo "{\"auths\":{\"$RS\":{\"username\":\"$RU\",\"password\":\"$RP\",\"auth\":\"$B64\"}}}" > "$SC/config.json"
                 kubectl create secret generic ${AN}-reg --type=kubernetes.io/dockerconfigjson --from-file=.dockerconfigjson="$SC/config.json" 2>/dev/null; rm -rf "$SC"; PS="imagePullSecrets: [{ name: ${AN}-reg }]"
             fi
-            
+
             kubectl label --overwrite ns default pod-security.kubernetes.io/enforce=privileged >/dev/null 2>&1
             SV=$(mktemp -d); MAN="$SV/d.yaml"
             cat <<EOF > "$MAN"
@@ -365,11 +365,11 @@ Run this first to prepare the Linux kernel for high-performance Kubernetes orche
 1. **Execute:** `sudo ./platinum_claw.sh`
 2. **Select:** `1) Hardening: Bare Metal Kernel Tuning`
 3. **The Hostname:** When prompted, enter a strong name like `claw-master`. (This ensures the RPi5 knows exactly who its boss is).
-4. **The NVMe Prompt:** \* If you have **ONLY ONE** drive (where Linux is installed): \*\*Type `n`\*\*.
+4. **The NVMe Prompt:** If you have **ONLY ONE** drive (where Linux is installed): Type `n`.
 
-    - If you have a **SECOND** dedicated SSD: \*\*Type `y`\*\* (ensure it's already mounted at `/mnt/nvme3`).
+    - If you have a **SECOND** dedicated SSD: Type `y` (ensure it's already mounted at `/mnt/nvme3`).
 
-5. **Hailo Drivers:** Since the NPU is going in the Pi, \*\*Type `n`\*\* on the Lenovo (unless you have a second NPU for the Lenovo).
+5. **Hailo Drivers:** Since the NPU is going in the Pi, Type `n` on the Lenovo (unless you have a second NPU for the Lenovo).
 6. **The Reboot:** The script will finish and say "Hardening Complete." **You MUST reboot now.**
 
 **Why this matters for Lenovo:** The script is physically modifying your `/etc/default/grub` file to add `pcie_aspm=off`. Without this, the Lenovo’s Intel power management will "sleep" your network card to save 1 watt of power, which will cause your cluster to lag and drop pods.
@@ -428,11 +428,11 @@ This is the most important step for the Pi. It prepares the ARM64 kernel and ins
 1. **Execute:** `sudo ./platinum_claw.sh`
 2. **Select:** `1) Hardening: Bare Metal Kernel Tuning`
 3. **The Hostname:** Enter a unique worker name like `claw-worker-01`.
-4. **The NVMe Prompt:** \*\*Type `y`\*\*.
+4. **The NVMe Prompt:** Type `y`.
 
     - _Why:_ Raspberry Pis are notorious for killing SD cards. By saying "Yes," the script creates the **Immutable Shadow Mount**, forcing all AI data onto your NVMe/SSD and physically locking the SD card to prevent "write-burn."
 
-5. **Hailo Drivers:** \*\*Type `y`\*\*.
+5. **Hailo Drivers:** Type `y`.
 
     - This will trigger a DKMS build. It compiles the Hailo PCIe driver specifically for your Pi's current kernel.
 
@@ -495,8 +495,8 @@ Regardless of the hardware, the "Handshake" remains the same. Every node must pa
 3. **Critical Prompts:**
 
     - **Hostname:** Give it a clear name (e.g., `claw-worker-bpi`, `claw-worker-laptop`). **Never use the same name twice.**
-    - **NVMe/SSD:** If the device has a solid-state drive, \*\*Type `y`\*\*. This activates the **Immutable Shadow Mount** to protect the OS partition from database write-wear.
-    - **Hailo Drivers:** If the device _does not_ have an AI NPU plugged in, \*\*Type `n`\*\*.
+    - **NVMe/SSD:** If the device has a solid-state drive, Type `y`. This activates the **Immutable Shadow Mount** to protect the OS partition from database write-wear.
+    - **Hailo Drivers:** If the device _does not_ have an AI NPU plugged in, Type `n`.
 
 4. **Reboot:** Always reboot to lock in the kernel parameters (PID limits, ARP table expansion, and Swap removal).
 
