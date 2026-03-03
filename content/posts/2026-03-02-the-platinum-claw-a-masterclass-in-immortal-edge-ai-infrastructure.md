@@ -692,7 +692,6 @@ Bash
 
 ```plain
 kubectl describe pod <any-stuck-pod-name> -n argocd
-
 ```
 
 ### 2. Look for the "Cilium Socket" Error
@@ -707,11 +706,12 @@ Bash
 
 ```plain
 kubectl get pods -n kube-system -l k8s-app=cilium
-
 ```
 
 _If this pod shows `Init:0/6`, refer back to the **BPF Mount Fix** (Manual mount + fstab). If you have stuck Pods attempt the following:_
 
-- **Force the Refresh:** `kubectl delete pods -n argocd --all`
+- **Force the Refresh:** `kubectl delete pods -n argocd --all --force`
 - **Verify:** `kubectl get pods -n argocd` should now show them hitting `Running` rapidly.
 - **Get Password:** Once `argocd-server` is `1/1`, run your `base64 -d` command to get that login!
+
+Same can be done for Longhorn - `kubectl delete pods -n longhorn-system --all --force`
