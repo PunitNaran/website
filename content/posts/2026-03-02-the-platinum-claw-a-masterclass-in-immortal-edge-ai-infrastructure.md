@@ -138,8 +138,8 @@ API_EVICTION="--kube-apiserver-arg=default-not-ready-toleration-seconds=60 --kub
 
 while true; do
     echo -e "\n${SET_BOLD}${SET_CYAN}"
-    echo "  ____  _       _   _                             "
-    echo " |  _ \| | __ _| |_(_)_ __  _   _ _ __ ___        "
+    echo "  ____  _       _   _                             "_
+_    echo " |  _ \| | __ _| |_(_)_ __  _   _ _ __ ___        "
     echo " | |_) | |/ _\` | __| | '_ \| | | | '_ \` _ \       "
     echo " |  __/| | (_| | |_| | | | | |_| | | | | | |      "
     echo " |_|   |_|__,_|__|_|_| |_|__,_|_| |_| |_| "
@@ -367,7 +367,7 @@ EOF
             echo -e "Which agent do you want to completely uninstall?"
             echo -e "1) OpenClaw | 2) NanoClaw | 3) ZeroClaw | 4) PicoClaw | 5) GoClaw | 6) Whisper API"
             read -p "Agent [1-6]: " PURGE_OPT
-            
+
             case $PURGE_OPT in
                 1) AN="openclaw" ;;
                 2) AN="nanoclaw" ;;
@@ -379,14 +379,14 @@ EOF
             esac
 
             warn "Initiating surgical extraction of $AN..."
-            
+
             # 1. Kill the Pods and Network Services
             kubectl delete deployment ${AN}-core --ignore-not-found=true
             kubectl delete svc ${AN}-svc --ignore-not-found=true
-            
+
             # 2. Clean up routing and registry secrets
             kubectl delete secret ${AN}-cf ${AN}-reg --ignore-not-found=true 2>/dev/null
-            
+
             # 3. The Data Safety Catch
             echo -e "${SET_BOLD}${SET_RED}WARNING: Deleting the storage volume will wipe all agent memory/databases!${SET_RESET}"
             read -p "Delete persistent data (PVC) for $AN? [y/N]: " DEL_PVC
@@ -396,10 +396,10 @@ EOF
             else
                 info "Storage preserved. If you reinstall $AN, it will reattach to the existing data."
             fi
-            
+
             log "✅ $AN has been purged from the cluster."
             ;;
-            
+
         7) exit 0 ;;
         *) err "Invalid." ;;
     esac
