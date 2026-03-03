@@ -138,8 +138,8 @@ API_EVICTION="--kube-apiserver-arg=default-not-ready-toleration-seconds=60 --kub
 
 while true; do
     echo -e "\n${SET_BOLD}${SET_CYAN}"
-    echo "  ____  _       _   _                             "_
-_    echo " |  _ \| | __ _| |_(_)_ __  _   _ _ __ ___        "
+    echo "  ____  _       _   _                             "
+    echo " |  _ \| | __ _| |_(_)_ __  _   _ _ __ ___        "
     echo " | |_) | |/ _\` | __| | '_ \| | | | '_ \` _ \       "
     echo " |  __/| | (_| | |_| | | | | |_| | | | | | |      "
     echo " |_|   |_|__,_|__|_|_| |_|__,_|_| |_| |_| "
@@ -276,9 +276,9 @@ EOF
 
         4)
             if [ "$ACTUAL_USER" != "root" ]; then UH=$(getent passwd "$ACTUAL_USER" | cut -d: -f6); [ -f "$UH/.kube/config" ] && export KUBECONFIG="$UH/.kube/config"; fi
-            echo -e "1) OpenClaw (Node) | 2) NanoClaw (TS) | 3) ZeroClaw (Rust) | 4) PicoClaw (Go) | 5) GoClaw (Go)"
-            read -p "Agent [1-5]: " AO; read -p "Target RAM (GB): " TR
-            H="false"; SEL=""; MNT=""; VOL=""; PORT="18789"; SHM="1Gi"
+            echo -e "1) OpenClaw (Node) | 2) NanoClaw (TS) | 3) ZeroClaw (Rust) | 4) PicoClaw (Go) | 5) GoClaw (Go) | 6) Whisper API (Hailo)"
+            read -p "Agent [1-6]: " AO; read -p "Target RAM (GB): " TR
+            H="false"; SEL=""; MNT=""; VOL=""; PORT="18789"; SHM="1Gi"; IMG=""
 
             case $AO in
                 1) AN="openclaw"; H="true"; PORT="18789"; [ "$TR" -ge 8 ] && { MEM="4096"; QMEM="6000Mi"; SHM="2Gi"; } || { MEM="1536"; QMEM="3000Mi"; }; QCPU="500m"; ENV="- name: NODE_OPTIONS\n          value: \"--max-old-space-size=$MEM\"" ;;
@@ -286,11 +286,24 @@ EOF
                 3) AN="zeroclaw"; PORT="3000"; QMEM="100Mi"; QCPU="100m"; ENV="- name: RUST_LOG\n          value: \"info\"" ;;
                 4) AN="picoclaw"; PORT="8080"; QMEM="150Mi"; QCPU="150m"; ENV="- name: GOMAXPROCS\n          value: \"2\"" ;;
                 5) AN="goclaw"; PORT="8080"; QMEM="300Mi"; QCPU="250m"; ENV="- name: GOMAXPROCS\n          value: \"2\"\n        - name: GOCLAW_MODE\n          value: \"gateway\"" ;;
+                6) AN="whisper"; H="true"; PORT="8000"; QMEM="2048Mi"; QCPU="500m"; ENV="" ;;
             esac
 
-            [ "$H" == "true" ] && { SEL="nodeSelector: { hardware.hailo: \"true\" }"; MNT="- { name: hailo, mountPath: /dev/hailo0 }"; VOL="- { name: hailo, hostPath: { path: /dev/hailo0, type: CharDevice } }"; }
+            # Properly formatted Flow array injection for volumeMounts and volumes
+            [ "$H" == "true" ] && { SEL="nodeSelector: { hardware.hailo: \"true\" }"; MNT=", { name: hailo, mountPath: /dev/hailo0 }"; VOL=", { name: hailo, hostPath: { path: /dev/hailo0, type: CharDevice } }"; }
+            
             read -s -p "CF Token: " CFT; echo ""; kubectl create secret generic ${AN}-cf --from-literal=token="$CFT" 2>/dev/null
-            read -p "Image URL: " IMG; read -p "Private? [y/N]: " IP
+            
+            # The Image Selection Logic
+            if [ "$AO" == "6" ]; then
+                read -p "Image URL [Default: mafiacoconut/whisper-hailo-8l-fastapi:latest]: " IMG
+                [ -z "$IMG" ] && IMG="mafiacoconut/whisper-hailo-8l-fastapi:latest"
+            else
+                while [[ -z "$IMG" ]]; do read -p "Image URL: " IMG; done
+            fi
+
+            read -p "Private Registry? [y/N]: " IP
+            PS=""
             if [[ "$IP" =~ ^[Yy]$ ]]; then
                 read -p "Srv: " RS; read -p "User: " RU; read -s -p "Pass: " RP; echo ""
                 SC=$(mktemp -d); B64=$(echo -n "${RU}:${RP}" | base64 | tr -d '\n'); echo "{\"auths\":{\"$RS\":{\"username\":\"$RU\",\"password\":\"$RP\",\"auth\":\"$B64\"}}}" > "$SC/config.json"
@@ -333,13 +346,13 @@ spec:
         resources: { limits: { memory: "$QMEM", cpu: "$QCPU" }, requests: { memory: "$QMEM", cpu: "$QCPU" } }
         ports: [ { containerPort: $PORT } ]
         livenessProbe: { tcpSocket: { port: $PORT }, initialDelaySeconds: 20, periodSeconds: 20 }
-        volumeMounts: [ { name: data, mountPath: /app/data }, { name: shm, mountPath: /dev/shm }, $MNT ]
+        volumeMounts: [ { name: data, mountPath: /app/data }, { name: shm, mountPath: /dev/shm } $MNT ]
       - name: tunnel
         image: cloudflare/cloudflared:$CLOUDFLARED_VERSION
         command: ["cloudflared", "tunnel", "--no-autoupdate", "run"]
         env: [ { name: TUNNEL_TOKEN, valueFrom: { secretKeyRef: { name: ${AN}-cf, key: token } } } ]
         resources: { limits: { memory: "256Mi", cpu: "200m" }, requests: { memory: "256Mi", cpu: "200m" } }
-      volumes: [ { name: data, persistentVolumeClaim: { claimName: ${AN}-pvc } }, { name: shm, emptyDir: { medium: Memory, sizeLimit: $SHM } }, $VOL ]
+      volumes: [ { name: data, persistentVolumeClaim: { claimName: ${AN}-pvc } }, { name: shm, emptyDir: { medium: Memory, sizeLimit: $SHM } } $VOL ]
 EOF
             kubectl apply -f "$MAN"; rm -rf "$SV"; log "Agent Injected." ;;
 
