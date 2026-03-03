@@ -309,6 +309,16 @@ EOF
                 kubectl create secret generic ${AN}-reg --type=kubernetes.io/dockerconfigjson --from-file=.dockerconfigjson="$SC/config.json" 2>/dev/null; rm -rf "$SC"; PS="imagePullSecrets: [{ name: ${AN}-reg }]"
             fi
 
+            # Make the Cloudflare tunnel optional!
+            TUNNEL_YAML=""
+            if [ -n "$CFT" ]; then
+                TUNNEL_YAML="      - name: tunnel
+        image: cloudflare/cloudflared:$CLOUDFLARED_VERSION
+        command: [\"cloudflared\", \"tunnel\", \"--no-autoupdate\", \"run\"]
+        env: [ { name: TUNNEL_TOKEN, valueFrom: { secretKeyRef: { name: ${AN}-cf, key: token } } } ]
+        resources: { limits: { memory: \"256Mi\", cpu: \"200m\" }, requests: { memory: \"256Mi\", cpu: \"200m\" } }"
+            fi
+
             kubectl label --overwrite ns default pod-security.kubernetes.io/enforce=privileged >/dev/null 2>&1
             SV=$(mktemp -d); MAN="$SV/d.yaml"
             cat <<EOF > "$MAN"
@@ -338,7 +348,8 @@ spec:
       containers:
       - name: agent
         image: $IMG
-        imagePullPolicy: Always
+        # 👇 THIS IS THE MAGIC FIX for local images
+        imagePullPolicy: IfNotPresent
         securityContext: { privileged: true }
         env:
         - name: TZ
@@ -348,11 +359,7 @@ spec:
         ports: [ { containerPort: $PORT } ]
         livenessProbe: { tcpSocket: { port: $PORT }, initialDelaySeconds: 20, periodSeconds: 20 }
         volumeMounts: [ { name: data, mountPath: /app/data }, { name: shm, mountPath: /dev/shm } $MNT ]
-      - name: tunnel
-        image: cloudflare/cloudflared:$CLOUDFLARED_VERSION
-        command: ["cloudflared", "tunnel", "--no-autoupdate", "run"]
-        env: [ { name: TUNNEL_TOKEN, valueFrom: { secretKeyRef: { name: ${AN}-cf, key: token } } } ]
-        resources: { limits: { memory: "256Mi", cpu: "200m" }, requests: { memory: "256Mi", cpu: "200m" } }
+      $TUNNEL_YAML
       volumes: [ { name: data, persistentVolumeClaim: { claimName: ${AN}-pvc } }, { name: shm, emptyDir: { medium: Memory, sizeLimit: $SHM } } $VOL ]
 EOF
             kubectl apply -f "$MAN"; rm -rf "$SV"; log "Agent Injected." ;;
