@@ -138,8 +138,8 @@ API_EVICTION="--kube-apiserver-arg=default-not-ready-toleration-seconds=60 --kub
 
 while true; do
     echo -e "\n${SET_BOLD}${SET_CYAN}"
-    echo "  ____  _       _   _                             "
-    echo " |  _ \| | __ _| |_(_)_ __  _   _ _ __ ___        "
+    echo "  ____  _       _   _                             "_
+_    echo " |  _ \| | __ _| |_(_)_ __  _   _ _ __ ___        "
     echo " | |_) | |/ _\` | __| | '_ \| | | | '_ \` _ \       "
     echo " |  __/| | (_| | |_| | | | | |_| | | | | | |      "
     echo " |_|   |_|__,_|__|_|_| |_|__,_|_| |_| |_| "
@@ -291,9 +291,9 @@ EOF
 
             # Properly formatted Flow array injection for volumeMounts and volumes
             [ "$H" == "true" ] && { SEL="nodeSelector: { hardware.hailo: \"true\" }"; MNT=", { name: hailo, mountPath: /dev/hailo0 }"; VOL=", { name: hailo, hostPath: { path: /dev/hailo0, type: CharDevice } }"; }
-            
+
             read -s -p "CF Token: " CFT; echo ""; kubectl create secret generic ${AN}-cf --from-literal=token="$CFT" 2>/dev/null
-            
+
             # The Image Selection Logic
             if [ "$AO" == "6" ]; then
                 read -p "Image URL [Default: mafiacoconut/whisper-hailo-8l-fastapi:latest]: " IMG
@@ -728,3 +728,87 @@ _If this pod shows `Init:0/6`, refer back to the **BPF Mount Fix** (Manual mount
 - **Get Password:** Once `argocd-server` is `1/1`, run your `base64 -d` command to get that login!
 
 Same can be done for Longhorn - `kubectl delete pods -n longhorn-system --all --force`
+
+
+
+
+## 🛠️ Troubleshooting the "Muscle" (Raspberry Pi 5 + Hailo-8)
+
+When you blend Edge AI hardware with distributed Kubernetes, things get spicy. If your Raspberry Pi 5 worker node isn't behaving, check these four critical failure domains.
+
+### 👻 1. The "Ghost Cluster" (Connection Refused on 8080)
+
+**The Symptom:** You run `kubectl get nodes` on your Raspberry Pi and get a wall of red text:
+
+`The connection to the server localhost:8080 was refused - did you specify the right host or port?`
+
+**The Cause:** By design, Kubernetes Worker nodes (Agents) are "blind." They do not hold the administrative `k3s.yaml` file. When you type `kubectl`, the terminal defaults to looking for a local master on port 8080. Since the Pi is just a worker, nobody is listening.
+
+**The Fix:** You must "Teleport" the configuration from the Master node and rewrite the target IP.
+
+1. Run `sudo cat /etc/rancher/k3s/k3s.yaml` on your **Master Node**.
+2. On your **Pi**, create the config file: `nano ~/.kube/config` and paste the text.
+3. **Crucial Step:** Change the `server: https://127.0.0.1:6443` line to point to your Master Node's actual IP (e.g., `https://100.77.199.37:6443`).
+4. Lock it down: `chmod 600 ~/.kube/config` and `export KUBECONFIG=~/.kube/config`.
+
+
+
+
+### 🐢 2. The PCIe Bottleneck (Stuck at Gen 2.0)
+
+**The Symptom:** Your Hailo-8 NPU is running inference slowly, or struggling with multiple streams.
+
+**The Diagnostic:** Run the PCIe link audit on the Pi:
+
+Bash
+
+```plain
+sudo lspci -vvv | grep -A 20 "Hailo" | grep "LnkSta:"
+
+```
+
+If you see `Speed 5GT/s (downgraded)`, your Pi has throttled the AI chip to Gen 2 speeds.
+
+**The Cause & Fix:** The Raspberry Pi 5 is highly sensitive to "Signal Integrity." If the tiny ribbon cable connecting your M.2 HAT has a kink, or isn't seated perfectly straight, the kernel will panic during the Gen 3 handshake and safely downgrade you.
+
+1. **The Software Force:** Ensure `dtparam=pciex1_gen=3` is at the bottom of `/boot/firmware/config.txt`.
+2. **The Hardware Fix:** Power down, unlatch the PCIe ribbon cable, ensure it is perfectly straight, and reseat it. If it still says `downgraded` after a reboot, your specific HAT or cable may be physically limited to Gen 2.0.
+
+
+
+
+### 🧠 3. "Is the Brain Awake?" (Verifying the NPU)
+
+**The Symptom:** Your Omni-Agent pod deploys, but logs show it is using the CPU instead of the NPU.
+
+**The Diagnostic:** We need to check if the Pi's kernel actually initialized the Hailo-8 drivers. Run these three checks:
+
+1. **The Device Check:** `ls -l /dev/hailo0` (If this says "No such file", the driver isn't loaded).
+2. **The Module Check:** `lsmod | grep hailo` (This confirms the kernel module is active).
+3. **The Boot Log Check:** `dmesg | grep -i hailo` (Look for "Firmware loaded successfully").
+
+**The Fix:** If `/dev/hailo0` is missing, you must ensure the `hailo-all` `dkms` package was compiled against your _current_ kernel headers. Run `sudo apt install linux-headers-$(uname -r)` and reinstall the Hailo drivers.
+
+
+
+
+### 🧱 4. The "Ghost SSH" (Silent Boot Failure)
+
+**The Symptom:** You edited `/boot/firmware/config.txt` to force Gen 3 speeds or optimize power, rebooted, and now the Pi won't connect to the network. The green LED might be solid, but SSH times out.
+
+**The Cause:** You pushed the hardware too far. Forcing Gen 3 on a weak cable, or pulling too much power for dual-NPUs without an adequate power supply, causes a "Kernel Panic" before the network interfaces can spin up.
+
+**The Fix (Emergency Surgery):**
+
+1. Unplug the Pi and remove the MicroSD card (or NVMe drive if you have a USB adapter).
+2. Plug the drive into your laptop.
+3. Open the `config.txt` file from the visible `boot` partition.
+4. Comment out (`#`) the line `dtparam=pciex1_gen=3` and save.
+5. Put the drive back in the Pi. It will boot safely at Gen 2 speeds so you can troubleshoot further.
+
+
+
+
+### 💡 The Golden Rule of Edge AI Hardware
+
+> _“Kubernetes assumes the hardware is perfect. At the Edge, the hardware is never perfect. Always verify the physical layer (PCIe lanes, device mounts, power delivery) before you spend hours debugging a container manifest.”_
