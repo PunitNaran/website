@@ -663,3 +663,55 @@ Bashkubectl get svc -n argocd argocd-server
 2. **Access it:** By default, it's behind a ClusterIP. To see it on your browser right now, run a **Port Forward**:
 Bashkubectl port-forward svc/argocd-server -n argocd 8080:443 --address 0.0.0.0
 3. **Open Browser:** Go to `https://<LENOVO_IP>:8080`. (You will get a certificate warning; click "Advanced" and "Proceed").
+
+## The "Socket" Deadlock
+
+### When the Sandbox Fails to Build
+
+If you see a wall of `FailedCreatePodSandBox` errors in your `kubectl describe` output, you are witnessing a cluster-wide strike.
+
+#### 🔍 The Anatomy of the Error
+
+The error `dial unix /var/run/cilium/cilium.sock: connect: no such file or directory` tells a very specific story:
+
+1. **The Kubelet** wants to start your ArgoCD pod.
+2. Before it can start the container, it must create a **"Sandbox"** (the networking and namespace environment).
+3. The Kubelet calls the **Cilium CNI plugin** to ask for an IP address.
+4. The CNI plugin looks for the **Cilium Agent Socket** to fulfill the request.
+5. **The Deadlock:** Because the Cilium Agent was stuck at `Init:0/6` (due to the BPF mount issue on our encrypted drive), the socket file was never created.
+
+**The result:** Kubernetes enters a "Retry Loop," failing every few seconds until the underlying kernel/mount issue is resolved.
+
+***
+
+### 1. Check for Cluster-Wide Networking Issues - ArgoCD
+
+If multiple pods are stuck in `ContainerCreating`, check the events of a single pod:
+
+Bash
+
+```plain
+kubectl describe pod <any-stuck-pod-name> -n argocd
+
+```
+
+### 2. Look for the "Cilium Socket" Error
+
+Search the "Events" section for: `unable to connect to Cilium agent: ... cilium.sock: no such file or directory`
+
+### 3. Trace it back to the Root Cause
+
+If the socket is missing, the problem isn't the pod you are looking at—it's the **Cilium DaemonSet**.
+
+Bash
+
+```plain
+kubectl get pods -n kube-system -l k8s-app=cilium
+
+```
+
+_If this pod shows `Init:0/6`, refer back to the **BPF Mount Fix** (Manual mount + fstab). If you have stuck Pods attempt the following:_
+
+- **Force the Refresh:** `kubectl delete pods -n argocd --all`
+- **Verify:** `kubectl get pods -n argocd` should now show them hitting `Running` rapidly.
+- **Get Password:** Once `argocd-server` is `1/1`, run your `base64 -d` command to get that login!
