@@ -559,3 +559,107 @@ The Platinum Claw isn't just code. It is the realization that at the edge, stabi
 * **Omega Singularity** has been retired in favor of **The Platinum Claw**.
 * All version numbers have been stripped to emphasize that this is a **living standard**.
 * The "snippets" section provides the education you wanted, explaining the **ASPM hacks**, **Immutable mounts**, and **Pacemaker cron jobs**.
+
+## 🛠️ Troubleshooting
+
+###  The "Deadlock" Protocol_ -_The "Init:0/6" Standoff
+
+When deploying **Cilium eBPF** on hardened hardware (like an encrypted Lenovo m700q), you might find your pods stuck in `Init:0/6`. This is the **BPF Filesystem Deadlock**. The network engine is trying to mount its memory maps, but the encrypted kernel hasn't "trusted" the container runtime yet.
+
+#### 🔍 Step 1: Identify the Identity Crisis
+
+Kubernetes is sensitive to its own name. If your node thinks it’s `localhost`, the internal routing will loop forever.
+
+- **The Check:** Run `kubectl get nodes`.
+- **The Fix:** Force the identity and restart the engine.
+
+Bash
+
+```plain
+sudo hostnamectl set-hostname claw-master
+sudo sed -i "s/127.0.1.1.*/127.0.1.1\tclaw-master/" /etc/hosts
+sudo systemctl restart k3s
+```
+
+#### 🛡️ Step 2: Breaking the dm_crypt Encryption Wall
+
+On encrypted nodes, the `/sys/fs/bpf` mount often fails to initialize during the standard boot sequence. You have to provide the "floor" manually.
+
+- **The Manual Mount:**
+
+Bash
+
+```plain
+sudo mount -t bpf bpf /sys/fs/bpf
+```
+
+- **The Permanent Solution:** Add `bpffs /sys/fs/bpf bpf defaults 0 0` to your `/etc/fstab`. This ensures that as soon as you decrypt your drive, the BPF highway is open for business.
+
+#### ⚡ Step 3: The "Platinum Hammer" (Force Rotation)
+
+Sometimes Kubernetes is too polite. If a pod is stuck `Terminating` or in a `PodInitializing` hang, you have to bypass the grace period to clear the cached hardware state.
+
+- **The Command:**
+
+Bash
+
+```plain
+kubectl delete pod <pod-name> -n kube-system --force --grace-period=0
+```
+
+## 📊 Summary Table: Diagnostic Commands
+
+You can include this table at the end of your post as a "Cheat Sheet" for your readers.
+
+| **Symptom** | **Probable Cause** | **The Fix** |
+| **Node `NotReady`** | Cilium/Network engine failed to start. | Check `kubectl get pods -n kube-system`. |
+| **`Init:0/6` Status** | BPF Filesystem not mounted or Secure Boot on. | Disable Secure Boot; manually mount BPF. |
+| **`Pending` Status** | Resource exhaustion or Node Taints. | Check `kubectl describe node`. |
+| **`localhost` name** | Hostname not set before K3s install. | Wipe K3s, set hostname, re-install. |
+
+## 💡 Pro-Tip for the Blog
+
+> "In the world of Edge AI, the hardware is just as opinionated as the code. If you are running encrypted NVMe drives, you aren't just managing pods—you are managing kernel-level trust."
+
+## Get Token and Password if needed
+
+***
+
+### 🔑 1. How to get your Join Token
+
+This is the "Secret Handshake" you need to join your Raspberry Pi 5 to the Lenovo. Run this on your **Lenovo**:
+
+Bash
+
+```plain
+sudo cat /var/lib/rancher/k3s/server/node-token
+```
+
+- **Action:** Copy the entire string (it usually starts with `K10...`). This is your **Muscle Token**.
+
+***
+
+### 🛡️ 2. How to get your ArgoCD Password
+
+ArgoCD is already running, but it generates a random password during the first install. Run this command to decrypt it:
+
+Bash
+
+```plain
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+```
+
+- **Username:** `admin`
+- **Password:** (The string that appears after running that command).
+
+***
+
+### 📊 3. How to access the Dashboard
+
+Now that you have the password, you can actually see your cluster's "Internal Organs."
+
+1. **Get the Service Port:**
+Bashkubectl get svc -n argocd argocd-server
+2. **Access it:** By default, it's behind a ClusterIP. To see it on your browser right now, run a **Port Forward**:
+Bashkubectl port-forward svc/argocd-server -n argocd 8080:443 --address 0.0.0.0
+3. **Open Browser:** Go to `https://<LENOVO_IP>:8080`. (You will get a certificate warning; click "Advanced" and "Proceed").
