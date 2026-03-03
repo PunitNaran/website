@@ -480,6 +480,22 @@ For your **Raspberry Pi 5**, the Platinum Claw protocol shifts from "Management 
 
 Follow these steps precisely to bind your Pi 5 to the Lenovo Master.
 
+**Build GoClaw:**
+
+1. `git clone https://github.com/nextlevelbuilder/goclaw.git`
+2. Run `./platinum_claw.sh` -> Select **Option 0**
+3. Source path: `./goclaw`
+4. Target Image: `local-goclaw:v1`
+
+**Build Whisper:**
+
+1. `git clone https://github.com/MafiaCoconut/whisper-hailo-8l-fastapi.git`
+2. Run `./platinum_claw.sh` -> Select **Option 0**
+3. Source path: `./whisper-hailo-8l-fastapi`
+4. Target Image: `local-whisper:v1`
+
+You and build them locally if they have not been pushed anywhere.
+
 ### 🟡 Step 1: Phase 1 - Bare Metal Hardening
 
 This is the most important step for the Pi. It prepares the ARM64 kernel and installs the specialized NPU drivers.
