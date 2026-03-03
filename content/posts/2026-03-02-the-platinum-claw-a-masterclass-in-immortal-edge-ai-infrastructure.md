@@ -138,8 +138,8 @@ API_EVICTION="--kube-apiserver-arg=default-not-ready-toleration-seconds=60 --kub
 
 while true; do
     echo -e "\n${SET_BOLD}${SET_CYAN}"
-    echo "  ____  _       _   _                             "_
-_    echo " |  _ \| | __ _| |_(_)_ __  _   _ _ __ ___        "
+    echo "  ____  _       _   _                             "
+    echo " |  _ \| | __ _| |_(_)_ __  _   _ _ __ ___        "
     echo " | |_) | |/ _\` | __| | '_ \| | | | '_ \` _ \       "
     echo " |  __/| | (_| | |_| | | | | |_| | | | | | |      "
     echo " |_|   |_|__,_|__|_|_| |_|__,_|_| |_| |_| "
@@ -152,8 +152,9 @@ _    echo " |  _ \| | __ _| |_(_)_ __  _   _ _ __ ___        "
     echo "3) 🚀 Phase 3: Join Worker Node"
     echo "4) 🦞 Phase 4: Omni-Agent App Store Injector"
     echo "5) 📊 Phase 5: Cluster Health Dashboard"
-    echo "6) ❌ Exit"
-    read -p "Select [0-6]: " MENU_OPT
+    echo "6) 🗑️  Phase 6: Purge Running Agent"
+    echo "7) ❌ Exit"
+    read -p "Select [0-7]: " MENU_OPT
 
     case $MENU_OPT in
         0)
@@ -281,20 +282,18 @@ EOF
             H="false"; SEL=""; MNT=""; VOL=""; PORT="18789"; SHM="1Gi"; IMG=""
 
             case $AO in
-                1) AN="openclaw"; H="true"; PORT="18789"; [ "$TR" -ge 8 ] && { MEM="4096"; QMEM="6000Mi"; SHM="2Gi"; } || { MEM="1536"; QMEM="3000Mi"; }; QCPU="500m"; ENV="- name: NODE_OPTIONS\n          value: \"--max-old-space-size=$MEM\"" ;;
-                2) AN="nanoclaw"; H="true"; PORT="18789"; [ "$TR" -ge 8 ] && { MEM="2048"; QMEM="3500Mi"; } || { MEM="1024"; QMEM="2048Mi"; }; QCPU="300m"; ENV="- name: DOCKER_HOST\n          value: \"unix:///run/k3s/containerd/containerd.sock\"" ;;
-                3) AN="zeroclaw"; PORT="3000"; QMEM="100Mi"; QCPU="100m"; ENV="- name: RUST_LOG\n          value: \"info\"" ;;
-                4) AN="picoclaw"; PORT="8080"; QMEM="150Mi"; QCPU="150m"; ENV="- name: GOMAXPROCS\n          value: \"2\"" ;;
-                5) AN="goclaw"; PORT="8080"; QMEM="300Mi"; QCPU="250m"; ENV="- name: GOMAXPROCS\n          value: \"2\"\n        - name: GOCLAW_MODE\n          value: \"gateway\"" ;;
+                1) AN="openclaw"; H="true"; PORT="18789"; [ "$TR" -ge 8 ] && { MEM="4096"; QMEM="6000Mi"; SHM="2Gi"; } || { MEM="1536"; QMEM="3000Mi"; }; QCPU="500m"; ENV=$'- name: NODE_OPTIONS\n          value: "--max-old-space-size='$MEM'"' ;;
+                2) AN="nanoclaw"; H="true"; PORT="18789"; [ "$TR" -ge 8 ] && { MEM="2048"; QMEM="3500Mi"; } || { MEM="1024"; QMEM="2048Mi"; }; QCPU="300m"; ENV=$'- name: DOCKER_HOST\n          value: "unix:///run/k3s/containerd/containerd.sock"' ;;
+                3) AN="zeroclaw"; PORT="3000"; QMEM="100Mi"; QCPU="100m"; ENV=$'- name: RUST_LOG\n          value: "info"' ;;
+                4) AN="picoclaw"; PORT="8080"; QMEM="150Mi"; QCPU="150m"; ENV=$'- name: GOMAXPROCS\n          value: "2"' ;;
+                5) AN="goclaw"; PORT="8080"; QMEM="300Mi"; QCPU="250m"; ENV=$'- name: GOMAXPROCS\n          value: "2"\n        - name: GOCLAW_PORT\n          value: "8080"\n        - name: GOCLAW_MODE\n          value: "managed"' ;;
                 6) AN="whisper"; H="true"; PORT="8000"; QMEM="2048Mi"; QCPU="500m"; ENV="" ;;
             esac
 
-            # Properly formatted Flow array injection for volumeMounts and volumes
             [ "$H" == "true" ] && { SEL="nodeSelector: { hardware.hailo: \"true\" }"; MNT=", { name: hailo, mountPath: /dev/hailo0 }"; VOL=", { name: hailo, hostPath: { path: /dev/hailo0, type: CharDevice } }"; }
 
             read -s -p "CF Token: " CFT; echo ""; kubectl create secret generic ${AN}-cf --from-literal=token="$CFT" 2>/dev/null
 
-            # The Image Selection Logic
             if [ "$AO" == "6" ]; then
                 read -p "Image URL [Default: mafiacoconut/whisper-hailo-8l-fastapi:latest]: " IMG
                 [ -z "$IMG" ] && IMG="mafiacoconut/whisper-hailo-8l-fastapi:latest"
@@ -342,6 +341,8 @@ spec:
         imagePullPolicy: Always
         securityContext: { privileged: true }
         env:
+        - name: TZ
+          value: "UTC"
         $ENV
         resources: { limits: { memory: "$QMEM", cpu: "$QCPU" }, requests: { memory: "$QMEM", cpu: "$QCPU" } }
         ports: [ { containerPort: $PORT } ]
@@ -361,7 +362,45 @@ EOF
             echo -e "\n--- NODES ---\n$(kubectl get nodes -o wide --show-labels)\n\n--- PODS ---\n$(kubectl get pods -n default -o wide)\n\n--- STORAGE ---\n$(kubectl get pods -n longhorn-system | grep -v Completed | head -n 5)"
             read -p "Press Enter..." ;;
 
-        6) exit 0 ;;
+        6)
+            if [ "$ACTUAL_USER" != "root" ]; then UH=$(getent passwd "$ACTUAL_USER" | cut -d: -f6); [ -n "$UH" ] && [ -f "$UH/.kube/config" ] && export KUBECONFIG="$UH/.kube/config"; fi
+            echo -e "Which agent do you want to completely uninstall?"
+            echo -e "1) OpenClaw | 2) NanoClaw | 3) ZeroClaw | 4) PicoClaw | 5) GoClaw | 6) Whisper API"
+            read -p "Agent [1-6]: " PURGE_OPT
+            
+            case $PURGE_OPT in
+                1) AN="openclaw" ;;
+                2) AN="nanoclaw" ;;
+                3) AN="zeroclaw" ;;
+                4) AN="picoclaw" ;;
+                5) AN="goclaw" ;;
+                6) AN="whisper" ;;
+                *) warn "Invalid selection."; continue ;;
+            esac
+
+            warn "Initiating surgical extraction of $AN..."
+            
+            # 1. Kill the Pods and Network Services
+            kubectl delete deployment ${AN}-core --ignore-not-found=true
+            kubectl delete svc ${AN}-svc --ignore-not-found=true
+            
+            # 2. Clean up routing and registry secrets
+            kubectl delete secret ${AN}-cf ${AN}-reg --ignore-not-found=true 2>/dev/null
+            
+            # 3. The Data Safety Catch
+            echo -e "${SET_BOLD}${SET_RED}WARNING: Deleting the storage volume will wipe all agent memory/databases!${SET_RESET}"
+            read -p "Delete persistent data (PVC) for $AN? [y/N]: " DEL_PVC
+            if [[ "$DEL_PVC" =~ ^[Yy]$ ]]; then
+                kubectl delete pvc ${AN}-pvc --ignore-not-found=true
+                log "Storage wiped clean."
+            else
+                info "Storage preserved. If you reinstall $AN, it will reattach to the existing data."
+            fi
+            
+            log "✅ $AN has been purged from the cluster."
+            ;;
+            
+        7) exit 0 ;;
         *) err "Invalid." ;;
     esac
 done
@@ -729,9 +768,6 @@ _If this pod shows `Init:0/6`, refer back to the **BPF Mount Fix** (Manual mount
 
 Same can be done for Longhorn - `kubectl delete pods -n longhorn-system --all --force`
 
-
-
-
 ## 🛠️ Troubleshooting the "Muscle" (Raspberry Pi 5 + Hailo-8)
 
 When you blend Edge AI hardware with distributed Kubernetes, things get spicy. If your Raspberry Pi 5 worker node isn't behaving, check these four critical failure domains.
@@ -751,9 +787,6 @@ When you blend Edge AI hardware with distributed Kubernetes, things get spicy. I
 3. **Crucial Step:** Change the `server: https://127.0.0.1:6443` line to point to your Master Node's actual IP (e.g., `https://100.77.199.37:6443`).
 4. Lock it down: `chmod 600 ~/.kube/config` and `export KUBECONFIG=~/.kube/config`.
 
-
-
-
 ### 🐢 2. The PCIe Bottleneck (Stuck at Gen 2.0)
 
 **The Symptom:** Your Hailo-8 NPU is running inference slowly, or struggling with multiple streams.
@@ -764,7 +797,6 @@ Bash
 
 ```plain
 sudo lspci -vvv | grep -A 20 "Hailo" | grep "LnkSta:"
-
 ```
 
 If you see `Speed 5GT/s (downgraded)`, your Pi has throttled the AI chip to Gen 2 speeds.
@@ -773,9 +805,6 @@ If you see `Speed 5GT/s (downgraded)`, your Pi has throttled the AI chip to Gen 
 
 1. **The Software Force:** Ensure `dtparam=pciex1_gen=3` is at the bottom of `/boot/firmware/config.txt`.
 2. **The Hardware Fix:** Power down, unlatch the PCIe ribbon cable, ensure it is perfectly straight, and reseat it. If it still says `downgraded` after a reboot, your specific HAT or cable may be physically limited to Gen 2.0.
-
-
-
 
 ### 🧠 3. "Is the Brain Awake?" (Verifying the NPU)
 
@@ -788,9 +817,6 @@ If you see `Speed 5GT/s (downgraded)`, your Pi has throttled the AI chip to Gen 
 3. **The Boot Log Check:** `dmesg | grep -i hailo` (Look for "Firmware loaded successfully").
 
 **The Fix:** If `/dev/hailo0` is missing, you must ensure the `hailo-all` `dkms` package was compiled against your _current_ kernel headers. Run `sudo apt install linux-headers-$(uname -r)` and reinstall the Hailo drivers.
-
-
-
 
 ### 🧱 4. The "Ghost SSH" (Silent Boot Failure)
 
@@ -806,9 +832,10 @@ If you see `Speed 5GT/s (downgraded)`, your Pi has throttled the AI chip to Gen 
 4. Comment out (`#`) the line `dtparam=pciex1_gen=3` and save.
 5. Put the drive back in the Pi. It will boot safely at Gen 2 speeds so you can troubleshoot further.
 
-
-
-
 ### 💡 The Golden Rule of Edge AI Hardware
 
 > _“Kubernetes assumes the hardware is perfect. At the Edge, the hardware is never perfect. Always verify the physical layer (PCIe lanes, device mounts, power delivery) before you spend hours debugging a container manifest.”_
+
+# Notes
+
+**"The Power of GHCR:"** When deploying GoClaw to the Platinum Claw, you don't use Docker Hub. The developers publish directly to the GitHub Container Registry (`ghcr.io/nextlevelbuilder/goclaw:main`). Because GoClaw is compiled natively as a \~25MB Go binary, Kubernetes pulls and starts the container in under a second. We override the port to `8080` via environment variables to match our standardized K3s ingress routing.
