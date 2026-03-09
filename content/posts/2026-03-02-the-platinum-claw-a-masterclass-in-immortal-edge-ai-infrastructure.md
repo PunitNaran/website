@@ -42,7 +42,7 @@ At the edge, network blips create "Ghost Pods" (Unknown/Evicted states) that hol
 
 You cannot manually `apt-get install` tools into running containers every time an AI agent needs a new capability. We implement a self-validating CI/CD loop that dynamically injects system dependencies (like `ffmpeg`, `sqlite3`, `pandoc`) directly into the agent's container image via a nightly cron job, gracefully handling upstream developer build failures without taking the agent offline.
 
----
+***
 
 ## 🏗️ Step-by-Step Installation Instructions
 
@@ -69,13 +69,13 @@ You cannot manually `apt-get install` tools into running containers every time a
 2. **Core AI Infra:** Say "Yes" to deploying `pgvector` and `OpenTelemetry`. This creates your unified vector database.
 3. **Select your Stack:** Choose between GoClaw, the Whisper API, or the Immich Photo Stack. The system will auto-compile, inject, and route the application to the correct hardware (e.g., flying the Whisper container directly to the node with the Hailo NPU).
 
----
+***
 
 ## 🦞 The Foundation Script: The Platinum OS
 
 Below is the complete, uncut logic for the base infrastructure. This script handles everything from QEMU cross-compilation and eBPF network routing to SCP bridging for remote node deployments.
 
-*(Note: Ensure you run this as root: `sudo ./platinum_claw.sh`)*
+_(Note: Ensure you run this as root: `sudo ./platinum_claw.sh`)_
 
 ```bash
 #!/bin/bash
@@ -154,11 +154,11 @@ API_EVICTION="--kube-apiserver-arg=default-not-ready-toleration-seconds=60 --kub
 
 while true; do
     echo -e "\n${SET_BOLD}${SET_CYAN}"
-    echo "  ____  _       _   _                             "
-    echo " |  _ \| | __ _| |_(_)_ __  _   _ _ __ ___        "
+    echo "  ____  _       _   _                             "_
+_    echo " |  _ \| | __ _| |_(_)_ __  _   _ _ __ ___        "
     echo " | |_) | |/ _\` | __| | '_ \| | | | '_ \` _ \       "
     echo " |  __/| | (_| | |_| | | | | |_| | | | | | |      "
-    echo " |_|   |_|\__,_|\__|_|_| |_|\__,_|_| |_| |_| "
+    echo " |_|   |_|__,_|__|_|_| |_|__,_|_| |_| |_| "
     echo "     THE OMEGA SINGULARITY | AUTONOMOUS CLUSTER   "
     echo -e "${SET_RESET}"
 
@@ -990,10 +990,9 @@ EOF
         *) err "Invalid." ;;
     esac
 done
-
 ```
 
----
+***
 
 ## 🧬 The Evolution Script: The Omega Protocol (Autoupdater)
 
@@ -1076,7 +1075,7 @@ EOF
         if [ "$UI_SUCCESS" = true ]; then
             docker save mrnaran/goclaw-ui:latest | sudo k3s ctr images import -
         fi
-        
+
         # Explicitly pass --kubeconfig to bypass the "Linux Lie"
         sudo kubectl --kubeconfig=/etc/rancher/k3s/k3s.yaml rollout restart deployment goclaw-core -n default
         echo "$(date): 🎉 Upgrade & Tool Injection complete."
@@ -1086,10 +1085,9 @@ EOF
 else
     echo "$(date): Agent is up to date."
 fi
-
 ```
 
----
+***
 
 ## 🛠️ The Platinum Troubleshooting Guide
 
@@ -1112,7 +1110,6 @@ When deploying **Cilium eBPF** on hardened hardware (like an encrypted Lenovo m7
 
 ```bash
 sudo kubectl --kubeconfig=/etc/rancher/k3s/k3s.yaml get pods -n default
-
 ```
 
 ### 🧱 3. The Disk Pressure Deadlock & Zombie Pods
@@ -1127,14 +1124,12 @@ sudo kubectl --kubeconfig=/etc/rancher/k3s/k3s.yaml get pods -n default
 sudo journalctl --vacuum-size=50M
 sudo docker system prune -f
 sudo apt-get clean
-
 ```
 
 Then, use **Phase 5 (Auto-Heal Engine)** in the main script, or surgically terminate the Zombie pod from the Master to release the storage lock:
 
 ```bash
 sudo kubectl delete pod <zombie-pod-name> -n default --grace-period=0 --force
-
 ```
 
 ### 🔌 4. The Missing Translator: CSI Driver Failure
@@ -1147,7 +1142,6 @@ sudo kubectl delete pod <zombie-pod-name> -n default --grace-period=0 --force
 
 ```bash
 sudo systemctl restart k3s-agent
-
 ```
 
 Wait 60 seconds, then delete the stuck pod on the Master node to force a fresh attachment retry.
@@ -1171,8 +1165,8 @@ Wait 60 seconds, then delete the stuck pod on the Master node to force a fresh a
 **The Symptom:** Your Omni-Agent pod deploys but uses CPU instead of the NPU.
 **The Fix:** Check if `/dev/hailo0` exists. If missing, your `hailo-all` DKMS package needs to be recompiled. Run `sudo apt install linux-headers-$(uname -r)` and reinstall.
 
----
+***
 
 ## 💡 The Golden Rule of Edge AI Infrastructure
 
-> *"In the cloud, you manage software. At the Edge, you manage physics. Kubernetes assumes the hardware is perfect, but the hardware is never perfect. Between PCIe bandwidth throttling, encrypted NVMe deadlocks, and disk-pressure taints, you aren't just deploying containers—you are negotiating with the kernel."*
+> _"In the cloud, you manage software. At the Edge, you manage physics. Kubernetes assumes the hardware is perfect, but the hardware is never perfect. Between PCIe bandwidth throttling, encrypted NVMe deadlocks, and disk-pressure taints, you aren't just deploying containers—you are negotiating with the kernel."_
