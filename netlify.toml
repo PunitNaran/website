@@ -3,9 +3,10 @@ publish = "public"
 # The dream theme is VENDORED as plain files (no git submodule), so the build
 # is deterministic and needs no submodule init. HUGO_VERSION must live in a
 # [build.environment] table (a bare [build] key is ignored by Netlify).
-# (The post-March deploy failures were NOT Hugo: the content-security-policy
-# app extension's __csp-nonce edge function imported @netlify/blobs, which
-# the new build image can't resolve. Extension removed in the dashboard.)
+# The post-March deploy failures were NOT Hugo: the content-security-policy
+# extension's __csp-nonce edge function imports @netlify/blobs, which needs
+# Node >= 22 (the build defaulted to Node 12). Fixed via PR16: package.json
+# provides @netlify/blobs to the bundler, NODE_VERSION=22 sets the Node.
 command = "hugo --gc --minify"
 
 [build.environment]
