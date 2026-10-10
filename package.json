@@ -1,0 +1,8 @@
+{
+  "name": "punitnaran-website",
+  "private": true,
+  "description": "Hugo site. Node dependencies exist only so Netlify's edge function bundler can resolve packages imported by platform-injected edge functions.",
+  "dependencies": {
+    "@netlify/blobs": "^11.1.4"
+  }
+}

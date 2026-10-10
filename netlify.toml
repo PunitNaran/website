@@ -12,6 +12,9 @@ command = "hugo --gc --minify"
 HUGO_VERSION = "0.167.0"
 HUGO_ENV = "production"
 HUGO_ENABLEGITINFO = "true"
+# Edge functions injected at deploy time (__csp-nonce, ua_blocker_*) import
+# @netlify/blobs, installed from package.json; it requires Node >= 22.12.
+NODE_VERSION = "22"
 
 [context.deploy-preview.environment]
 HUGO_ENV = "preview"
