@@ -1,11 +1,10 @@
 [build]
 publish = "public"
-# themes/dream is a git submodule; Netlify's clone does not init it, so Hugo
-# sees no layouts and fails. Init submodules before the build (root cause of
-# every post-March cloud deploy failure). This single command applies to all
-# contexts (production, preview, branch) — keep per-context overrides to a
-# minimum so it stays in sync.
-command = "git submodule update --init --recursive && hugo --gc --minify"
+# The dream theme is now VENDORED as plain files (no git submodule), so the
+# build is deterministic and no submodule init is needed at build time.
+# (The submodule + Netlify's shallow clone was the root cause of every
+# post-March cloud deploy failure — it saw no theme layouts.)
+command = "hugo --gc --minify"
 HUGO_VERSION = "0.167.0"
 HUGO_ENV = "production"
 
