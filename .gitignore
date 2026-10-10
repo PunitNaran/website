@@ -1,0 +1,11 @@
+# Hugo build output
+public/
+.hugo_build.lock
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Local editor
+.idea/
+.vscode/
