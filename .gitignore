@@ -9,3 +9,10 @@ Thumbs.db
 # Local editor
 .idea/
 .vscode/
+
+# Local Netlify folder
+.netlify
+
+# Python
+__pycache__/
+*.pyc
