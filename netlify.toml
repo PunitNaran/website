@@ -2,17 +2,17 @@
 publish = "public"
 # The dream theme is VENDORED as plain files (no git submodule), so the build
 # is deterministic and needs no submodule init.
-# NOTE: Netlify only turns [build.environment] / [context.*.environment] into
-# env vars — HUGO_VERSION must live in an environment table or it is ignored
-# and Netlify falls back to its (older) default Hugo, which cannot build this
-# theme's newer layouts. This is what broke every post-March cloud deploy.
-command = "hugo --gc --minify"
+# Hugo version is made DETERMINISTIC: Netlify's Hugo toolchain does not yet
+# cache v0.167.0, so a HUGO_VERSION=0.167.0 pin silently falls back to an
+# older default Hugo that cannot build this theme (exit 2) — the root cause
+# of every post-March cloud deploy failure (local builds always passed). We
+# download the exact Hugo release in the build and run ./hugo, so the version
+# can never drift.
+command = "curl -sL https://github.com/gohugoio/hugo/releases/download/v0.167.0/hugo_extended_0.167.0_linux-amd64.tar.gz | tar xz && ./hugo --gc --minify"
 
 [build.environment]
 HUGO_VERSION = "0.167.0"
 HUGO_ENV = "production"
-
-[context.production.environment]
 HUGO_ENABLEGITINFO = "true"
 
 [context.deploy-preview.environment]
