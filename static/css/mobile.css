@@ -16,7 +16,12 @@
 }
 
 /* Code blocks: horizontal scroll, never overflow the viewport */
-pre {
+pre,
+.markdown-body pre,
+.highlight {
+  display: block;
+  width: 100%;
+  max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
