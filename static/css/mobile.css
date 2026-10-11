@@ -1,0 +1,60 @@
+/* Mobile & readability baseline — wired via [params.advanced].customCSS */
+
+/* --- Typography baseline (all viewports) --- */
+/* Article body: 18px, 1.6 line-height, ~42rem max width */
+#dream-single-post-main {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  max-width: 42rem;
+}
+
+/* Long unbroken words/URLs wrap instead of overflowing */
+#dream-single-post-content,
+.markdown-body,
+.prose {
+  overflow-wrap: break-word;
+}
+
+/* Code blocks: horizontal scroll, never overflow the viewport */
+pre {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Images never wider than their container */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* --- Mobile (<=768px) --- */
+@media (max-width: 768px) {
+  /* Nav: let links wrap to a second line instead of overflowing
+     (no hamburger exists in this custom nav; wrapping is the CSS-only fix) */
+  nav.sticky > div:last-child {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+
+  /* Index cards: summary/meta were 14px/12px → 16px/14px;
+     shrink canvas padding (48px sides) so cards keep a readable width */
+  .premium-summary {
+    font-size: 1rem;
+  }
+  .premium-meta {
+    font-size: 0.875rem;
+  }
+  .premium-canvas {
+    padding: 1.5rem 1rem;
+  }
+  .premium-container {
+    padding: 1.5rem 0.5rem;
+  }
+
+  /* Tables scroll inside the viewport */
+  table {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+}
