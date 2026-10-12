@@ -4,7 +4,7 @@ title: DockerDogs - TestContainers + GoDogs
 date: 2021-03-12T23:26:51.517Z
 lastmod: 2021-03-12T23:26:51.701Z
 author: Punit Naran
-cover: /img/godogs.png
+cover: /img/godogs.webp
 categories:
   - Go
 tags:
