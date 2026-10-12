@@ -30,7 +30,7 @@ enableRobotsTXT = true
   darkNav = true
   dark404 = true
 
-  images = [""]
+  images = ["/img/avatar.jpg"]
 
   author = "Punit Naran"
   description = "Software Engineer"
