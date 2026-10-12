@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Punit Naran</title><link>https://punitnaran.com/</link><description>Recent content on Punit Naran</description><generator>Hugo</generator><language>en</language><copyright>&lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;This work is licensed under a &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;Creative Commons Attribution-ShareAlike 4.0 International License&lt;/a&gt;.</copyright><lastBuildDate>Mon, 02 Mar 2026 22:44:00 +0000</lastBuildDate><atom:link href="https://punitnaran.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Implement a KVDB Key-Value Database effectively using Interfaces</title><link>https://punitnaran.com/posts/key-value-database-implementation/</link><pubDate>Mon, 15 Feb 2021 23:57:07 +0000</pubDate><guid>https://punitnaran.com/posts/key-value-database-implementation/</guid><description>&lt;h1 id="simple-kvdb-key-value-database-implementation"&gt;Simple (KVDB) Key-Value Database Implementation&lt;/h1&gt;
+&lt;p&gt;For this post I will be showing you how to implement a Database interface. This will be a simple Key-Value Database.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The database should have at least a minimum interface for a KVDB
+&lt;ul&gt;
+&lt;li&gt;Get, Set and Delete operations&lt;/li&gt;
+&lt;li&gt;Close Database connection&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;First lets create a &lt;code&gt;database.go&lt;/code&gt; file. We can call it a &lt;code&gt;database&lt;/code&gt; package.&lt;/p&gt;
+&lt;p&gt;Now we need to implement a Database instance. The code below shows the minimum required calls (operations) needed for a Key-Value Database.&lt;/p&gt;</description></item><item><title>The Platinum Claw: A Masterclass in Immortal Edge AI Infrastructure</title><link>https://punitnaran.com/posts/2026-03-02-the-platinum-claw-a-masterclass-in-immortal-edge-ai-infrastructure/</link><pubDate>Mon, 02 Mar 2026 22:44:00 +0000</pubDate><guid>https://punitnaran.com/posts/2026-03-02-the-platinum-claw-a-masterclass-in-immortal-edge-ai-infrastructure/</guid><description>How to build a self-healing, hardware-aware AI cluster that survives the chaos of the edge using the Platinum Claw protocol.</description></item><item><title>DockerDogs - TestContainers + GoDogs</title><link>https://punitnaran.com/posts/2021-03-12-dockerdogs-testcontainers-godogs/</link><pubDate>Fri, 12 Mar 2021 23:26:51 +0000</pubDate><guid>https://punitnaran.com/posts/2021-03-12-dockerdogs-testcontainers-godogs/</guid><description>&lt;p&gt;I&amp;rsquo;ve always been fond of Behavior-Driven Development (&lt;strong&gt;BDD&lt;/strong&gt;)&lt;/p&gt;
+&lt;p&gt;GoDog is a BDD &lt;strong&gt;Given-When-Then&lt;/strong&gt; framework -&lt;/p&gt;
+&lt;h2 id="restored-content-test"&gt;Restored Content (Test)&lt;/h2&gt;
+&lt;p&gt;This is a test to verify that the single post layout is working correctly.
+If you can see this text, the layout is fine, and the original file content was truncated/missing.&lt;/p&gt;
+&lt;h3 id="what-is-testcontainers"&gt;What is TestContainers?&lt;/h3&gt;
+&lt;p&gt;TestContainers is a Java library that supports JUnit tests, providing lightweight, throwaway instances of common databases, Selenium web browsers, or anything else that can run in a Docker container.&lt;/p&gt;</description></item></channel></rss>

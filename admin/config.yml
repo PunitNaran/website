@@ -1,0 +1,83 @@
+backend:
+  name: github
+  repo: PunitNaran/website
+  branch: master
+
+publish_mode: editorial_workflow
+media_folder: "static/img"
+public_folder: "/img"
+display_url: "https://punitnaran.com" # Update with your domain
+logo_url: "https://punitnaran.com/img/avatar.png" # Update if needed
+
+collections:
+  # 1. BLOG POSTS
+  - name: "post"
+    label: "Blog Posts"
+    folder: "content/posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "Draft", name: "draft", widget: "boolean", default: false}
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Description", name: "summary", widget: "text"}
+      - {label: "Publish Date", name: "date", widget: "datetime"}
+      - {label: "Cover Image", name: "cover", widget: "image", required: false}
+      - {label: "Categories", name: "categories", widget: "list", required: false}
+      - {label: "Tags", name: "tags", widget: "list", required: false}
+      - {label: "Body", name: "body", widget: "markdown"}
+
+  # 2. ABOUT PAGE
+  - name: "about"
+    label: "About Page"
+    files:
+      - name: "me"
+        label: "About Me"
+        file: "content/about/me.md"
+        fields:
+          - {label: "Title", name: "title", widget: "string"}
+          - {label: "Body", name: "body", widget: "markdown"}
+
+  # 3. PROJECTS (Data File)
+  - name: "projects"
+    label: "Projects"
+    files:
+      - name: "projects_data"
+        label: "Manage Projects"
+        file: "data/projects.yml"
+        fields:
+          - label: "Projects List"
+            name: "projects"
+            widget: "list"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Emoji Icon", name: "icon", widget: "string"}
+              - {label: "Tag (e.g. AI, Crypto)", name: "tag", widget: "string"}
+              - {label: "Description (Markdown)", name: "description", widget: "markdown"}
+              - {label: "Link URL", name: "url", widget: "string", default: "#"}
+
+  # 4. TIMELINE (Data File)
+  - name: "timeline"
+    label: "Experience Timeline"
+    files:
+      - name: "timeline_data"
+        label: "Manage Experience"
+        file: "data/timeline.yml"
+        fields:
+          - label: "Jobs List"
+            name: "timeline"
+            widget: "list"
+            fields:
+              - {label: "Role", name: "role", widget: "string"}
+              - {label: "Company", name: "company", widget: "string"}
+              - {label: "Date Range", name: "date", widget: "string"}
+              - {label: "Description", name: "description", widget: "markdown"}
+
+  # 5. CONFIGURATION
+  - name: "config"
+    label: "Site Config"
+    files:
+      - name: "config_toml"
+        label: "Global Config (Read Only)"
+        file: "config.toml"
+        fields:
+           - {label: "Title", name: "title", widget: "string", readonly: true}

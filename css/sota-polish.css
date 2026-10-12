@@ -1,0 +1,243 @@
+/* ============================================================================
+   PunitNaran — SOTA Component Polish (applied on top of design-tokens.css)
+   ----------------------------------------------------------------------------
+   Closes the specific gaps the vision audit found on the live portfolio:
+     1. Hero quote    — tight line-height + small attribution; now open, muted,
+                        with a clear attribution treatment
+     2. Search bar    — light-gray placeholder fails WCAG; now readable;
+                        input padding tightened
+     3. Article cards — generic shadow + cramped tags; now a refined lift,
+                        a pill date badge (integrated, not a dark box),
+                        and proper bottom breathing room
+     4. Nav icon buttons — heavy gray borders; now borderless glass so the
+                        visual language matches the text links
+     5. TAGS/SORT labels — too close to their pills; now spaced
+   Presentation-only; no layout/JS changes.
+   ========================================================================== */
+
+/* ---- 1. Hero quote: contemplative, open, with a real attribution ---- */
+.hero blockquote, .hero .quote, .dream-header blockquote,
+blockquote, .post-quote {
+  line-height: 1.75 !important;
+  font-style: italic;
+  color: var(--pn-ink-3) !important;   /* muted so the name stays the hero */
+  font-size: var(--fs-body);
+  max-width: 56ch;
+  margin-inline: auto;
+  padding: 0;
+}
+.hero blockquote::before, .hero .quote::before, blockquote::before {
+  content: none;                         /* no default quote bar */
+}
+.hero cite, .hero .quote cite, blockquote cite, .quote-author {
+  display: block;
+  margin-top: var(--sp-3);
+  font-style: normal;
+  font-size: var(--fs-caption);
+  letter-spacing: 0.02em;
+  color: var(--pn-ink-4);
+  text-transform: uppercase;
+}
+
+/* ---- 2. Search bar: readable placeholder + tighter input ---- */
+.search input::placeholder,
+input::placeholder, .filter-input::placeholder {
+  color: var(--pn-ink-3);               /* was ~#b0b0b8, now AA-compliant */
+  font-size: var(--fs-small);
+  font-weight: 400;
+}
+.search input, .filter-input, .search-input,
+input[type="search"], input[type="text"].filter {
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--pn-border-strong);
+  border-radius: var(--r-md);
+  background: var(--pn-surface-2);
+  color: var(--pn-ink);
+  transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+}
+.search input:focus, .filter-input:focus, .search-input:focus,
+input[type="search"]:focus {
+  border-color: var(--pn-accent);
+  background: var(--pn-surface);
+  box-shadow: var(--focus-ring);
+}
+
+/* ---- 3. Article cards: refined lift + pill date + breathing room ---- */
+.premium-canvas, .post-card, .card {
+  overflow: hidden;                       /* clip the thumbnail corners */
+}
+.premium-canvas .post-thumb, .premium-canvas img,
+.premium-canvas figure, .post-thumb {
+  width: 100%;
+  display: block;
+  border-radius: 0;
+}
+/* Date: a subtle pill, top-left of the thumb — integrated, not a hard box. */
+.premium-canvas .post-date, .post-date, .card-date,
+.premium-canvas time, time.post-date {
+  position: absolute;
+  top: var(--sp-3);
+  left: var(--sp-3);
+  background: rgba(15,15,16,.72);
+  color: #fff;
+  backdrop-filter: blur(6px);
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--r-full);
+  border: 1px solid rgba(255,255,255,.12);
+}
+/* Card body: title above tags with real spacing. */
+.premium-canvas .post-title, .post-title, .card-title {
+  margin: 0 0 var(--sp-3);
+  color: var(--pn-ink);
+  font-weight: 600;
+  line-height: 1.25;
+}
+.premium-canvas {
+  padding-bottom: var(--sp-5);
+}
+.premium-canvas .post-tags, .post-tags, .card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+}
+.premium-canvas .post-tag, .post-tag, .tag {
+  padding: 0.2rem 0.6rem;
+}
+.premium-canvas:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--ring), var(--sh-pop);
+}
+
+/* ---- 4. Nav icon buttons: borderless glass, matches the text links ---- */
+.menu-item, .navbar .btn-icon, .icon-btn,
+[class*="icon"] button, button[title] {
+  border: none !important;
+  background: var(--pn-surface-2) !important;
+  color: var(--pn-ink-2);
+  border-radius: var(--r-md);
+  box-shadow: none;
+  transition: background .15s ease, color .15s ease;
+}
+.menu-item:hover, .navbar .btn-icon:hover, .icon-btn:hover,
+[class*="icon"] button:hover, button[title]:hover {
+  background: var(--pn-accent-tint) !important;
+  color: var(--pn-accent);
+}
+body[theme='dark'] .menu-item, body[theme='dark'] .icon-btn {
+  background: var(--pn-surface-3) !important;
+}
+
+/* ---- 5. TAGS / SORT / FILTER labels: clear separation from their pills ---- */
+.filter-label, .labels-tag, .label-tag, .sort-label,
+.tag-label, .lbl, .labels span, .filter-bar span.label {
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pn-ink-3);
+  margin-right: var(--sp-3);
+}
+.filter-bar .row, .filter-row, .tag-row, .sort-row,
+.tags-cloud, .tags-wrap, .filter-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-2);
+}
+.filter-bar .row > * { margin: 0; }
+
+/* ---- 6. "Filters +" button: not squished on mobile; consistent with tags ---- */
+#adv-filter-btn, #adv-filter-btn button {
+  white-space: nowrap;
+  padding: 0.55rem 0.85rem;
+  min-height: 34px;
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--pn-ink-2);
+  background: var(--pn-surface-2);
+  border: 1px solid var(--pn-border);
+  border-radius: var(--r-md);
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+#adv-filter-btn:hover, #adv-filter-btn button:hover {
+  background: var(--pn-accent-tint);
+  border-color: var(--pn-accent);
+  color: var(--pn-accent);
+}
+#adv-filter-btn ion-icon { font-size: 0.9em; }
+
+/* ---- 8. Dark mode: the dashboard cards use inline `background:white` which
+       beats all external CSS — the only way to fix it is `!important` under
+       `html.dark`. Without this the post cards + filter card are white and
+       clash with the dark page (the #1 "compressed/ugly mobile" complaint).
+       ponytail: !required to beat inline styles; hex approx of the theme's
+       oklch base-200 dark surface. If the theme palette changes, re-tune hex. */
+html.dark .dashboard-container .post-card {
+  background: #171717 !important;
+  border-color: rgba(255,255,255,.08) !important;
+}
+html.dark .dashboard-container .post-card .content { padding: 1.5rem; }
+html.dark .dashboard-container .post-card h2 { color: #f4f4f5 !important; }
+html.dark .dashboard-container .post-card .content > p { color: #a1a1aa !important; }
+html.dark .dashboard-container .post-card > a > .content > div { color: #71717a !important; }
+html.dark .dashboard-container .post-card > a > .content > div[style*="relative"] > div {
+  background: rgba(0,0,0,.72) !important;   /* date pill on cover */
+}
+html.dark .dashboard-container section.filter-bar {
+  background: rgba(23,23,23,.85) !important;
+  border-color: rgba(255,255,255,.08) !important;
+}
+html.dark .dashboard-container section.filter-bar .filter-label,
+html.dark .dashboard-container section.filter-bar span[style*="margin-right"] {
+  color: #a1a1aa !important;
+}
+html.dark .dashboard-container section.filter-bar input {
+  background: #171717 !important;
+  border-color: rgba(255,255,255,.12) !important;
+  color: #f4f4f5 !important;
+}
+html.dark .dashboard-container section.filter-bar button,
+html.dark .dashboard-container section.filter-bar [class*="tag"],
+html.dark .dashboard-container section.filter-bar span {
+  background: rgba(255,255,255,.06) !important;
+  color: #d4d4d8 !important;
+  border-color: transparent !important;
+}
+html.dark .dashboard-container section.filter-bar button[aria-pressed="true"],
+html.dark .dashboard-container section.filter-bar .active {
+  background: var(--pn-accent) !important;
+  color: #fff !important;
+}
+
+/* ---- 7. "Buy me a coffee" floating button: on-brand, not raw ---- */
+.bmc-button, .bmc-widget, .coffee-btn,
+a[title*="coffee" i], [id*="bmc" i] a {
+  border-radius: var(--r-full);
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+.bmc-button:hover, .coffee-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sh-pop);
+}
+
+/* ---- 9. Buy-me-a-coffee widget: white toast + blue FAB clash on the dark
+       page. Darken the toast; keep the brand-blue button (it's the brand).
+       ponytail: BMC injects an inline-styled <div>; we can't beat its inline
+       bg with external CSS, so target only what's overridable. */
+html.dark .bmc-button,
+html.dark .bmc-widget,
+html.dark #bmc-widget,
+html.dark .bmc-1 { box-shadow: 0 4px 14px rgba(0,0,0,.5); }
+/* the "Thank you for visiting." toast text sits on a white bubble */
+html.dark .bmc-tooltip,
+html.dark [class*="bmc"] [class*="tip"],
+html.dark .bmc-widget .bmc-tooltip {
+  background: #171717 !important;
+  color: #f4f4f5 !important;
+  border: 1px solid rgba(255,255,255,.12);
+}
