@@ -171,6 +171,49 @@ body[theme='dark'] .menu-item, body[theme='dark'] .icon-btn {
 }
 #adv-filter-btn ion-icon { font-size: 0.9em; }
 
+/* ---- 8. Dark mode: the dashboard cards use inline `background:white` which
+       beats all external CSS — the only way to fix it is `!important` under
+       `html.dark`. Without this the post cards + filter card are white and
+       clash with the dark page (the #1 "compressed/ugly mobile" complaint).
+       ponytail: !required to beat inline styles; hex approx of the theme's
+       oklch base-200 dark surface. If the theme palette changes, re-tune hex. */
+html.dark .dashboard-container .post-card {
+  background: #171717 !important;
+  border-color: rgba(255,255,255,.08) !important;
+}
+html.dark .dashboard-container .post-card .content { padding: 1.5rem; }
+html.dark .dashboard-container .post-card h2 { color: #f4f4f5 !important; }
+html.dark .dashboard-container .post-card .content > p { color: #a1a1aa !important; }
+html.dark .dashboard-container .post-card > a > .content > div { color: #71717a !important; }
+html.dark .dashboard-container .post-card > a > .content > div[style*="relative"] > div {
+  background: rgba(0,0,0,.72) !important;   /* date pill on cover */
+}
+html.dark .dashboard-container section.filter-bar {
+  background: rgba(23,23,23,.85) !important;
+  border-color: rgba(255,255,255,.08) !important;
+}
+html.dark .dashboard-container section.filter-bar .filter-label,
+html.dark .dashboard-container section.filter-bar span[style*="margin-right"] {
+  color: #a1a1aa !important;
+}
+html.dark .dashboard-container section.filter-bar input {
+  background: #171717 !important;
+  border-color: rgba(255,255,255,.12) !important;
+  color: #f4f4f5 !important;
+}
+html.dark .dashboard-container section.filter-bar button,
+html.dark .dashboard-container section.filter-bar [class*="tag"],
+html.dark .dashboard-container section.filter-bar span {
+  background: rgba(255,255,255,.06) !important;
+  color: #d4d4d8 !important;
+  border-color: transparent !important;
+}
+html.dark .dashboard-container section.filter-bar button[aria-pressed="true"],
+html.dark .dashboard-container section.filter-bar .active {
+  background: var(--pn-accent) !important;
+  color: #fff !important;
+}
+
 /* ---- 7. "Buy me a coffee" floating button: on-brand, not raw ---- */
 .bmc-button, .bmc-widget, .coffee-btn,
 a[title*="coffee" i], [id*="bmc" i] a {
@@ -180,4 +223,21 @@ a[title*="coffee" i], [id*="bmc" i] a {
 .bmc-button:hover, .coffee-btn:hover {
   transform: translateY(-2px);
   box-shadow: var(--sh-pop);
+}
+
+/* ---- 9. Buy-me-a-coffee widget: white toast + blue FAB clash on the dark
+       page. Darken the toast; keep the brand-blue button (it's the brand).
+       ponytail: BMC injects an inline-styled <div>; we can't beat its inline
+       bg with external CSS, so target only what's overridable. */
+html.dark .bmc-button,
+html.dark .bmc-widget,
+html.dark #bmc-widget,
+html.dark .bmc-1 { box-shadow: 0 4px 14px rgba(0,0,0,.5); }
+/* the "Thank you for visiting." toast text sits on a white bubble */
+html.dark .bmc-tooltip,
+html.dark [class*="bmc"] [class*="tip"],
+html.dark .bmc-widget .bmc-tooltip {
+  background: #171717 !important;
+  color: #f4f4f5 !important;
+  border: 1px solid rgba(255,255,255,.12);
 }
