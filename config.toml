@@ -78,7 +78,7 @@ enableRobotsTXT = true
   # hasTwitterEmbed = true
 
   [params.advanced]
-    customCSS = ["css/enhanced.css", "css/dashboard.css", "css/mobile.css"]
+    customCSS = ["css/enhanced.css", "css/dashboard.css", "css/mobile.css", "css/design-tokens.css", "css/sota-polish.css"]
     customJS = ["js/dashboard.js"]
   [outputs]
     home = ["HTML", "RSS", "JSON"]

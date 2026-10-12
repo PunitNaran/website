@@ -1,0 +1,212 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+/* ============================================================================
+   PunitNaran — SOTA Design Token Layer
+   ----------------------------------------------------------------------------
+   An additive, last-in-cascade layer that upgrades the Dream theme to a
+   Superhuman/Vercel-grade visual language. Presentation-only: it sets fonts,
+   color, type scale, spacing rhythm, shadows, borders and radius via CSS
+   custom properties + a small number of high-specificity overrides. It does
+   NOT change layout, breakpoints, nav behaviour, masonry, or the JS hooks in
+   header.js / dashboard.js — those keep working.
+
+   Design language (from the popular-web-designs skill — superhuman + vercel):
+     * Canvas    — warm white #ffffff / #fafafa, near-black #111 text
+     * Type      — Inter; display tracking -0.02em, 1.6 body line-height
+     * Accent    — single signature purple #6d4dfc (Mysteria), used sparingly
+     * Shadows   — ring shadows (0 0 0 1px) + whisper lifts; border-as-shadow
+     * Radius    — 10/16/24 scale; no pills except chips
+     * Spacing   — 8px scale, 64–96px section rhythm
+   Load AFTER output.css (the theme's compiled Tailwind) so these win.
+   ========================================================================== */
+
+:root {
+  /* ---- Color: neutral (warm near-black, never pure #000 / #fff) ---- */
+  --pn-ink: #0f0f10;
+  --pn-ink-2: #3d3d42;
+  --pn-ink-3: #6b6b74;
+  --pn-ink-4: #9a9aa3;
+  --pn-surface: #ffffff;
+  --pn-surface-2: #fafafa;
+  --pn-surface-3: #f3f3f5;
+  --pn-border: #e7e7ea;
+  --pn-border-strong: #d4d4da;
+
+  /* ---- Accent: single signature purple (Superhuman "Mysteria") ---- */
+  --pn-accent: #6d4dfc;
+  --pn-accent-strong: #5a3cf0;
+  --pn-accent-soft: #a99bff;
+  --pn-accent-tint: #f3f0ff;
+
+  /* ---- Spacing: 8px scale ---- */
+  --sp-1: 0.25rem; --sp-2: 0.5rem; --sp-3: 0.75rem; --sp-4: 1rem;
+  --sp-5: 1.25rem; --sp-6: 1.5rem; --sp-8: 2rem; --sp-10: 2.5rem;
+  --sp-12: 3rem; --sp-16: 4rem; --sp-20: 5rem;
+
+  /* ---- Type scale (Inter) ---- */
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --fs-display: clamp(2.25rem, 1.2rem + 3.6vw, 3.75rem);
+  --fs-h1: clamp(2rem, 1.2rem + 2.8vw, 3rem);
+  --fs-h2: 1.75rem;
+  --fs-h3: 1.375rem;
+  --fs-h4: 1.125rem;
+  --fs-body: 1.0625rem;   /* 17px — portfolio reading comfort */
+  --fs-small: 0.9375rem;
+  --fs-caption: 0.8125rem;
+  --lh-display: 1.02;
+  --lh-h: 1.2;
+  --lh-body: 1.65;
+  --track-display: -0.03em;
+  --track-h: -0.02em;
+  --track-body: -0.003em;
+
+  /* ---- Radius scale ---- */
+  --r-sm: 8px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-full: 9999px;
+
+  /* ---- Shadows: ring + whisper (border-as-shadow, Vercel technique) ---- */
+  --ring: 0 0 0 1px var(--pn-border);
+  --ring-accent: 0 0 0 1px var(--pn-accent);
+  --sh-whisper: 0 1px 2px rgba(15,15,16,.05);
+  --sh-lift: 0 2px 8px rgba(15,15,16,.07), 0 18px 40px -20px rgba(109,77,252,.25);
+  --sh-pop: 0 4px 14px rgba(15,15,16,.08), 0 30px 60px -24px rgba(15,15,16,.22);
+
+  /* ---- Misc ---- */
+  --pn-container: 70rem;
+  --pn-hero-min: clamp(68vh, 720px, 860px);
+  --focus-ring: 0 0 0 3px rgba(109,77,252,.35);
+}
+
+/* Dark mode: same token names, dark values. Keep the accent. */
+body[theme='dark'], .dark, [data-theme='dark'] {
+  --pn-ink: #f5f5f7;
+  --pn-ink-2: #c9c9d2;
+  --pn-ink-3: #8e8e98;
+  --pn-ink-4: #6b6b76;
+  --pn-surface: #0f0f12;
+  --pn-surface-2: #141418;
+  --pn-surface-3: #1a1a20;
+  --pn-border: #23232b;
+  --pn-border-strong: #34343e;
+  --pn-accent-tint: #1a1636;
+  --ring: 0 0 0 1px var(--pn-border);
+  --sh-whisper: 0 1px 2px rgba(0,0,0,.6);
+  --sh-lift: 0 2px 8px rgba(0,0,0,.5), 0 18px 40px -20px rgba(109,77,252,.4);
+  --sh-pop: 0 4px 14px rgba(0,0,0,.5), 0 30px 60px -24px rgba(0,0,0,.6);
+}
+
+/* ---------- Typography ---------- */
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: "cv05", "cv06";
+  letter-spacing: var(--track-body);
+  color: var(--pn-ink-2);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background: var(--pn-surface);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  color: var(--pn-ink);
+  letter-spacing: var(--track-h);
+  line-height: var(--lh-h);
+  font-weight: 600;
+  text-wrap: balance;
+}
+h1 { font-size: var(--fs-h1); letter-spacing: var(--track-display); }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); }
+h4 { font-size: var(--fs-h4); }
+
+p { max-width: 70ch; }
+a { color: var(--pn-accent); text-decoration-color: rgba(109,77,252,.4); }
+a:hover { color: var(--pn-accent-strong); }
+
+::selection { background: rgba(109,77,252,.22); color: var(--pn-ink); }
+
+code, pre, kbd, samp { font-family: var(--font-mono); }
+
+/* ---------- Container + section rhythm ---------- */
+.container { max-width: var(--pn-container); margin-inline: auto; padding-inline: var(--sp-6); }
+main, article, section { padding-block: var(--sp-16); }
+.hero, .dream-header, [class*="hero"] { min-height: var(--pn-hero-min); }
+
+/* ---------- Cards: the portfolio's workhorse (post/premium cards) ---------- */
+.premium-canvas, .post, .card, .trust-score-card, .referral-chain-card,
+.bad-actor-card, [class*="card"] {
+  background: var(--pn-surface);
+  border: 1px solid var(--pn-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--ring), var(--sh-whisper);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.premium-canvas:hover, .post:hover, .card:hover,
+.trust-score-card:hover, .referral-chain-card:hover, .bad-actor-card:hover {
+  border-color: var(--pn-accent);
+  box-shadow: var(--ring), var(--sh-lift);
+  transform: translateY(-3px);
+}
+
+/* ---------- Buttons: primary (accent) + ghost ---------- */
+.btn, button, .btn-primary, .btn-ghost, [class*="btn"] {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: var(--track-body);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: background .16s ease, border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+.btn-primary, a.btn-primary, .btn-primary:hover {
+  background: var(--pn-accent); color: #fff; border: 1px solid var(--pn-accent);
+  box-shadow: var(--sh-whisper);
+}
+.btn-primary:hover { background: var(--pn-accent-strong); box-shadow: var(--sh-lift); }
+.btn-ghost, .btn-secondary {
+  background: transparent; color: var(--pn-ink); border: 1px solid var(--pn-border-strong);
+}
+.btn-ghost:hover, .btn-secondary:hover {
+  border-color: var(--pn-accent); color: var(--pn-accent); background: var(--pn-accent-tint);
+}
+
+/* ---------- Chips / tags / badges ---------- */
+.tag, .badge, .chip, .post-tag, .label, .pill, .post-meta, .premium-meta {
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  color: var(--pn-ink-3);
+  background: var(--pn-surface-2);
+  border: 1px solid var(--pn-border);
+  border-radius: var(--r-full);
+  padding: 0.25rem 0.75rem;
+}
+.tag:hover, .badge:hover { color: var(--pn-accent); border-color: var(--pn-accent); }
+
+/* ---------- Nav / header polish (presentation only) ---------- */
+nav, .navbar, .dream-header {
+  border-bottom: 1px solid var(--pn-border);
+  background: rgba(255,255,255,.82);
+  backdrop-filter: saturate(180%) blur(14px);
+}
+body[theme='dark'] nav, body[theme='dark'] .navbar, body[theme='dark'] .dream-header {
+  background: rgba(15,15,18,.82);
+}
+.navbar .nav-link, .menu-item, .navbar .link, .nav-link {
+  color: var(--pn-ink-2);
+  font-weight: 500;
+  border-radius: var(--r-sm);
+  padding: .375rem .625rem;
+  transition: color .15s ease, background .15s ease;
+}
+.navbar .nav-link:hover, .menu-item:hover { color: var(--pn-accent); background: var(--pn-accent-tint); }
+
+/* ---------- Focus (a11y) ---------- */
+:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: var(--r-sm); }
+
+/* ---------- Scrollbars (subtle) ---------- */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--pn-border-strong); border-radius: var(--r-full); }
+::-webkit-scrollbar-track { background: transparent; }
