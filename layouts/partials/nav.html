@@ -1,4 +1,4 @@
-<nav x-data="{ isSticky: false }" x-init="window.addEventListener('scroll', () => { isSticky = window.scrollY > 30 })"
+<nav x-data="{ isSticky: false, mobileOpen: false }" x-init="window.addEventListener('scroll', () => { isSticky = window.scrollY > 30 })"
     class="sticky top-0 z-30 flex items-center justify-between py-4 px-6 transition-all duration-300 backdrop-blur-md bg-white/70 dark:bg-black/50 border-b border-gray-200 dark:border-gray-800"
     :class="{ 'shadow-lg': isSticky }">
 
@@ -21,21 +21,21 @@
     </div>
 
     <!-- Right: Navigation Items - STRICT SPACING -->
-    <div class="flex items-center" style="gap: 1.5rem;">
-        <a href="{{ site.BaseURL }}" style="margin-right: 1.5rem;" class="nav-link">Home</a>
-        <a href="/posts" style="margin-right: 1.5rem;" class="nav-link">Posts</a>
-        <a href="/categories" style="margin-right: 1.5rem;" class="nav-link">Categories</a>
-        <a href="/tags" style="margin-right: 1.5rem;" class="nav-link">Tags</a>
+    <div class="hidden md:flex items-center" style="gap: 1.5rem;">
+        <a href="{{ site.BaseURL }}" class="nav-link">Home</a>
+        <a href="/posts" class="nav-link">Posts</a>
+        <a href="/categories" class="nav-link">Categories</a>
+        <a href="/tags" class="nav-link">Tags</a>
 
         <!-- About Toggles the Flip -->
-        <button @click="flip = !flip" style="margin-right: 1.5rem;" class="nav-link focus:outline-none">
+        <button @click="flip = !flip" class="nav-link focus:outline-none">
             About
         </button>
 
         <!-- Settings Trigger -->
         <!-- Settings Trigger -->
         <button onclick="if(window.toggleSettings) window.toggleSettings();" class="btn btn-ghost btn-circle btn-sm"
-            title="Settings" style="margin-right: 0.5rem;">
+            title="Settings">
             <ion-icon name="options-outline" class="text-xl"></ion-icon>
         </button>
 
@@ -49,8 +49,34 @@
         <!-- Search Focus -->
         <button
             onclick="if(document.getElementById('post-search')){document.getElementById('post-search').focus(); window.scrollTo({top:0, behavior:'smooth'});}else{window.location.href='/';}"
-            class="btn btn-ghost btn-circle btn-sm" title="Search">
+            class="btn btn-ghost btn-circle btn-sm hidden md:inline-flex" title="Search">
             <ion-icon name="search" class="text-xl"></ion-icon>
         </button>
+    </div>
+
+    <!-- Mobile: hamburger — must be a direct child of <nav>, NOT inside the
+         hidden md:flex row above (or it inherits display:none). -->
+    <button @click="mobileOpen = !mobileOpen"
+        class="md:hidden"
+        :aria-expanded="mobileOpen" aria-label="Menu">
+        <ion-icon :name="mobileOpen ? 'close' : 'menu'" class="text-xl"></ion-icon>
+    </button>
+
+    <!-- Mobile panel: full nav items, 44px rows, solid background -->
+    <div x-show="mobileOpen" x-cloak
+        @click.outside="mobileOpen = false"
+        class="absolute top-full left-0 right-0 z-40 shadow-lg">
+        <a href="{{ site.BaseURL }}" @click="mobileOpen = false"
+            class="block px-6 py-3 border-b border-gray-100 dark:border-gray-800 text-gray-800 dark:text-gray-200">Home</a>
+        <a href="/posts" @click="mobileOpen = false"
+            class="block px-6 py-3 border-b border-gray-100 dark:border-gray-800 text-gray-800 dark:text-gray-200">Posts</a>
+        <a href="/categories" @click="mobileOpen = false"
+            class="block px-6 py-3 border-b border-gray-100 dark:border-gray-800 text-gray-800 dark:text-gray-200">Categories</a>
+        <a href="/tags" @click="mobileOpen = false"
+            class="block px-6 py-3 border-b border-gray-100 dark:border-gray-800 text-gray-800 dark:text-gray-200">Tags</a>
+        <button @click="flip = !flip; mobileOpen = false"
+            class="block w-full text-left px-6 py-3 border-b border-gray-100 dark:border-gray-800 text-gray-800 dark:text-gray-200">About</button>
+        <button onclick="if(window.toggleSettings){window.toggleSettings(); mobileOpen = false;}"
+            class="block w-full text-left px-6 py-3 text-gray-800 dark:text-gray-200">Settings</button>
     </div>
 </nav>

@@ -33,12 +33,71 @@ img {
 }
 
 /* --- Mobile (<=768px) --- */
+
+/* Alpine: hide x-cloak elements until the script boots (hamburger panel) */
+[x-cloak] {
+  display: none !important;
+}
+
+/* Tailwind v4 utilities the theme's compiled output.css doesn't emit
+   (its build only scans the theme's own layouts/, not the site's nav.html).
+   Adding them here keeps nav.html's class-list portable across breakpoints. */
+.top-full { top: 100%; }
+.left-0 { left: 0; }
+.right-0 { right: 0; }
+.absolute { position: absolute; }
+.z-40 { z-index: 40; }
+.py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+.px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+.w-full { width: 100%; }
+
+/* --- Responsive `md:` variants (min-width:768px, Tailwind's md breakpoint) ---
+   nav.html uses `hidden` + `md:flex` on the link row, `hidden` + `md:inline-flex`
+   on the search icon, and `md:hidden` on the hamburger + mobile panel. The
+   theme's compiled CSS only emits the base `.hidden` (display:none), not the
+   `md:` variants. Defining them here at the real min-width:768 breakpoint:
+     row        hidden md:flex        -> mobile none (base .hidden), desktop flex
+     search     hidden md:inline-flex -> mobile none, desktop inline-flex
+     hamburger  md:hidden             -> mobile visible (default), desktop none
+     panel      md:hidden             -> mobile = x-show controls, desktop none
+   This file loads after output.css, so at equal specificity these win at >=768. */
+@media (min-width: 768px) {
+  .md\:flex { display: flex !important; }
+  .md\:inline-flex { display: inline-flex !important; }
+  .md\:hidden { display: none !important; }
+}
+
+/* --- Mobile (<=768px) --- */
+/* The dropdown panel must be opaque: it sits on top of the page and the
+   nav's own bg-white/70 backdrop is translucent, so a transparent panel let
+   content show through the rows. Solid bg per theme. */
+nav.sticky > div[aria-hidden="true"],
+nav.sticky > div[x-show] {
+  background: #fff;
+}
+html.dark nav.sticky > div[x-show] {
+  background: #0f172a;
+}
+
 @media (max-width: 768px) {
-  /* Nav: let links wrap to a second line instead of overflowing
-     (no hamburger exists in this custom nav; wrapping is the CSS-only fix) */
-  nav.sticky > div:last-child {
-    flex-wrap: wrap;
-    row-gap: 0.5rem;
+  /* Hamburger: the theme's .btn sizes via a --size var this build leaves
+     unset (it rendered 0x0), so give the button an explicit 44x44 target
+     and a 24px icon. */
+  nav button[aria-label="Menu"] {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  nav button[aria-label="Menu"] ion-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Nav links stay comfortably tappable. */
+  .nav-link {
+    font-size: 16px;
   }
 
   /* Index cards: summary/meta were 14px/12px → 16px/14px;
