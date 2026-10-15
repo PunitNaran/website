@@ -1,9 +1,9 @@
 ---
-draft: false
+draft: true
 title: 'Polyglot Trader T212: Teaching a Machine to Trade Like a Discipline, Not a Gut Feeling'
 summary: How to build a self-checking ML trading system where a dual-threshold brain, an 11-gate risk matrix, and atomic state writes keep you from blowing up — with the real code to drop into your own service.
 date: 2026-10-15T10:00:00
-cover: /img/polyglot-trader-t212-cover.jpg
+cover: /img/polyglot-trader-t212-cover.png
 categories:
   - Artificial Intelligence
   - FinTech
