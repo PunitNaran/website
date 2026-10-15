@@ -1,4 +1,5 @@
 ---
+
 date: 2026-10-15T09:00:00
 draft: true
 title: "Platform-independent SIMD in Go"

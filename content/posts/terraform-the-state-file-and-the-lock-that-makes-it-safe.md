@@ -1,8 +1,9 @@
 ---
+
 date: 2026-10-15T09:00:00
 draft: true
 title: "Terraform: The State File and the Lock That Makes It Safe"
-summary: Terraform: The State File and the Lock That Makes It Safe
+summary: "Terraform: The State File and the Lock That Makes It Safe"
 categories:
   - Terraform
   - IaC

@@ -1,8 +1,9 @@
 ---
+
 date: 2026-10-15T09:00:00
 draft: true
 title: "DevSecOps That Actually Lands: SAST, Secrets, and Runtime Policies"
-summary: DevSecOps That Actually Lands: SAST, Secrets, and Runtime Policies
+summary: "DevSecOps That Actually Lands: SAST, Secrets, and Runtime Policies"
 categories:
   - DevSecOps
 ---

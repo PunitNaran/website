@@ -308,6 +308,10 @@
 {{ $tocJs = $tocJs | minify }}
 {{ end }}
 <script src="{{ $tocJs.RelPermalink }}"></script>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'default' });
+</script>
 
 {{ if site.Params.imageZoomableInPost }}
 {{ if fileExists "layouts/partials/medium-zoom.html" }}

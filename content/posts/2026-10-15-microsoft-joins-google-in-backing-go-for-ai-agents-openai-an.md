@@ -1,4 +1,5 @@
 ---
+
 date: 2026-10-15T09:00:00
 draft: true
 title: "Microsoft joins Google in backing Go for AI agents — OpenAI and Anthropic lag"

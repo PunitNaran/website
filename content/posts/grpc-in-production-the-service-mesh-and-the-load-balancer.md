@@ -1,8 +1,9 @@
 ---
+
 date: 2026-10-15T09:00:00
 draft: true
 title: "gRPC in Production: The Service Mesh and the Load Balancer"
-summary: gRPC in Production: The Service Mesh and the Load Balancer
+summary: "gRPC in Production: The Service Mesh and the Load Balancer"
 categories:
   - gRPC
   - Microservices

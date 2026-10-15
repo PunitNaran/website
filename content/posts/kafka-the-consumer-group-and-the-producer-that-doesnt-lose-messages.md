@@ -1,8 +1,9 @@
 ---
+
 date: 2026-10-15T09:00:00
 draft: true
 title: "Kafka: The Consumer Group and the Producer That Doesn't Lose Messages"
-summary: Kafka: The Consumer Group and the Producer That Doesn't Lose Messages
+summary: "Kafka: The Consumer Group and the Producer That Doesn't Lose Messages"
 categories:
   - Kafka
   - Messaging
