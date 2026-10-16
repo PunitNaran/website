@@ -1,6 +1,6 @@
 ---
 
-draft: false
+draft: true
 title: 'The Platinum Claw: A Masterclass in Immortal Edge AI Infrastructure'
 summary: How to build a self-healing, hardware-aware AI cluster that survives the chaos of the edge using the Platinum Claw protocol.
 date: 2026-03-02T22:44:00
@@ -19,6 +19,37 @@ tags:
 
 # The Platinum Claw: Edge AI & Autonomous Infrastructure
 
+> **Thesis.** A cloud cluster fails *logically* (a bad pod, an OOM); an edge AI cluster fails *physically* — the PCIe lane drops to Gen 2, the SD card exhausts its writes, the 365-day CA certificate expires, the encrypted NVMe deadlocks under disk pressure. The **Platinum Claw** is the protocol for making the *hardware* the thing you trust: a **K3s** cluster where the bootloader, the storage, the CA, the auto-heal loop, and the tool-injection CI/CD are all hardened **before** a single AI pod is ever scheduled. Read it as a set of *defenses against physics*, not as a deployment recipe.
+
+## The Claw at a Glance
+
+One control-plane "master brain" (an x86 box) runs the K3s control plane plus the eBPF, storage, and GitOps machinery; the "muscle" are Raspberry Pi 5 workers carrying the **Hailo-8** NPU and the agent pods. The five *Phases* of the Platinum OS are the *genetic code* that makes the whole thing immortal — each is a hardening applied to the hardware or the cluster *before* it is needed.
+
+```mermaid
+flowchart TD
+    subgraph MASTER["claw-master — Lenovo m700q (x86)"]
+        CP["K3s Control Plane v1.30.4+k3s1"]
+        CL["Cilium eBPF CNI 1.15.1"]
+        LH["Longhorn CSI 1.7.1"]
+        AC["ArgoCD v2.12.3"]
+        CF["Cloudflared 2026.1.2"]
+    end
+    subgraph WORKER["claw-worker-01 — Raspberry Pi 5"]
+        NP["Hailo-8 NPU /dev/hailo0"]
+        AG["Omni-Agent pod (GoClaw / Whisper / Immich)"]
+    end
+    CP -->|join token| WORKER
+    CL -.->|eBPF data path| NP
+    LH -->|NVMe-backed volumes| AG
+    AC -->|gitops sync| WORKER
+    P1["Phase 1 — Atomic Boot (ASPM off)"] -.-> CP
+    P5["Phase 5 — Auto-Heal"] -.-> LH
+    P7["Phase 7 — Storage Migrate (chattr +i)"] -.-> LH
+    style NP fill:#1a3a1a
+    style AG fill:#1a3a1a
+    style P5 fill:#3a2a1a
+```
+
 ## 🧩 Part 1: The Anatomy of the Platinum Claw
 
 Before we reveal the scripts, we must understand the "Genetic Code" that makes this infrastructure different from a standard installation. We don't just install software; we modify the physical behavior of the hardware.
@@ -31,6 +62,8 @@ We don't trust factory settings. We proactively patch the bootloader to prevent 
 
 Standard mounts fail silently, and Raspberry Pis are notorious for killing SD cards through write-exhaustion. **Phase 7** of the Platinum OS physically migrates the core databases of K3s and Docker off your boot drive and symlinks them to a high-speed NVMe/SSD. We follow this up with a kernel-level lock (`chattr +i`) to make the base directory unwritable. If the NVMe drops offline, the system refuses to write, saving your hardware.
 
+> **Note:** The `chattr +i` (immutable) lock is the *fail-safe*, not the *feature*. The real work is the *migration*: K3s's `rancher` state and Docker's `/var/lib/docker` are the two directories whose I/O pattern (constant small writes, journal churn) is what exhausts an SD card. Move *them* to the NVMe and the card stops being the bottleneck; the `chattr +i` just means that when the NVMe *does* die, you get a loud "cannot write" instead of a silent, corrupting, write-allowed death.
+
 ### 3. The Cryptographic Pacemaker
 
 Kubernetes certificates expire in 365 days. If your cluster is so stable it never reboots, it will "die" on its first birthday. We built a heartbeat for the CA—a monthly cron job that silently renews communication TLS keys without downtime.
@@ -39,9 +72,41 @@ Kubernetes certificates expire in 365 days. If your cluster is so stable it neve
 
 At the edge, network blips create "Ghost Pods" (Unknown/Evicted states) that hold your distributed storage volumes hostage. **Phase 5** introduces an Auto-Heal Engine that scans the cluster for these zombies and executes a surgical purge, immediately releasing the storage locks so new AI pods can boot.
 
+```mermaid
+sequenceDiagram
+    participant N as node (k3s-agent)
+    participant L as Longhorn CSI
+    participant P as zombie pod (Unknown/Evicted)
+    participant H as Auto-Heal Engine (Phase 5)
+    Note over N,P: disk-pressure taint set; pod holds an NVMe volume
+    P-->>L: volume locked (ContainerStatusUnknown)
+    H->>N: scan pods in Unknown/Evicted
+    H->>P: kubectl delete --force --grace-period=0
+    P-->>L: pod gone
+    L-->>N: release the NVMe volume
+    N-->>N: clear disk-pressure taint, reschedule
+    Note over N,L: the storage lock is the whole failure;<br/>purging the pod is what frees it
+```
+
+> **Warning:** A *force-deleted* zombie pod is a *symptom you can act on*; a *force-deleted live* pod is data you lose. The Auto-Heal Engine only targets pods in `Unknown`/`Evicted` (the ones that are *already* dead on the wire). Never let a generic "stuck pod → `kubectl delete --force`" loop run against `Running` pods — that is how you delete the one pod that was mid-write.
+
 ### 5. The Autonomous Injection Engine (The Omega Protocol)
 
 You cannot manually `apt-get install` tools into running containers every time an AI agent needs a new capability. We implement a self-validating CI/CD loop that dynamically injects system dependencies (like `ffmpeg`, `sqlite3`, `pandoc`) directly into the agent's container image via a nightly cron job, gracefully handling upstream developer build failures without taking the agent offline.
+
+## The Five Phases, and the Physics Each One Defends Against
+
+The five Phases above are not a checklist; each one is a *specific* failure mode the edge throws at you. The table maps each Phase to the *physical* failure it exists to prevent, and the *symptom* you see if it is missing.
+
+| Phase | Hardening it performs | Physical failure it defends against | Symptom if missing |
+|---|---|---|---|
+| **1 — Atomic Boot** | Disable ASPM / keep PCIe lanes at full voltage | NPU entering a sleep "latency nap" and lagging inference | `hailo` inference *occasionally* 10× slower |
+| **5 — Auto-Heal Engine** | Scan + purge `Unknown`/`Evicted` pods | Disk-pressure taint locking Longhorn NVMe volumes | Zombie pod holds a volume forever |
+| **7 — Storage Migration** | Move K3s + Docker state to NVMe, `chattr +i` | SD-card write-exhaustion (the Pi's #1 killer) | Boot drive corrupts after months |
+| **3 — Cryptographic Pacemaker** | Monthly CA cert renewal (no downtime) | 365-day k8s cert expiry on a *stable* cluster | Cluster "dies" on its first birthday |
+| **Omega — Tool Injection** | Nightly CI/CD injects deps into the agent image | Agent needs `ffmpeg`/`sqlite3` mid-run; no `apt` in the pod | Agent replies "command not found" |
+
+The pattern across the table is the same: **the failure is physical and the defense is pre-emptive.** You do not react to the disk pressure; you *migrated* the state off the flaky drive. You do not renew the cert when it is about to expire; you *scheduled* the renewal. That is the difference between an *immortal* cluster and a *reliably-dead* one.
 
 ***
 
@@ -1101,6 +1166,8 @@ When deploying **Cilium eBPF** on hardened hardware (like an encrypted Lenovo m7
 * **The Manual Mount:** `sudo mount -t bpf bpf /sys/fs/bpf`
 * **The Permanent Solution:** Add `bpffs /sys/fs/bpf bpf defaults 0 0` to your `/etc/fstab`.
 
+> **Note**: The `bpf` mount is a *kernel filesystem*, not a container artifact — that is why it survives container restarts but not node reboots (unless it is in `fstab`). When Cilium reports it "cannot mount its maps," the *first* thing to check is `mount | grep bpf`, not the pod. A missing `/sys/fs/bpf` on a hardened node is the single most common cause of `Init:0/6` on eBPF nodes.
+
 ### 👻 2. The "Sudo" Environment Trap (Ghost Cluster)
 
 **The Symptom:** You run `sudo kubectl get pods` and get a wall of red text: `The connection to the server localhost:8080 was refused`.
@@ -1112,6 +1179,8 @@ When deploying **Cilium eBPF** on hardened hardware (like an encrypted Lenovo m7
 ```bash
 sudo kubectl --kubeconfig=/etc/rancher/k3s/k3s.yaml get pods -n default
 ```
+
+> **Warning**: The `KUBECONFIG`-scrubbing trap is not an edge-only problem — it is the #1 "ghost cluster" you will ever see. Every `sudo kubectl` in your automation that depends on an exported `KUBECONFIG` is *silently* talking to `localhost:8080`. Prefer the explicit `--kubeconfig=` flag (or a `~/.config/k3s` path the sudo'd user can read) over any exported variable the moment you are in a `sudo` context.
 
 ### 🧱 3. The Disk Pressure Deadlock & Zombie Pods
 
@@ -1171,3 +1240,19 @@ Wait 60 seconds, then delete the stuck pod on the Master node to force a fresh a
 ## 💡 The Golden Rule of Edge AI Infrastructure
 
 > _"In the cloud, you manage software. At the Edge, you manage physics. Kubernetes assumes the hardware is perfect, but the hardware is never perfect. Between PCIe bandwidth throttling, encrypted NVMe deadlocks, and disk-pressure taints, you aren't just deploying containers—you are negotiating with the kernel."_
+
+## Takeaways
+
+- **The edge fails physically, not logically.** A cloud pod can OOM; an edge NPU can sleep, an SD card can exhaust its writes, a 365-day CA cert can expire on a cluster that *never reboots*. The Platinum Claw treats each of these as a *first-class* failure domain with a pre-emptive defense, not a runbook.
+- **Every Phase is a defense against one specific physics.** The Atomic Boot loader defends against *latency* (ASPM), the Storage Migration defends against *write-exhaustion* (SD cards), the Cryptographic Pacemaker defends against *time* (cert expiry), the Auto-Heal Engine defends against *disk pressure*, and the Omega Protocol defends against *capability gaps* (missing tools).
+- **The failure is *pre-emptive*, not *reactive*.** You do not respond to the disk pressure; you already moved the state off the flaky drive. You do not renew the cert at expiry; you *scheduled* the renewal. The cluster is immortal because it never reaches the failure state in the first place.
+- **The Auto-Heal Engine is a *zombie purger*, not a *pod killer*.** It only touches `Unknown`/`Evicted` pods — the ones already dead on the wire. The storage lock is the whole failure; purging the pod is what frees the volume.
+- **`chattr +i` is the *fail-safe*, not the *feature*.** The migration (K3s + Docker state → NVMe) is the feature; the immutable lock just means the *next* failure is loud ("cannot write") instead of silent (a corrupt, write-allowed death).
+
+## Next steps
+
+1. **Run the Atomic Boot (Phase 1) first, and reboot.** The PCIe ASPM state is set at boot; patching GRUB without a reboot means the NPU is still napping.
+2. **Do the Storage Migration (Phase 7) *before* you care about the cluster's longevity.** A K3s control plane and a Docker data-root living on an SD card is a ticking clock; move them to NVMe and lock the base dir with `chattr +i` *before* you have your first month of uptime.
+3. **Wire the Cryptographic Pacemaker (Phase 3) into your ops calendar** as a *monthly* job, not a *quarterly* one — the 365-day cert window is the whole reason a "stable" edge cluster has a birthday.
+4. **Treat the Auto-Heal Engine (Phase 5) as a *safety net*, not a *policy*.** It should fire *rarely*. If it is firing daily, you have a *real* problem (a leaking disk, a flapping network) that the engine is papering over — go fix the root cause.
+5. **Let the Omega Protocol run its nightly injection loop** and watch the agent image *grow* a new capability every week. The agent should never reply "command not found" to a tool the user *just* asked it to use.

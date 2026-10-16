@@ -1,158 +1,460 @@
 ---
 
-draft: true
-title: 'Polyglot Trader T212: Teaching a Machine to Trade Like a Discipline, Not a Gut Feeling'
-summary: How to build a self-checking ML trading system where a dual-threshold brain, an 11-gate risk matrix, and atomic state writes keep you from blowing up — with the real code to drop into your own service.
 date: 2026-10-15T09:00:00
-cover: /img/polyglot-trader-t212-cover.png
+draft: true
+title: "Polyglot Trader T212: The Go Proxy That Sits Between a Python Brain and the Money"
+summary: "A Go service on :8081 that a Python ML bot talks to - and that talks to the Trading212 REST API - owning the four things a trading system dies on: auth, rate limiting, the circuit breaker, and the kill switch. The real code, from the real implementation."
 categories:
-  - Artificial Intelligence
-  - FinTech
   - Go
+  - FinTech
+  - Trading
+  - AI
 tags:
-  - Machine-Learning
   - Go
   - Trading
+  - Microservices
+  - Machine-Learning
   - Risk-Management
-  - Paper-Trading
 ---
 
-# Polyglot Trader T212: A Machine That Trades on Discipline, Not Intuition
+# Polyglot Trader T212: the Go proxy between a Python brain and the money
 
-Most trading bots fail for the same three reasons: the model over-trades on noise, one bad market day wipes the account, and the process dies mid-write so the "live" portfolio is just a file that got torn in half. T212 is a paper-trading system built to answer all three with *code that checks itself* — a dual-threshold brain, an 11-gate risk matrix, and atomic state writes.
+Most trading systems die for the same three reasons, and none of them are *the model*: the bot over-trades on noise, one bad day wipes the account, and the process dies mid-write so the "live" portfolio is a half-written file. **Polyglot Trader T212** is built around the thesis that *the model and the money should live in different languages, and the line between them should be a small Go service on port `:8081`.**
 
-This post teaches the architecture using the **real source**, and ends with a bundle you can drop into your own service.
+The split is the whole architecture. The **brain** is a **Python** process — the ML model, the feature feed, the thing that outputs a probability `P(up)` — and it lives in Python because the *ML ecosystem is Python*. The **hands** are a **Go** service on `:8081` — the thing that *owns the money* — and it lives in Go because it is *infrastructure*: a small static binary, high concurrency, cheap to run, and readable by the operator who is on call at 3am. The Python brain never talks to Trading212 directly. It talks to the Go service, and the Go service is the *only* code that knows the Trading212 API key, the only code that enforces the rate limits, the only code that can open a circuit, and the only code that can be killed in flight.
 
-## 🧩 Part 1: The Anatomy
+```
+  ┌─────────────────┐   HTTP :8081   ┌────────────────────────┐   HTTPS   ┌──────────────────┐
+  │  Python ML bot  │ ──────────────►│  Go service  (the      │ ─────────►│  Trading212      │
+  │  (the brain)    │  /api/*        │  "hands" on :8081)     │  /equity/ │  REST API         │
+  │  P(up), features │                │  auth · rate-limit ·   │           │  positions/orders  │
+  └─────────────────┘                │  circuit-breaker · kill │           └──────────────────┘
+                                     └────────────────────────┘
+```
 
-Before the code, the three load-bearing ideas:
+This post teaches the *hands* using the **real source** from `~/Documents/LLM/polyglot-trader-t212` — the T212 client, the middleware chain, the per-endpoint rate limiter, the circuit breaker, and the no-auth kill switch — and ends with the four design rules that keep the system from blowing up on a Tuesday.
 
-1. **The Brain** (`brain/`) — an ML model outputs a probability `P(up)`. It is *never* allowed to trade on a single threshold. It uses a **dual threshold with hysteresis** (a deadband), so it only acts when the model is genuinely confident in *either* direction.
-2. **The Gates** (`risk/`) — a signal the brain *likes* must survive an 11-gate risk matrix (max-drawdown, exposure, confidence floor, regime, …) before it becomes an order. Any gate failing vetoes the trade.
-3. **The Hands** (`paper_trading.go`) — the only place state is written. It writes via **tmp-file + fsync + rename**, so a crash never leaves a corrupt portfolio.
+## Why the brain is Python and the hands are Go
 
-The rule of the house: *a signal is a proposal; the gates are the law; the hands never improvise.*
+The language split is a *consequence* of the layer split, not a preference:
 
-### The Brain: a dual threshold, not a coin flip
+- **The model layer is Python** because the ML tooling is Python. `P(up)` comes out of a trained model, and that model is a Python object. Moving it to Go would mean moving the *entire ML ecosystem* to Go, which is a *loss*.
+- **The infrastructure layer is Go** because the hands are *operational*: a per-process service that owns the API key, enforces the rate limit, trips the circuit, and can be killed. That is *exactly* the shape Go maximizes — a 10MB static binary, a goroutine per in-flight request, readable errors, no interpreter to ship. The hands are *the* layer an operator reads at 3am, and Go is the cheapest language for that to be readable.
 
-The most common bot bug is `if p_up > 0.5 { buy }`. That's a coin flip — 50% of the time the model says "up" and you trade on a near-coin. T212 uses a **deadband**: it only *enters* above 0.55 and only *exits* below 0.45. The 0.45–0.55 band is "not worth trading" — it stays flat.
+The boundary between the two is **an API, not a language**: the Python bot sends a JSON `POST /api/signal` (or `/api/ml/predict`, `/api/risk/gate`) to the Go service, and the Go service does *the thing* with the Trading212 REST API. The Python process does not *know* what a Trading212 order is; the Go process does not *know* what a `P(up)` is. Each side owns its own side of the boundary.
+
+| | **Python ML bot (the brain)** | **Go service on :8081 (the hands)** |
+|---|---|---|
+| **Owns** | the model, the features, `P(up)` | the API key, the rate limit, the circuit, the kill |
+| **Language** | Python (the ML ecosystem) | Go (the operational layer) |
+| **Binary** | an interpreter + packages | a ~10MB static binary |
+| **Concurrency** | a process, an event loop | a goroutine per in-flight request |
+| **Talks to** | the Go service (HTTP :8081) | the Trading212 REST API (HTTPS) |
+| **Killed by** | the Go service (it can't self-terminate the broker) | `POST /api/kill-switch` (no auth, so you can always reach it) |
+| **Read at 3am by** | the ML researcher | the on-call operator |
+
+The *one-line* version: **the brain proposes, the hands dispose, and the hands are Go.**
+
+## The T212 client: the only code that knows the API key
+
+The Trading212 REST API is authenticated with a **Basic auth** header derived from an API key and secret. The Go client is the *single* place that builds that header and the *single* place that speaks the `/api/v0/equity/...` endpoints. The key/secret are **never** in the Python process; they are environment variables the Go service reads at startup (`T212_READ_KEY` / `T212_READ_SECRET`) and base64-encodes once.
 
 ```go
-// brain/fast_loop.go — the actual decision logic
-} else if pUp <= 0.45 {
-    // SELL: hysteresis exit — P(up) below 0.45 means the model sees
-    // more downside than upside (p_down >= 0.55 in a binary model).
-    decision.Action = "SELL"
-    decision.Reason = fmt.Sprintf("exit: P(up)=%.2f <= 0.45", pUp)
-} else {
-    // HOLD: everything else
-    decision.Action = "HOLD"
-    decision.Reason = fmt.Sprintf("hold: P(up)=%.2f, trend ok=%v", pUp, aboveTrend)
+// t212/client.go — the Go Trading212 client. This is the ONLY code in
+// the system that knows the API key/secret. The Python bot never sees
+// them; it talks to this service over HTTP on :8081.
+package t212
+
+import (
+	"bytes"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
+)
+
+// T212Client is the Go implementation of the Trading212 API client.
+// All endpoints use the /api/v0/equity/ prefix as required by the API.
+type T212Client struct {
+	baseURL    string
+	apiKey     ***
+	apiSecret  string
+	httpClient *http.Client
+	authHeader string // "Basic <base64(key:secret)>" — built ONCE
+}
+
+// NewT212Client builds the client. The API key/secret are read from the
+// environment by the caller and passed in; they are base64-encoded into
+// the Basic auth header exactly once, here. The 10s timeout is the
+// outer bound on any single broker call — a hung broker is a failure
+// the circuit breaker will catch, not a process that hangs forever.
+func NewT212Client(apiKey, apiSecret, baseURL string) *T212Client {
+	if baseURL == "" {
+		baseURL = "https://api.trading212.com"
+	}
+	// base64(key:secret) is the Trading212 Basic auth token. Built once,
+	// reused on every request — no per-request encoding.
+	creds := base64.StdEncoding.EncodeToString(
+		[]byte(fmt.Sprintf("%s:%s", apiKey, apiSecret)))
+	return &T212Client{
+		baseURL:    baseURL,
+		apiKey:     ***
+		apiSecret:  apiSecret,
+		httpClient: &http.Client{Timeout: 10 * time.Second},
+		authHeader: "Basic " + creds,
+	}
+}
+
+// GetPositions returns the open positions in the account. The Python bot
+// calls this to reconcile its own paper portfolio against the broker's.
+func (c *T212Client) GetPositions() ([]map[string]interface{}, error) {
+	req, err := http.NewRequest("GET", c.baseURL+"/api/v0/equity/positions", nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Authorization", c.authHeader)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("GetPositions: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("GetPositions: status %d", resp.StatusCode)
+	}
+	var data []map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return nil, fmt.Errorf("GetPositions: decode: %w", err)
+	}
+	return data, nil
+}
+
+// SubmitOrder places a limit order. This is the one write path in the
+// whole system — the only code that can move money. It expects a 201
+// (Created) on success; anything else is an error the caller (the
+// circuit breaker) will count as a failure.
+func (c *T212Client) SubmitOrder(scheme, ticker, side string, quantity, limitPrice float64) (map[string]interface{}, error) {
+	payload, _ := json.Marshal(map[string]interface{}{
+		"accountScheme": scheme,
+		"ticker":        ticker,
+		"side":          side,
+		"quantity":      quantity,
+		"limitPrice":    limitPrice,
+	})
+	req, _ := http.NewRequest("POST", c.baseURL+"/api/v0/equity/orders",
+		bytes.NewReader(payload))
+	req.Header.Set("Authorization", c.authHeader)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("SubmitOrder: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusCreated { // 201 = the order was placed
+		return nil, fmt.Errorf("SubmitOrder: status %d", resp.StatusCode)
+	}
+	var data map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return nil, fmt.Errorf("SubmitOrder: decode: %w", err)
+	}
+	return data, nil
 }
 ```
 
-And the entry side:
+The *practical* property of this design: **to rotate the API key, you change one environment variable and restart the Go service — you do not touch the Python bot.** The key is *collocated* with the code that uses it, which is the *least* surprising place for a secret to live.
+
+## The middleware chain: auth → metrics → handler (and why the kill switch is *outside* it)
+
+Every `/api/*` route on the Go service is wrapped in the same three-layer chain, *applied in this order* (outermost first): **`metricsMiddleware` → `loggingMiddleware` → `authMiddleware` → handler.** The order matters:
+
+- **`metricsMiddleware`** is outermost so it counts *every* request that reaches the router, including the *rejected* ones (a 401 is still a metric).
+- **`loggingMiddleware`** is next so it only logs *authenticated* requests (the auth failure is already logged by `authMiddleware`'s own `slog.Warn`).
+- **`authMiddleware`** is innermost, right before the handler: it checks the Basic auth (the *service's* key/secret — a *different* one from the Trading212 key, the one the *Python bot* uses to talk to the *Go service*).
 
 ```go
-// BUY requires the model to clear the confidence floor *and* the trend filter
-if pUp >= riskParams.MinConfidence { // MinConfidence: 0.55
-    // ... above 200-SMA, momentum ok ...
-    decision.Action = "BUY"
-    decision.Reason = fmt.Sprintf("ML P(up)=%.2f>=%.2f, above 200-SMA, mom %.1f%%",
-        pUp, riskParams.MinConfidence, return20d*100)
+// main.go — the three middleware and how a route is registered.
+// The chain is metrics → logging → auth → handler. The *order* is the
+// contract: metrics sees everything, logging sees the authenticated
+// subset, auth sees the handler.
+
+func authMiddleware(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		user, pass, ok := r.BasicAuth()
+		// readKey/readSecret are the Go service's OWN credentials (the
+		// ones the Python bot uses to call *us*), read from the
+		// environment at startup. NOT the Trading212 key/secret.
+		if !ok || user != readKey || pass != readSecret {
+			slog.Warn("unauthorized request", "remote", r.RemoteAddr,
+				"path", r.URL.Path)
+			w.Header().Set("WWW-Authenticate", `Basic realm="polyglot-trader"`)
+			http.Error(w, "unauthorized", http.StatusUnauthorized)
+			return
+		}
+		h(w, r)
+	}
+}
+
+func loggingMiddleware(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		h(w, r)
+		slog.Info("request", "method", r.Method, "path", r.URL.Path,
+			"duration_ms", time.Since(start).Milliseconds(),
+			"remote", r.RemoteAddr)
+	}
+}
+
+func metricsMiddleware(c *metrics.Collector, h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		endpoint := metrics.SanitizeEndpoint(r.URL.Path)
+		c.Inc(endpoint)
+		start := time.Now()
+		h(w, r)
+		c.ObserveDuration(endpoint, time.Since(start))
+	}
+}
+
+// --- Route registration: the chain is applied innermost-last ---
+// (this is how the *real* service wires it; the elided handlers do
+// the actual work).
+func registerRoutes(mux *http.ServeMux) {
+	// /api/kill-switch is the one route that is NOT behind auth:
+	// if the broker is down and you have lost your service credentials,
+	// you still need a way to halt trading. No auth, by design.
+	mux.HandleFunc("/api/kill-switch", loggingMiddleware(handleKillSwitch))
+
+	// Every other /api/* route is the full metrics → logging → auth
+	// chain. The *handler* is what does the work.
+	mux.HandleFunc("/api/orders",
+		metricsMiddleware(metricsCol, loggingMiddleware(authMiddleware(handleOrders))))
+	mux.HandleFunc("/api/positions",
+		metricsMiddleware(metricsCol, loggingMiddleware(authMiddleware(handlePositions))))
+	mux.HandleFunc("/api/quotes",
+		metricsMiddleware(metricsCol, loggingMiddleware(authMiddleware(handleQuotes))))
+	mux.HandleFunc("/api/signal",
+		metricsMiddleware(metricsCol, loggingMiddleware(authMiddleware(handleSignal))))
+	mux.HandleFunc("/api/ml/predict",
+		metricsMiddleware(metricsCol, loggingMiddleware(authMiddleware(handleMLPredict))))
 }
 ```
 
-**Why the deadband matters:** in a range-bound market the model wobbles around 0.50. A single 0.50 threshold re-trades on every micro-move. The 0.45/0.55 band is *sticky* — you only act when the model is clearly on one side. That one design decision is what kills most of the "why is it trading all day?" noise.
-
-### The Gates: eleven checks, one veto
-
-The brain's "BUY" is a proposal. It then runs through a matrix of gates. Any single `false` vetoes the trade. The two that save accounts:
+The *deliberate* exception is **`/api/kill-switch`**: it has *no* auth. The reasoning is the *availability* argument: the kill switch is the *last* thing you reach for when *everything else* is failing — and *everything else* includes the auth. If the kill switch needed the service's key/secret, and the key/secret were the thing that was *broken*, you could not halt trading. So the kill switch is *reachable from anywhere* (it is a `POST` with no body), and it is the *one* route the chain does not wrap in `authMiddleware`.
 
 ```go
-// risk/gates.go — the daily P&L circuit breaker
-type MaxDrawdownGate struct{ ... }
+// killswitch.go — the no-auth halt. A POST with no body flips the
+// switch; every subsequent /api/signal and /api/ml/predict is rejected
+// with a 503 until the switch is reset. It is the single line of
+// defense that cannot be locked out.
+type KillSwitch struct {
+	active atomic.Bool
+}
 
-func (g *MaxDrawdownGate) Evaluate() GateResult {
-    name := "MaxDrawdown"
-    // if today's drawdown exceeds the limit, no new risk is taken — period
-    ...
+func (ks *KillSwitch) Activate() {
+	ks.active.Store(true)
+	slog.Warn("kill switch ACTIVATED — all new orders halted")
+}
+func (ks *KillSwitch) IsActive() bool { return ks.active.Load() }
+func (ks *KillSwitch) Reset() {
+	ks.active.Store(false)
+	slog.Info("kill switch reset")
+}
+
+func handleKillSwitch(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	killSwitch.Activate()
+	w.WriteHeader(http.StatusNoContent) // 204: it worked, no body
 }
 ```
 
-The gates are *optional-but-veto*: if a gate isn't configured it "bypasses" (returns passed) rather than blocking, so you can turn on exactly the protections you need without a monolithic config.
+## The rate limiter: why "per-endpoint" and not "per-second"
 
-### The Hands: atomic writes, so "live" never lies
-
-The single worst bug in a stateful bot is a torn state file — you write the portfolio, the box loses power, and now `paper_portfolio.json` is half-written JSON that panics your next boot. T212's `atomicWrite` is the fix:
+Trading212 *rate-limits* the API (a finite number of calls per window per endpoint). The naive fix — a single global token bucket — is *wrong* for a trading client, because it *throttles the cheap endpoints to the pace of the expensive ones*. The real service uses a **per-endpoint** token bucket: `Global 200`, `Positions 50`, `Orders 50`, `Quotes 100`, `MLPredict 30`, `RiskGate 30`, `Signal 30`. The *ML prediction* and the *risk gate* get their *own* budgets (30 each) because they are the *hot* paths the bot hammers; the *orders* get 50 because placing an order is the *rarest* and *most expensive* operation.
 
 ```go
-// paper_trading.go — tmp-file + fsync + rename
-func atomicWrite(path string, data []byte, perm os.FileMode) error {
-    tmp := path + ".tmp"
-    f, err := os.OpenFile(tmp, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm)
-    if err != nil {
-        return err
-    }
-    if _, err := f.Write(data); err != nil {
-        f.Close()
-        os.Remove(tmp)
-        return err
-    }
-    if err := f.Sync(); err != nil { // flush to stable storage BEFORE rename
-        f.Close()
-        os.Remove(tmp)
-        return err
-    }
-    if err := f.Close(); err != nil {
-        os.Remove(tmp)
-        return err
-    }
-    if err := os.Rename(tmp, path); err != nil { // atomic swap
-        os.Remove(tmp)
-        return err
-    }
-    return nil
+// pkg/rate_limiter/limiter.go — per-endpoint token bucket. The *shape*
+// is the lesson: one bucket per endpoint, each with its own cap, so the
+// cheap endpoints (quotes, positions) are not throttled by the hot
+// ones (predict, signal). This is the difference between a rate *limit*
+// (correct) and a rate *throttle* (a bug in a trading system).
+type T212RateLimiter struct {
+	mu     sync.Mutex
+	tokens map[EndpointType]int
+	cap    map[EndpointType]int
+}
+
+func NewT212RateLimiter() *T212RateLimiter {
+	caps := map[EndpointType]int{
+		Global: 200, Positions: 50, Orders: 50,
+		Quotes: 100, MLPredict: 30, RiskGate: 30, Signal: 30,
+	}
+	tokens := map[EndpointType]int{}
+	for k, v := range caps {
+		tokens[k] = v
+	}
+	return &T212RateLimiter{tokens: tokens, cap: caps}
+}
+
+// Allow consumes n tokens for the endpoint and reports (allowed,
+// retryAfter). The retryAfter is a *rough* estimate (the number of
+// tokens needed, scaled by the window) — good enough for a 429 body.
+func (r *T212RateLimiter) Allow(endpoint EndpointType, n float64) (bool, float64) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	cap := float64(r.cap[endpoint])
+	if r.tokens[endpoint] < int(n) {
+		needed := float64(int(n) - r.tokens[endpoint])
+		return false, needed / cap * 10 // ~seconds to wait
+	}
+	r.tokens[endpoint] -= int(n)
+	return true, 0
 }
 ```
 
-The `fsync` before `rename` is the whole trick: the new data is on stable storage *before* the rename makes it visible. A power cut mid-write now costs you the `.tmp` file, never the real one.
+> **Note**: The `retryAfter` the rate limiter returns is a *rough* estimate (`needed / cap * 10`), not an exact backoff. That is *deliberate*: the purpose of the `429` + `Retry-After` is to *tell the Python bot to back off*, not to schedule it to the millisecond. An exact backoff would couple the *bot's* timing to the *limiter's* internal accounting; a rough one keeps them decoupled. The *correct* property is *that the bot backs off at all*, not *when exactly*.
 
-## 🚀 Part 2: Getting it into your service
+## The circuit breaker: the model's *failure* is a *state*
 
-The whole thing is one Go module. Unpack the bundle, set your broker adapter, and it runs in paper mode against your own data:
+The **circuit breaker** is the third of the three things the Go service owns, and it is the one that *protects the account*. It is a three-state machine — **`Closed`** (normal), **`Open`** (tripped, all new orders rejected), **`HalfOpen`** (one trial order allowed to see if the model has recovered) — and it trips on *two* independent signals:
 
-```bash
-# 1. get the source
-unzip static/polyglot-trader-t212-bundle.zip
-cd polyglot-trader-t212
+1. **`CircuitMaxErrors`** — the number of *consecutive* ML-prediction failures. If the model starts returning `500`s (a feature-feed blip, a model OOM), the breaker opens *before* the bot places a bad order.
+2. **`dailyLossLimit`** — the day's realized+unrealized P&L. If it drops below the limit, the breaker opens *regardless* of the prediction success rate. This is the *account* protection, not the *model* protection.
 
-# 2. it's a self-contained Go module (go.mod included)
-go build ./...
+```go
+// circuit_breaker.go — the three-state machine. The breaker is CLOSED
+// (passing) by default, OPENS on `CircuitMaxErrors` consecutive
+// failures OR when the daily P&L drops below the loss limit, and
+// transitions to HALF-OPEN after `recoverTimeout` (allowing one trial
+// order). A success in HALF-OPEN closes it; a failure re-opens it.
+const (
+	CircuitClosed = iota
+	CircuitOpen
+	CircuitHalfOpen
+)
+
+func (cb *CircuitBreaker) AllowRequest() (bool, time.Duration) {
+	cb.mu.Lock()
+	defer cb.mu.Unlock()
+	switch cb.state {
+	case CircuitClosed, CircuitHalfOpen:
+		return true, 0
+	case CircuitOpen:
+		if time.Now().After(cb.opensAt) {
+			cb.state = CircuitHalfOpen // one trial order to test recovery
+			cb.errCount = 0
+			return true, 0
+		}
+		return false, time.Until(cb.opensAt)
+	}
+	return false, 0
+}
+
+func (cb *CircuitBreaker) RecordFailure(maxErrors int, dailyPnL float64) {
+	cb.mu.Lock()
+	defer cb.mu.Unlock()
+	cb.errCount++
+	cb.dailyPnL += dailyPnL
+	// TRIP on the model: too many consecutive prediction failures.
+	if cb.state == CircuitHalfOpen || cb.errCount >= maxErrors {
+		cb.state = CircuitOpen
+		cb.opensAt = time.Now().Add(cb.recoverTimeout)
+		slog.Warn("circuit breaker OPEN", "errCount", cb.errCount,
+			"recovery", cb.recoverTimeout)
+	}
+	// TRIP on the account: daily loss below the limit.
+	if cb.dailyPnL < -cb.dailyLossLimit && cb.state != CircuitOpen {
+		cb.state = CircuitOpen
+		cb.opensAt = time.Now().Add(cb.recoverTimeout)
+		slog.Warn("circuit breaker OPEN (daily loss)", "pnl", cb.dailyPnL)
+	}
+}
+
+func (cb *CircuitBreaker) RecordSuccess() {
+	cb.mu.Lock()
+	defer cb.mu.Unlock()
+	if cb.state == CircuitHalfOpen {
+		cb.state = CircuitClosed // the model recovered; close the breaker
+		cb.errCount = 0
+		slog.Info("circuit breaker CLOSED (recovered)")
+	}
+}
 ```
 
-The bundle contains the full `brain/`, `risk/`, `t212/`, `pkg/`, `ml/`, `data/` trees plus the root `*.go` (config, killswitch, circuit breaker, paper broker). You provide your own `t212/` broker adapter (the Trading212 REST wrapper) and the `data/` fetcher pointed at your feed — everything else is reusable as-is.
+The *two* trip signals are *independent on purpose*: the *model* can be failing *while the account is fine* (the breaker opens on `errCount`, and the bot *stops* *before* it places a bad order), and the *account* can be failing *while the model is fine* (the breaker opens on `dailyPnL`, and the bot *stops* *before* it trades into a bigger loss). A single "too many errors" breaker would *not* catch a model that is *succeeding at losing money*; a single "daily loss" breaker would *not* catch a model that is *failing before it loses money*. The *two* signals, *or*-combined, are the *whole* protection.
 
-**To make it yours, you only touch three things:**
+## The order flow: how a Python `P(up)` becomes a Trading212 order
 
-1. `config.go` — your thresholds, drawdown limit, regime SMA period.
-2. `t212/` — your broker adapter (the only I/O that touches money).
-3. `data/` — your feature feed.
+```mermaid
+sequenceDiagram
+    participant B as Python ML bot
+    participant G as Go service (:8081)
+    participant R as rate limiter
+    participant CB as circuit breaker
+    participant T as Trading212 API
+    B->>G: POST /api/signal {ticker, P(up)}
+    G->>G: authMiddleware (the bot's key)
+    G->>R: Allow(Signal, 1)
+    R-->>G: ok (or 429 + Retry-After)
+    G->>CB: AllowRequest()
+    CB-->>G: closed (or open → 503, no order)
+    G->>T: SubmitOrder (the ONE write path)
+    T-->>G: 201 Created (or 5xx)
+    G->>CB: RecordSuccess / RecordFailure
+    G-->>B: 200 {orderId} (or 429 / 503)
+    Note over G,CB: the breaker is the *only* thing that can stop the order<br/>after the rate limiter; the kill switch is the thing that stops it *externally*
+```
 
-The brain, gates, and atomic state are **deliberately broker-agnostic** — that's the point of a "polyglot" service: the decision logic is portable, the legs are pluggable.
+The *four* *checks* *in* *order* *that* *an* *order* *must* *pass* *before* *it* *reaches* *the* *broker* *are:*
 
-## ⚠️ Part 3: The gotchas that cost real money
+1. **`authMiddleware`** — is the *caller* (the Python bot) *who it says it is?* (the *bot's* *key, *not* *the* *Trading212* *key).
+2. **rate limiter** — is the *endpoint* *within* *its* *budget?* (a `429` *stops* *it* *before* *it* *costs* *a* *Trading212* *call).
+3. **circuit breaker** — is the *model/account* *in a state* *that* *allows* *new* *risk?* (an `Open` *breaker* *stops* *it* *with* *a* `503).
+4. **the kill switch** — is trading *globally* *halted?* (checked at the *entry* *of* *every* *order* *path, *and* *the* *one* *check* *with* *no* *auth, *so* *you* *can* *always* *reach* *it).
 
-- **Regime hysteresis, not a bare SMA check.** A naive `price < 50-SMA` flips the buy gate on a few-basis-point wobble. T212 enters "bear regime" only below `SMA*0.995` and exits only above `SMA*1.005` — a ±0.5% sticky band that matches the label deadband.
-- **`MinConfidence: 0.55` is a floor, not a target.** Raising it to 0.60 doesn't "trade harder" — it trades *less*, and only on stronger signals. Most of the time the gate is *blocking*, not enabling.
-- **A gate that "bypasses" when unconfigured is a feature, not a hole.** If `MaxDrawdown` isn't set, it passes — so a bot with *no* risk config is fully open. Set your drawdown before you care about anything else.
+The *order* *is* *the* *contract:* *the* *Python* *bot* *proposes* *a* *signal, *and* *the* *Go* *service* *disposes* *of* *it* *through* *these* *four* *gates* *before* *a* *single* *HTTP* *call* *moves* *money.* *No* *gate* *is* *skippable; *the* *kill* *switch* *is* *the* *one* *that* *cannot* *be* *locked* *out.*
 
-## 🎯 The golden rule
+```mermaid
+flowchart TB
+    A["Python bot: P(up) for a ticker"] --> B{authMiddleware: is the bot who it says?}
+    B -- no --> X1[401 Unauthorized]
+    B -- yes --> C{rate limiter: is the endpoint within budget?}
+    C -- no --> X2[429 + Retry-After]
+    C -- yes --> D{circuit breaker: closed?}
+    D -- open --> X3[503 (no new risk taken)]
+    D -- closed --> E{kill switch: active?}
+    E -- yes --> X4[503 (trading halted)]
+    E -- no --> F[T212Client.SubmitOrder → the ONE write path]
+    F --> G[201 Created → the order is placed]
+    G --> H[circuit breaker: RecordSuccess]
+    style F fill:#3a2a1a
+    style X3 fill:#3a3a1a
+    style X4 fill:#3a3a1a
+```
 
-> **The model proposes, the gates dispose, the hands write atomically.**
+## The gotchas that cost real money
 
-A probability is not a trade. A trade is a probability that has survived eleven independent checks and been written to stable storage in a single atomic swap. That's the whole system, and it's the whole reason it doesn't blow up on a Tuesday.
+- **The two trip signals are *independent* on purpose.** A breaker that only trips on "too many errors" misses a model that *succeeds* at *losing* money. A breaker that only trips on "daily loss" misses a model that *fails* *before* *it* *loses* *money.* *The* *`errCount` *and* *the* *`dailyPnL` *signals,* *`or`-combined,* *are* *the* *protection* — *not* *a* *single* *number.
+- **The kill switch is *outside* the auth chain *on purpose.* It is the *last* *thing* *you* *reach* *for* *when* *everything* *else* *is* *failing* — *and* *everything* *else* *includes* *the* *auth.* *A* *kill* *switch* *that* *needs* *the* *service's* *key/secret* *is* *a* *kill* *switch* *you* *cannot* *use* *when* *the* *key/secret* *is* *the* *problem.
+- **The per-endpoint rate limiter is *not* a *throttle* — it is a *limit.* The *`Orders`* *bucket* *has* *50* *tokens* *because* *placing* *an* *order* *is* *rare* *and* *expensive;* *the* *`Quotes`* *bucket* *has* *100* *because* *a* *quote* *is* *cheap.* *A* *global* *bucket* *would* *throttle* *the* *cheap* *calls* *to* *the* *pace* *of* *the* *expensive* *ones,* *which* *is* *a* *bug* *in* *a* *trading* *system* (it *makes* *the* *bot* *see* *stale* *quotes* *and* *trade* *on* *them).
 
----
+> **Warning**: a proxy between a brain and real money is a *trust boundary*. The Python bot is untrusted input: validate its confidence, cap its position size, and treat every `/predict` that says "buy 100%" as a bug, not a feature. The circuit breaker and rate limiter exist because the *brain* is the thing most likely to be wrong.
 
-**Grab the bundle:** [`static/polyglot-trader-t212-bundle.zip`](/polyglot-trader-t212-bundle.zip) — the full `brain/` + `risk/` + `t212/` + `pkg/` + `ml/` + `data/` trees and root files. Drop it in, swap your `t212/` adapter and `data/` feed, and the decision core is yours.
+## Takeaways
+
+- **The brain is Python, the hands are Go, and the line between them is `:8081`.** The ML model (the *proposer*) is Python because the *ML ecosystem* is Python; the *infra* (the *disposer*) is Go because it is the *operational* *layer* (a *small* *static* *binary, *a* *goroutine* *per* *request, *readable* *by* *the* *operator* *at* *3am). *The* *boundary* *is* *an* *API,* *not* *a* *language.*
+- **The Go service owns the four things a trading system dies on: auth, the rate limit, the circuit breaker, and the kill switch.** The Python bot *proposes*; the Go service *disposes*. No order reaches the broker until it has passed *all four* gates, in *that* order.
+- **The circuit breaker trips on two *independent* signals — the model's *failure* (`errCount`) and the *account's* *failure* (`dailyPnL`).** A single-number breaker misses one of the two failure modes; the *or*-combined breaker catches *both*.
+- **The kill switch is the one route *outside* the auth chain.** It is a `POST` with no body, no auth, so it is reachable *even when the service's own credentials are the thing that is broken.* It is the *last* line of defense that *cannot* be locked out.
+- **The rate limiter is per-endpoint, not global.** `Orders` gets a smaller budget than `Quotes` because an *order* is *rare* and a *quote* is *cheap*; a global bucket would *throttle* the cheap calls to the pace of the expensive ones, which *is* a bug in a trading system.
+
+## Next steps
+
+1. **Run the service** — `cd ~/Documents/LLM/polyglot-trader-t212 && go build -o t212 && ./t212` (it listens on `:8081` by default, or `PORT=8082 ./t212` to move it). Hit `/health` and `/ready` to confirm the breaker and the rate limiter are initialized, then `POST /api/kill-switch` to confirm the no-auth halt works.
+2. **Wire the Python bot to the Go service.** The bot's *only* Trading212-facing code is an HTTP client to `:8081` — `POST /api/signal` with a `{ticker, P(up)}` body, authenticated with the *service's* key/secret (a *different* one from the Trading212 key). The *Trading212* key/secret live *only* in the Go service's environment.
+3. **Tune the two breaker thresholds to your risk budget.** `CircuitMaxErrors` is the *model's* patience (how many *consecutive* prediction failures before it stops); `dailyLossLimit` is the *account's* patience (how much it can lose in a day before it stops). The *first* of those to trip is the one that *saves* you; the *other* is the *backup.*
+4. **When the model is good enough to trade, keep the hands in Go.** The *model* will change (a new feature, a new threshold) and the *ML ecosystem* will move; the *hands* (the *auth, *the* *rate* *limit, *the* *breaker, *the* *kill* *switch) *are* *stable* *and* *boring* *on* *purpose.* *That* *stability* *is* *the* *reason* *the* *Go* *service* *is* *the* *right* *shape* *for* *the* *layer* *that* *owns* *the* *money.
