@@ -25,6 +25,16 @@ This is the check that catches the "we deployed a pod with `privileged: true` be
 
 ## The minimum pipeline (one repo, no new infra)
 
+| Layer | Catches | Runs on | Fails in |
+|---|---|---|---|
+| **gitleaks** | secrets committed to git | every PR | seconds |
+| **SAST (semgrep)** | injection/classic vulns in source | every PR | ~1 min |
+| **Trivy (image + IaC)** | CVEs in images, misconfig in manifests | push / plan | ~2 min |
+| **OPA (Rego)** | policy drift (RBAC, netpol) that SAST can't see | plan / push | seconds |
+| **runtime (Falco/pspy)** | behaviour SAST can't see: exec in a pod, unexpected egress | always, post-deploy | continuous |
+
+Each layer is a *different* question; stacking all five is what 'devsecops that lands' actually means — one of them alone is a demo.
+
 ```yaml
 # .github/workflows/sec.yml — the whole program
 name: security

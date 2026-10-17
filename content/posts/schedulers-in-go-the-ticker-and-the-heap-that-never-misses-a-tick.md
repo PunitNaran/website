@@ -271,6 +271,16 @@ sequenceDiagram
 
 ## The 30-line rule
 
+| | **Ticker (periodic)** | **Heap (deadline)** |
+|---|---|---|
+| **Schedules** | a *rate* (every 5 s) | a *deadline* (at 14:03:22) |
+| **Miss a tick?** | no (select re-arms) | no (timer = f(top), re-armed after every op) |
+| **Cost of a slow job** | next tick waits (serial) or runs concurrent (fan-out) | logged + moved past, runs in own goroutine |
+| **Survives restart?** | no (in-process) | no (in-process) |
+| **Over the line?** | become a cron daemon | become a cron daemon |
+
+**Rule:** if a job must *survive a process restart*, you no longer have a pattern — you have a daemon (durable store, systemd unit, crash-recovery story). That is a *different artifact*; the ticker/heap pair stops being the answer the moment persistence enters.
+
 A **`time.Ticker` + `select` loop** is the *periodic* scheduler; a **heap + one re-armed timer** is the *arbitrary-time* scheduler. If your "scheduler" is more than ~100 lines of stdlib, you have built a *cron daemon* (a separate process, a durable store, a *systemd* unit), not a *pattern* — and that is a *different artifact* with a *different* failure surface (durable state, a *crash* recovery story, a *restart* policy). The line between the two is the *persistence* question: **if the job has to survive a process restart, it is a daemon; if it does not, it is a heap in a goroutine.** Under the line, the ticker and the heap are the *entire* scheduler. Over it, the *scheduler* is a *component* of a *system*, and you should stop calling it a *scheduler*.
 
 ## Takeaways

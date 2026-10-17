@@ -39,6 +39,14 @@ That block is the whole post. **S3 is the state store. DynamoDB is the lock.** `
 
 ## The lock: why it is a *table* and not a flag
 
+| Backend | Stores state as | Lock | Crash of holder | Use when |
+|---|---|---|---|---|
+| **local** | `terraform.tfstate` file | none | state lost to the machine | throwaway experiments, CI sandboxes |
+| **S3 + DynamoDB** | objects in S3 | mandatory, TTL in Dynamo | lock expires on TTL (15-30 min), next apply re-acquires | single team, cheap, already on AWS |
+| **Terraform Cloud / HCP** | managed S3 + managed lock | mandatory, managed, auditable | managed expiry + console force-unlock | multiple teams / org policy / audit needs |
+
+The *lock* is what makes any of these safe; the *backend* is where the state *lives*. A remote backend with no lock (or an advisory one) is a double-apply machine; a local file is fine only while the machine outlives the experiment.
+
 The lock is a **single item** in a key-value store, keyed by the *state's identity* (the bucket + key, in the S3 case). Its value carries the *identity of the holder* (usually the `terraform` process id) and a **TTL** — a time-to-live. The TTL is the part that makes it *safe* rather than *fragile*:
 
 - **Normal path:** the lock is acquired, the state is read, the apply runs, the lock is released. The item is deleted.
