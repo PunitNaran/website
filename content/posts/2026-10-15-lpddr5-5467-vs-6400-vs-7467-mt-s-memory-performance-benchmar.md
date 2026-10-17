@@ -3,6 +3,7 @@
 date: 2026-10-15T09:00:00
 draft: false
 title: "LPDDR5 5467 vs. 6400 vs. 7467 MT/s: The Laptop Memory-Speed Benchmark"
+image: /images/covers/2026-10-15-lpddr5-5467-vs-6400-vs-7467-mt-s-memory-performance-benchmar.svg
 summary: Phoronix benchmarks the Star Labs StarFighter Ultra (Core Ultra 9 285H, 8x8GB LPDDR5-7467) at three memory speeds — 5467, 6400 (the vendor default), and 7467 MT/s — to quantify the real performance and power cost of running laptop LPDDR5 at its rated speed versus a lower, more efficient one.
 categories:
   - Hardware

@@ -3,6 +3,7 @@
 date: 2026-10-15T09:00:00
 draft: false
 title: "DevSecOps That Actually Lands: SAST, Secrets, and Runtime Policies"
+image: /images/covers/devsecops-that-actually-lands-sast-secrets-and-runtime-policies.svg
 summary: "DevSecOps That Actually Lands: SAST, Secrets, and Runtime Policies"
 categories:
   - DevSecOps
@@ -60,7 +61,7 @@ jobs:
           # --error: exit non-zero if ANY finding is present
           semgrep ci --diff --error \
             --config p/go,p/python,p/js
-  image:
+image:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

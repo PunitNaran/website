@@ -3,6 +3,7 @@
 date: 2026-10-15T09:00:00
 draft: false
 title: "Building AI Agents That Actually Work in Production"
+image: /images/covers/building-ai-agents-that-actually-work-in-production.svg
 summary: Building AI Agents That Actually Work in Production
 categories:
   - Artificial Intelligence

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(214, 45%, 16%)"/><stop offset="1" stop-color="hsl(254, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<rect x="697" y="464" width="44" height="116" rx="6" fill="hsl(34, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="304" y="336" width="44" height="244" rx="6" fill="hsl(214, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="500" y="363" width="44" height="217" rx="6" fill="hsl(34, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="713" y="167" width="44" height="413" rx="6" fill="hsl(214, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="104" y="494" width="44" height="86" rx="6" fill="hsl(34, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1090" y="248" width="44" height="332" rx="6" fill="hsl(214, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="412" y="254" width="44" height="326" rx="6" fill="hsl(34, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="546" y="400" width="44" height="180" rx="6" fill="hsl(214, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="260" y="404" width="44" height="176" rx="6" fill="hsl(34, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="176" y="337" width="44" height="243" rx="6" fill="hsl(214, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="558" y="304" width="44" height="276" rx="6" fill="hsl(34, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="793" y="516" width="44" height="64" rx="6" fill="hsl(214, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="648" y="441" width="44" height="139" rx="6" fill="hsl(34, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="242" y="385" width="44" height="195" rx="6" fill="hsl(214, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1012" y="164" width="44" height="416" rx="6" fill="hsl(34, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="308" y="291" width="44" height="289" rx="6" fill="hsl(214, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="401" y="235" width="44" height="345" rx="6" fill="hsl(34, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="421" y="219" width="44" height="361" rx="6" fill="hsl(214, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1039" y="440" width="44" height="140" rx="6" fill="hsl(34, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="312" y="284" width="44" height="296" rx="6" fill="hsl(214, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="577" y="238" width="44" height="342" rx="6" fill="hsl(34, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1045" y="271" width="44" height="309" rx="6" fill="hsl(214, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="488" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Go 1.27 Released: Portable SIMD,</text>
+<text x="60" y="540" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Arch-Specific SIMD, and a 5x Faster</text>
+<text x="60" y="592" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">HTTP/1 Client</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(34, 70%, 60%)">punitnaran.com</text>
+</svg>

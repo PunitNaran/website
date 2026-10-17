@@ -3,6 +3,7 @@
 date: 2026-10-15T09:00:00
 draft: false
 title: "gRPC in Production: The Service Mesh and the Load Balancer"
+image: /images/covers/grpc-in-production-the-service-mesh-and-the-load-balancer.svg
 summary: "gRPC in Production: The Service Mesh and the Load Balancer"
 categories:
   - gRPC

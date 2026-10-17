@@ -3,6 +3,7 @@
 date: 2026-10-15T09:00:00
 draft: false
 title: "Kubernetes Operators: The CRD and the Reconciler That Never Gives Up"
+image: /images/covers/kubernetes-operators-the-crd-and-the-reconciler-that-never-gives-up.svg
 summary: "Kubernetes Operators: The CRD and the Reconciler That Never Gives Up"
 categories:
   - Kubernetes

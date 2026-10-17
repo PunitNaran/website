@@ -3,6 +3,7 @@
 date: 2026-10-15T09:00:00
 draft: false
 title: "Rust for Go Developers: The Borrow Checker Is a Feature"
+image: /images/covers/rust-for-go-developers-the-borrow-checker-is-a-feature.svg
 summary: "Rust for Go Developers: The Borrow Checker Is a Feature"
 categories:
   - Rust

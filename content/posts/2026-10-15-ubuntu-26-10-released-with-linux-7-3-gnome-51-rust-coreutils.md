@@ -3,6 +3,7 @@
 date: 2026-10-15T09:00:00
 draft: false
 title: "Ubuntu 26.10: What a Go + Rust Engineer Actually Gets on a New Distro"
+image: /images/covers/2026-10-15-ubuntu-26-10-released-with-linux-7-3-gnome-51-rust-coreutils.svg
 summary: "Ubuntu 26.10 'Stonking Stingray' ships Linux 7.3, GNOME 51, and completes the migration to Rust-based uutils coreutils. Here is what that means for a Go toolchain (GOAMD64=V3 on the new amd64v3 images) and how to verify the Rust coreutils are really what your build is calling."
 categories:
   - posts

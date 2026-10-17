@@ -3,6 +3,7 @@
 date: 2026-10-15T09:00:00
 draft: false
 title: "Microsoft Joins Google in Backing Go for AI Agents — OpenAI and Anthropic Lag"
+image: /images/covers/2026-10-15-microsoft-joins-google-in-backing-go-for-ai-agents-openai-an.svg
 summary: Go has become the lingua franca of cloud infrastructure, and now Microsoft (alongside Google) is building its agent framework in Go — while OpenAI and Anthropic's agent tooling is still Python-first. The post is the systems case for why Go is the agent-era infrastructure language.
 categories:
   - Go

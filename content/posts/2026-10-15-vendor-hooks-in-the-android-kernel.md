@@ -3,6 +3,7 @@
 date: 2026-10-15T09:00:00
 draft: false
 title: "Vendor Hooks in the Android Kernel: How Out-of-Tree Code Survives Mainline"
+image: /images/covers/2026-10-15-vendor-hooks-in-the-android-kernel.svg
 summary: At the 2026 Linux Plumbers Conference, Todd Kjos ran the Android-track session on vendor hooks — the mechanism that lets phone vendors keep their out-of-tree kernel changes close to mainline without a full fork.
 categories:
   - Linux

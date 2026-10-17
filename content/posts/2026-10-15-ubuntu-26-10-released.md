@@ -3,6 +3,7 @@
 date: 2026-10-15T09:00:00
 draft: false
 title: "Ubuntu 26.10 Released: Stonking Stingray, Rust coreutils, and GNOME 51"
+image: /images/covers/2026-10-15-ubuntu-26-10-released.svg
 summary: Canonical ships Ubuntu 26.10 "Stonking Stingray" — the release that completes the rollout of the Rust-based uutils coreutils, advances enterprise security (Microsoft Entra ID), and lands GNOME 51.
 categories:
   - Linux

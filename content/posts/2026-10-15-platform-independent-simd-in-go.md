@@ -3,6 +3,7 @@
 date: 2026-10-15T09:00:00
 draft: false
 title: "Platform-Independent SIMD in Go: The write-once vector layer"
+image: /images/covers/2026-10-15-platform-independent-simd-in-go.svg
 summary: Go 1.27 adds an experimental, fully portable, size-agnostic simd package — a Highway-style "write once, run on every arch" vector API that emulates on non-SIMD platforms so the code always runs.
 categories:
   - Go

@@ -3,6 +3,7 @@
 date: 2026-10-15T09:00:00
 draft: false
 title: "Post-Quantum Cryptography: A Practical Migration Guide for Engineers"
+image: /images/covers/post-quantum-cryptography-practical-migration-guide.svg
 summary: "Post-Quantum Cryptography: A Practical Migration Guide for Engineers"
 categories:
   - Artificial Intelligence

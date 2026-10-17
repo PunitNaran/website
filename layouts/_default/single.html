@@ -102,6 +102,9 @@
           {{ end }}
         </header>
 
+        {{ if .Params.image }}
+        <figure class="post-cover" style="margin:0 0 1.5rem;border-radius:12px;overflow:hidden;"><img src="{{ .Params.image | relURL }}" alt="{{ .Title }} cover" loading="lazy" style="width:100%;display:block;" /></figure>
+        {{ end }}
         <section id="dream-single-post-content" itemprop="articleBody">
           {{ if and .Params.Cover site.Params.showSummaryCoverInPost }}
           <figure class="mb-10 -mx-6 md:-mx-0">

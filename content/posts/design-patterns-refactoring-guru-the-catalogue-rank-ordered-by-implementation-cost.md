@@ -3,6 +3,7 @@
 date: 2026-10-15T09:00:00
 draft: false
 title: "Design Patterns (Refactoring Guru): The Catalogue, Ranked by Implementation Cost"
+image: /images/covers/design-patterns-refactoring-guru-the-catalogue-rank-ordered-by-implementation-cost.svg
 summary: "Design Patterns (Refactoring Guru): The Catalogue, Ranked by Implementation Cost"
 categories:
   - DesignPatterns

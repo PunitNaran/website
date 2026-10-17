@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(126, 45%, 16%)"/><stop offset="1" stop-color="hsl(166, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<rect x="150" y="160" width="44" height="420" rx="6" fill="hsl(306, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="770" y="362" width="44" height="218" rx="6" fill="hsl(126, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1009" y="280" width="44" height="300" rx="6" fill="hsl(306, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="87" y="311" width="44" height="269" rx="6" fill="hsl(126, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="861" y="447" width="44" height="133" rx="6" fill="hsl(306, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="591" y="327" width="44" height="253" rx="6" fill="hsl(126, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="832" y="378" width="44" height="202" rx="6" fill="hsl(306, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="290" y="212" width="44" height="368" rx="6" fill="hsl(126, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="538" y="244" width="44" height="336" rx="6" fill="hsl(306, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="885" y="343" width="44" height="237" rx="6" fill="hsl(126, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="551" y="345" width="44" height="235" rx="6" fill="hsl(306, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1048" y="328" width="44" height="252" rx="6" fill="hsl(126, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="982" y="467" width="44" height="113" rx="6" fill="hsl(306, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1093" y="505" width="44" height="75" rx="6" fill="hsl(126, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="211" y="397" width="44" height="183" rx="6" fill="hsl(306, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="371" y="477" width="44" height="103" rx="6" fill="hsl(126, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="163" y="485" width="44" height="95" rx="6" fill="hsl(306, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="696" y="489" width="44" height="91" rx="6" fill="hsl(126, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="177" y="235" width="44" height="345" rx="6" fill="hsl(306, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="314" y="359" width="44" height="221" rx="6" fill="hsl(126, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="548" y="321" width="44" height="259" rx="6" fill="hsl(306, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="526" y="464" width="44" height="116" rx="6" fill="hsl(126, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="484" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">'The Platinum Claw: A Masterclass in</text>
+<text x="60" y="536" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Immortal Edge AI Infrastructure'</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(306, 70%, 60%)">punitnaran.com</text>
+</svg>

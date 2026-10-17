@@ -2,6 +2,7 @@
 
 draft: false
 title: "Implement a KVDB Key-Value Database: B-tree + a Write-Ahead Log + Snapshots"
+image: /images/covers/Key-Value-Database-Implementation.svg
 summary: "Go: a key-value store that is actually durable — a balanced B-tree index in memory, an append-only WAL that fsyncs before a write is acknowledged, and periodic snapshots that compact the log the way Redis BGSAVE and RocksDB do."
 date: 2021-02-15T23:57:07.239Z
 lastmod: 2026-10-16T00:00:00Z

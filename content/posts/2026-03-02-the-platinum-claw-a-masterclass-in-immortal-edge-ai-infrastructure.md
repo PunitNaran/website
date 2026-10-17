@@ -2,6 +2,7 @@
 
 draft: false
 title: 'The Platinum Claw: A Masterclass in Immortal Edge AI Infrastructure'
+image: /images/covers/2026-03-02-the-platinum-claw-a-masterclass-in-immortal-edge-ai-infrastructure.svg
 summary: How to build a self-healing, hardware-aware AI cluster that survives the chaos of the edge using the Platinum Claw protocol.
 date: 2026-03-02T22:44:00
 cover: /img/Gemini_Generated_Image_hy6zyvhy6zyvhy6z.webp

@@ -3,6 +3,7 @@
 date: 2026-10-15T09:00:00
 draft: false
 title: "Terraform: The State File and the Lock That Makes It Safe"
+image: /images/covers/terraform-the-state-file-and-the-lock-that-makes-it-safe.svg
 summary: "Terraform: The State File and the Lock That Makes It Safe"
 categories:
   - Terraform
