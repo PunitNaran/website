@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(19, 45%, 16%)"/><stop offset="1" stop-color="hsl(59, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<rect x="856" y="377" width="44" height="203" rx="6" fill="hsl(199, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="68" y="396" width="44" height="184" rx="6" fill="hsl(19, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="811" y="196" width="44" height="384" rx="6" fill="hsl(199, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="422" y="258" width="44" height="322" rx="6" fill="hsl(19, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="796" y="379" width="44" height="201" rx="6" fill="hsl(199, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1021" y="342" width="44" height="238" rx="6" fill="hsl(19, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="560" y="489" width="44" height="91" rx="6" fill="hsl(199, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="254" y="227" width="44" height="353" rx="6" fill="hsl(19, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="738" y="506" width="44" height="74" rx="6" fill="hsl(199, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="497" y="435" width="44" height="145" rx="6" fill="hsl(19, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="294" y="286" width="44" height="294" rx="6" fill="hsl(199, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="501" y="460" width="44" height="120" rx="6" fill="hsl(19, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="787" y="493" width="44" height="87" rx="6" fill="hsl(199, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="68" y="354" width="44" height="226" rx="6" fill="hsl(19, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="973" y="469" width="44" height="111" rx="6" fill="hsl(199, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="561" y="392" width="44" height="188" rx="6" fill="hsl(19, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="304" y="200" width="44" height="380" rx="6" fill="hsl(199, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="382" y="383" width="44" height="197" rx="6" fill="hsl(19, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="159" y="260" width="44" height="320" rx="6" fill="hsl(199, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="217" y="514" width="44" height="66" rx="6" fill="hsl(19, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="382" y="476" width="44" height="104" rx="6" fill="hsl(199, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="278" y="347" width="44" height="233" rx="6" fill="hsl(19, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="488" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">What’s up, Docsy? Google’s docs project</text>
+<text x="60" y="540" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">joins the Linux Foundation as AI agents</text>
+<text x="60" y="592" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">become readers</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(199, 70%, 60%)">punitnaran.com</text>
+</svg>

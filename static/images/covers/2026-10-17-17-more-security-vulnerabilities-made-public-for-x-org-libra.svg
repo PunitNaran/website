@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(247, 45%, 16%)"/><stop offset="1" stop-color="hsl(287, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<rect x="783" y="301" width="44" height="279" rx="6" fill="hsl(67, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="390" y="417" width="44" height="163" rx="6" fill="hsl(247, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="605" y="319" width="44" height="261" rx="6" fill="hsl(67, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="940" y="439" width="44" height="141" rx="6" fill="hsl(247, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="824" y="454" width="44" height="126" rx="6" fill="hsl(67, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="726" y="392" width="44" height="188" rx="6" fill="hsl(247, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="880" y="238" width="44" height="342" rx="6" fill="hsl(67, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1016" y="319" width="44" height="261" rx="6" fill="hsl(247, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="989" y="426" width="44" height="154" rx="6" fill="hsl(67, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="96" y="220" width="44" height="360" rx="6" fill="hsl(247, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="205" y="313" width="44" height="267" rx="6" fill="hsl(67, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="932" y="301" width="44" height="279" rx="6" fill="hsl(247, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="186" y="397" width="44" height="183" rx="6" fill="hsl(67, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="445" y="494" width="44" height="86" rx="6" fill="hsl(247, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1047" y="433" width="44" height="147" rx="6" fill="hsl(67, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="644" y="336" width="44" height="244" rx="6" fill="hsl(247, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="477" y="381" width="44" height="199" rx="6" fill="hsl(67, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="35" y="401" width="44" height="179" rx="6" fill="hsl(247, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="582" y="379" width="44" height="201" rx="6" fill="hsl(67, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="725" y="211" width="44" height="369" rx="6" fill="hsl(247, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="813" y="247" width="44" height="333" rx="6" fill="hsl(67, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="587" y="400" width="44" height="180" rx="6" fill="hsl(247, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="484" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">17 More Security Vulnerabilities Made</text>
+<text x="60" y="536" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Public For X.Org Libraries</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(67, 70%, 60%)">punitnaran.com</text>
+</svg>

@@ -1,11 +1,13 @@
 ---
+
 date: 2026-10-17T09:00:00
 draft: true
 title: "One year later: the power of 1.1.1.1 interns"
+image: /images/covers/2026-10-17-one-year-later-the-power-of-1-1-1-1-interns.svg
 summary: "A year after announcing our goal to hire 1,111 interns, more than 750 early-career builders have shipped real products across 48 teams at Cloudflare. From Birthday Week launches to post-quantum securi"
 categories:
   - posts
----
+
 
 A year after announcing our goal to hire 1,111 interns, more than 750 early-career builders have shipped real products across 48 teams at Cloudflare. From Birthday Week launches to post-quantum security, our interns prove that AI amplifies human potential instead of replacing it.
 

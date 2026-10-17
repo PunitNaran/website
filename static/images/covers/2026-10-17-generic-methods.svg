@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(224, 45%, 16%)"/><stop offset="1" stop-color="hsl(264, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<line x1="0" y1="0" x2="0" y2="630" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="90" y1="0" x2="90" y2="630" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="180" y1="0" x2="180" y2="630" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="270" y1="0" x2="270" y2="630" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="360" y1="0" x2="360" y2="630" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="450" y1="0" x2="450" y2="630" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="540" y1="0" x2="540" y2="630" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="630" y1="0" x2="630" y2="630" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="720" y1="0" x2="720" y2="630" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="810" y1="0" x2="810" y2="630" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="900" y1="0" x2="900" y2="630" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="990" y1="0" x2="990" y2="630" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="1080" y1="0" x2="1080" y2="630" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="1170" y1="0" x2="1170" y2="630" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="0" x2="1200" y2="0" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="90" x2="1200" y2="90" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="180" x2="1200" y2="180" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="270" x2="1200" y2="270" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="360" x2="1200" y2="360" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="450" x2="1200" y2="450" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="540" x2="1200" y2="540" stroke="hsl(224, 85%, 55%)" stroke-opacity="0.10"/>
+<circle cx="944" cy="540" r="8" fill="hsl(44, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="537" cy="408" r="14" fill="hsl(44, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="610" cy="220" r="10" fill="hsl(44, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="780" cy="71" r="17" fill="hsl(44, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="363" cy="445" r="12" fill="hsl(44, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="103" cy="360" r="18" fill="hsl(44, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="583" cy="115" r="15" fill="hsl(44, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="663" cy="184" r="16" fill="hsl(44, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="670" cy="193" r="9" fill="hsl(44, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="969" cy="417" r="15" fill="hsl(44, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="921" cy="114" r="12" fill="hsl(44, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="293" cy="430" r="10" fill="hsl(44, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="258" cy="466" r="12" fill="hsl(44, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="988" cy="537" r="8" fill="hsl(44, 70%, 60%)" fill-opacity="0.8"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="480" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Generic Methods</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(44, 70%, 60%)">punitnaran.com</text>
+</svg>
