@@ -1,6 +1,6 @@
 ---
 
-draft: true
+draft: false
 title: "Testcontainers + GoDog: Testing Against a Real Postgres, the Way the Docker Daemon Sees It"
 summary: "Behavior-Driven integration tests for Go: GoDog (Given/When/Then) drives a disposable Postgres container, and Testcontainers is just a thin client over the same Docker Engine API your docker CLI uses."
 date: 2021-03-12T23:26:51.517Z

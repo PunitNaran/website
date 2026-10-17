@@ -1,7 +1,7 @@
 ---
 
 date: 2026-10-15T09:00:00
-draft: true
+draft: false
 title: "Kubernetes Operators: The CRD and the Reconciler That Never Gives Up"
 summary: "Kubernetes Operators: The CRD and the Reconciler That Never Gives Up"
 categories:

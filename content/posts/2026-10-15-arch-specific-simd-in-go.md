@@ -1,7 +1,7 @@
 ---
 
 date: 2026-10-15T09:00:00
-draft: true
+draft: false
 title: "Arch-Specific SIMD in Go: The intrinsics layer, now for arm64 and wasm too"
 summary: Go 1.27 extends the experimental simd/archsimd package to arm64 (NEON) and wasm, alongside the existing amd64 (AVX/AVX2/AVX-512) support — a named-instruction intrinsics layer that is deliberately not a 1:1 mapping to the underlying ISA.
 categories:

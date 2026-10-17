@@ -1,7 +1,7 @@
 ---
 
 date: 2026-10-15T09:00:00
-draft: true
+draft: false
 title: "Go Experts: 'I Don't Want to Maintain AI-Generated Code'"
 summary: Two long-time Go programmers on the future of the language in the age of AI agents — and why the maintenance cost of AI-generated code, not the generation cost, is the bottleneck that will decide which languages win the agent era.
 categories:

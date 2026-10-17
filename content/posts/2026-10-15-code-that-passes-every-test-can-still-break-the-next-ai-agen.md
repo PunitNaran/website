@@ -1,7 +1,7 @@
 ---
 
 date: 2026-10-15T09:00:00
-draft: true
+draft: false
 title: "Code That Passes Every Test Can Still Break the Next AI Agent That Touches It"
 summary: Go is being repositioned as the language for AI agents — not because agents write it well, but because its small surface, readable errors, and enforced formatting make it the lowest-cost language for the *next* agent (or human) to read, fix, and maintain.
 categories:

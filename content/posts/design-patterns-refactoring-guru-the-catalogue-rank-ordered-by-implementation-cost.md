@@ -1,7 +1,7 @@
 ---
 
 date: 2026-10-15T09:00:00
-draft: true
+draft: false
 title: "Design Patterns (Refactoring Guru): The Catalogue, Ranked by Implementation Cost"
 summary: "Design Patterns (Refactoring Guru): The Catalogue, Ranked by Implementation Cost"
 categories:

@@ -1,7 +1,7 @@
 ---
 
 date: 2026-10-15T09:00:00
-draft: true
+draft: false
 title: "KDE Releases Its 30th Anniversary Documentary: A Story of Free-Software Underdogs"
 summary: "As part of KDE's 30th anniversary, the project has released The KDE Documentary — A Story of Free Software Underdogs: the story of how a 1996 Usenet post asking for programmers to build a Linux desktop became one of the world's largest free-software communities."
 categories:

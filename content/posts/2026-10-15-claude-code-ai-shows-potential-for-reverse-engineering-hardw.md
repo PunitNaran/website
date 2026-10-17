@@ -1,7 +1,7 @@
 ---
 
 date: 2026-10-15T09:00:00
-draft: true
+draft: false
 title: "Claude Code / AI Shows Potential for Reverse-Engineering Hardware for Linux Support"
 summary: Christian Schaller (Red Hat) used Claude Code to reverse-engineer a Pustek 8200i scanner (via USB capture from a Windows VM with the vendor driver) into a working SANE driver, then a Rust GNOME app — the first credible data point that LLMs can do the tedious 80% of hardware reverse engineering.
 categories:

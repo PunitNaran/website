@@ -1,7 +1,7 @@
 ---
 
 date: 2026-10-15T09:00:00
-draft: true
+draft: false
 title: "Polyglot Trader T212: The Go Proxy That Sits Between a Python Brain and the Money"
 summary: "A Go service on :8081 that a Python ML bot talks to - and that talks to the Trading212 REST API - owning the four things a trading system dies on: auth, rate limiting, the circuit breaker, and the kill switch. The real code, from the real implementation."
 categories:

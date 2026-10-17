@@ -1,7 +1,7 @@
 ---
 
 date: 2026-10-15T09:00:00
-draft: true
+draft: false
 title: "Schedulers in Go: The Ticker and the Heap That Never Misses a Tick"
 summary: "Schedulers in Go: The Ticker and the Heap That Never Misses a Tick"
 categories:

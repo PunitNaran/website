@@ -1,7 +1,7 @@
 ---
 
 date: 2026-10-15T09:00:00
-draft: true
+draft: false
 title: "Rust for Go Developers: The Borrow Checker Is a Feature"
 summary: "Rust for Go Developers: The Borrow Checker Is a Feature"
 categories:

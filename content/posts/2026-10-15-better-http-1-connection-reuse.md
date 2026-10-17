@@ -1,7 +1,7 @@
 ---
 
 date: 2026-10-15T09:00:00
-draft: true
+draft: false
 title: "Better HTTP/1 Connection Reuse: The 5x That Costs You Zero Lines of Code"
 summary: Go 1.27's net/http transport now asynchronously drains unread HTTP/1 response bodies (50 ms / 256 KB) and returns the connection to the pool — the 100-sequential-GET benchmark drops from ~710 ms to ~150 ms with no changes to your code.
 categories:
