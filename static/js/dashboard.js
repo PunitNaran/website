@@ -193,7 +193,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const sorted = cards.sort((a, b) => {
             const dateA = parseInt(a.dataset.date);
             const dateB = parseInt(b.dataset.date);
-            return order === 'newest' ? dateB - dateA : dateA - dateB;
+            if (dateA !== dateB) return order === 'newest' ? dateB - dateA : dateA - dateB;
+            // ponytail: deterministic tie-break for equal dates (title asc/desc) —
+            // without it, same-day posts shuffle randomly on every sort
+            const t = (a.dataset.title || '').localeCompare(b.dataset.title || '');
+            return order === 'newest' ? t : -t;
         });
 
         sorted.forEach(card => grid.appendChild(card));

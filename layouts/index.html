@@ -119,7 +119,7 @@
             {{ if eq $readTime 0 }} {{ $readTime = 1 }} {{ end }} <!-- Safety Default -->
             <article class="post-card"
                 style="background: white; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); transition: transform 0.2s; display: flex; flex-direction: column;"
-                data-title="{{ .Title | lower }}" data-date="{{ .Date.Unix }}" data-year="{{ .Date.Format " 2006" }}"
+                data-title="{{ .Title | lower }}" data-date="{{ .Date.Unix }}" data-year="{{ .Date.Format "2006" }}"
                 data-tags="{{ range .Params.tags }}{{ . | lower }} {{ end }}"
                 data-categories="{{ range .Params.categories }}{{ . | lower }} {{ end }}"
                 data-readtime="{{ $readTime }}" data-summary="{{ .Summary | plainify | lower }}">
