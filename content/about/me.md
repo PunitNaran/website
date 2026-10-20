@@ -2,9 +2,9 @@
 draft: false
 title: About Me
 date: 2021-02-14T13:35:13.378Z
-lastmod: 2026-01-30T23:35:00.000Z
+lastmod: 2026-10-20T04:00:00.000Z
 ---
-I am a **Senior/Lead Site Reliability Engineer (SRE)** at **TikTok**, where I collaborate with multiple teams across many countries to maintain systems at massive global scale.
+Computer systems engineer with **8+ years of production Go** and hands-on **AI/ML** engineering: LLM fine-tuning (QLoRA), quantisation, and local serving of 27B-class models, plus production ML-ops — model hot-swap with rollback and regime-based strategy switching. I am a **Senior/Lead SRE at TikTok**, leading distributed multi-country engineering teams and maintaining systems at massive global scale.
 
 I define myself as a driven **Polyglot Engineer**. I don't just use tools; I build them. Deeply involved in **AI Engineering**—creating and fine-tuning models rather than just consuming APIs.
 
