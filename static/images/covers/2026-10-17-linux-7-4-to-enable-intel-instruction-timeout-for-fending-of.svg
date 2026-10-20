@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(67, 45%, 16%)"/><stop offset="1" stop-color="hsl(107, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<line x1="367" y1="245" x2="281" y2="165" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="73" y1="329" x2="185" y2="399" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="73" y1="329" x2="164" y2="456" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="73" y1="329" x2="86" y2="339" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="73" y1="329" x2="197" y2="350" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="73" y1="329" x2="168" y2="406" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="185" y1="399" x2="164" y2="456" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="185" y1="399" x2="86" y2="339" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="185" y1="399" x2="197" y2="350" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="185" y1="399" x2="168" y2="406" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="529" y1="407" x2="621" y2="427" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="529" y1="407" x2="411" y2="467" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="529" y1="407" x2="654" y2="465" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="529" y1="407" x2="630" y2="417" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="964" y1="382" x2="1113" y2="395" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="964" y1="382" x2="988" y2="289" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="964" y1="382" x2="1095" y2="346" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="964" y1="382" x2="974" y2="233" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="621" y1="427" x2="654" y2="465" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="621" y1="427" x2="630" y2="417" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="164" y1="456" x2="86" y2="339" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="164" y1="456" x2="197" y2="350" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="164" y1="456" x2="168" y2="406" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="796" y1="106" x2="733" y2="213" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="796" y1="106" x2="824" y2="233" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="796" y1="106" x2="677" y2="87" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="796" y1="106" x2="672" y2="83" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1113" y1="395" x2="1095" y2="346" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="654" y1="465" x2="630" y2="417" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="733" y1="213" x2="824" y2="233" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="733" y1="213" x2="677" y2="87" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="733" y1="213" x2="672" y2="83" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="824" y1="233" x2="974" y2="233" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="988" y1="289" x2="1095" y2="346" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="988" y1="289" x2="974" y2="233" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="86" y1="339" x2="197" y2="350" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="86" y1="339" x2="168" y2="406" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="677" y1="87" x2="672" y2="83" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="197" y1="350" x2="168" y2="406" stroke="hsl(67, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<circle cx="367" cy="245" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="73" cy="329" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="185" cy="399" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="529" cy="407" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="964" cy="382" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="621" cy="427" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="281" cy="165" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="164" cy="456" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="796" cy="106" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="1113" cy="395" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="411" cy="467" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="654" cy="465" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="733" cy="213" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="824" cy="233" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="480" cy="74" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="988" cy="289" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="86" cy="339" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="1095" cy="346" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="677" cy="87" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="974" cy="233" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="630" cy="417" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="197" cy="350" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="672" cy="83" r="7" fill="hsl(247, 70%, 60%)"/>
+<circle cx="168" cy="406" r="7" fill="hsl(247, 70%, 60%)"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="488" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Linux 7.4 To Enable Intel Instruction</text>
+<text x="60" y="540" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Timeout For Fending Off TDX VM DoS</text>
+<text x="60" y="592" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Attacks</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(247, 70%, 60%)">punitnaran.com</text>
+</svg>
