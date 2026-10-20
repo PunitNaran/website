@@ -4,7 +4,7 @@ date: 2026-10-17
 description: "After 12+ years, Russ Cox hands the Go tech-lead baton to Austin Clements and turns to AI-powered open-source tooling — a leadership transition that shows how large projects deliberately rotate their stewards."
 image: /images/covers/2026-10-17-russ-cox-steps-down-as-tech-lead-of-go-programming-language.svg
 tags: ["Go", "Tech Culture", "Open Source", "AI"]
-draft: true
+draft: false
 ---
 
 A language does not grow because one person is good at it. It grows because the *person in charge* keeps being someone the community can trust to make the next hard call. That is the whole argument behind the Go project's latest leadership change: after more than a decade, **Russ Cox** — the figure most synonymous with Go's day-to-day evolution — is stepping down as tech lead. **Austin Clements**, on the Go team since 2014, takes over as tech lead for both the Google Go team and the broader Go project, effective **September 1** (of the transition year).

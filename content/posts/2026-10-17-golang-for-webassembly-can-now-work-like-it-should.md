@@ -4,7 +4,7 @@ date: 2026-10-17
 description: "The WASI P2 component model and TinyGo's wasip2 target let you build a Go program into a standard Wasm component with one compiler flag and generated WIT bindings."
 image: /images/covers/2026-10-17-golang-for-webassembly-can-now-work-like-it-should.svg
 tags: ["Go", "WebAssembly", "WASI"]
-draft: true
+draft: false
 ---
 
 WebAssembly's promise was always **modularity**: compile any language into a Wasm module and run it on any CPU that can decode the instruction set, in the browser or out of it. C++ and Rust got there fast; **Go** kept trailing because the standard `go` toolchain's Wasm target was browser-bound and the **WASI P2 component model** — the thing that turns a Wasm module into a stackable, typed, language-agnostic *component* — had no first-class Go story.

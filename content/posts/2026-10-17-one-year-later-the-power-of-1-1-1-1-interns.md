@@ -4,7 +4,7 @@ date: 2026-10-17
 description: "A year after betting on 1,111 interns, Cloudflare has 750 of them across 48 teams shipping real product work — a data-driven case for AI-augmented early-career programs."
 image: /images/covers/2026-10-17-one-year-later-the-power-of-1-1-1-1-interns.svg
 tags: ["Cloudflare", "AI", "Engineering"]
-draft: true
+draft: false
 ---
 
 A year ago most companies were **cutting** intern and new-grad hiring. Cloudflare went the other direction: it announced a goal of **1,111 interns in 2026**, a number that is an explicit nod to `1.1.1.1`, its public DNS resolver. The bet was that AI makes early-career engineers *more* valuable and *faster* to impact — not that it replaces them. A year in, the program has produced **750 internships across 48 teams in nine offices**, and the intern work is not a training exercise: it is shipping to customers. This post treats the program as a data point in a bigger question — what does a well-run, AI-augmented early-career program actually produce, and what is the operating model that makes it work?

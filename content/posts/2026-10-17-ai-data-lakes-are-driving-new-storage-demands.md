@@ -4,7 +4,7 @@ date: 2026-10-17
 description: "AI workloads turn data lakes from passive vaults into high-throughput delivery platforms, and ultra-high-capacity QLC NAND is the answer to the resulting capacity, power, and write-amplification constraints."
 image: /images/covers/2026-10-17-ai-data-lakes-are-driving-new-storage-demands.svg
 tags: ["AI infrastructure", "Storage", "Data center"]
-draft: true
+draft: false
 ---
 
 The most pressing AI compute problem is no longer about faster processor cycles. It is about **serving a diverse set of compute engines with data — efficiently, consistently, and at scale.** For decades the data center's storage story was a cost story: store terabytes cheaply, access them in predictable batches, tolerate the latency. AI workloads have broken that story. Training reads large datasets *repeatedly* across distributed clusters; inference generates access events that fan out far beyond a single query, where one apparent request triggers dozens of underlying reads of stored data, intermediate results, and context. The result is that the **data lake is no longer a passive vault — it is an active, persistent, high-throughput delivery platform**, and the storage architecture underneath it was not designed for that.

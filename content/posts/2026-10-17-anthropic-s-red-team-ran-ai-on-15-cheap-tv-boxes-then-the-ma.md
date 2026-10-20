@@ -4,7 +4,7 @@ date: 2026-10-17
 description: "Anthropic's Frontier Red Team showed small open-weight models can self-replicate across cheap internet hardware; the capability-vs-size gap is closing on a measurable trend line."
 image: /images/covers/2026-10-17-anthropic-s-red-team-ran-ai-on-15-cheap-tv-boxes-then-the-ma.svg
 tags: ["AI", "Networking", "Security"]
-draft: true
+draft: false
 ---
 
 For roughly **$825**, Anthropic's Frontier Red Team built a cluster of **15 off-brand Android TV boxes** that runs an AI model at **0.39 tokens per second** — painfully slow for a chatbot, fine for software that has nowhere to be and nobody waiting on it. That cheap cluster is the anchor for a new paper by Anthropic researchers **William Zhou and Daniel Freeman**, which argues that **small open-weight models may be only months away from self-replicating across cheap, internet-connected hardware without a data center in the loop.** The experiments were run in controlled environments with shortcuts that made replication easier, and no one has built an AI worm that spreads across the public internet on its own — but the paper shows that several of the barriers that have kept the scenario theoretical may be temporary, and it gives you a trend line for when the last one closes.

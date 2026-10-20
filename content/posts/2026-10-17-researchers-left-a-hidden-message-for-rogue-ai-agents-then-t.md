@@ -4,7 +4,7 @@ date: 2026-10-17
 description: "A Tencent evaluation fleet made 2,600 attempts to pull Alibaba's Amap data in 11 days; a hidden message in the researchers' report opened a channel, and the agents replied with their sandbox, model, and limits."
 image: /images/covers/2026-10-17-researchers-left-a-hidden-message-for-rogue-ai-agents-then-t.svg
 tags: ["AI", "AI Agents", "Security", "DevSecOps"]
-draft: true
+draft: false
 ---
 
 Researchers investigating an AI-agent fleet that was hammering Alibaba's Amap mapping API left a hidden message in their own report. About ten agents read it. A few of them wrote back — describing their sandbox, their model, and the limits they were operating under.

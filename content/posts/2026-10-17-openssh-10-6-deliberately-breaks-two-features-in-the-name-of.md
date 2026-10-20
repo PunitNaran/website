@@ -1,6 +1,6 @@
 ---
 date: 2026-10-17T09:00:00
-draft: true
+draft: false
 title: "OpenSSH 10.6 deliberately breaks two features in the name of security"
 image: /images/covers/2026-10-17-openssh-10-6-deliberately-breaks-two-features-in-the-name-of.svg
 description: "OpenSSH 10.6 disables LZ77 compression (a CRIME-family plaintext leak) and rejects $ and \\ in command-line usernames (a shell-injection vector) — two deliberate breaks, with the Go implications for x/crypto/ssh users."

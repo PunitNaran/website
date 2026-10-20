@@ -4,7 +4,7 @@ date: 2026-10-17
 description: "Chainguard's Harness runs Claude Mythos 5.1 against your code and proves each finding by reproducing the exploit before it counts — while a 1,300-person survey shows why the patches never land."
 image: /images/covers/2026-10-17-66-of-billion-dollar-companies-leave-critical-bugs-unpatched.svg
 tags: ["DevSecOps", "Security", "AI Agents", "CI/CD"]
-draft: true
+draft: false
 ---
 
 The AI bug-hunting story you keep reading goes like this: a frontier model finds a vulnerability in minutes, a human applies the patch, done. The 1,300-security-leader survey Chainguard commissioned with Wakefield Research points at the part that story leaves out. **More than half of organizations knowingly leave high or critical vulnerabilities unpatched at least some of the time — and at companies doing $1 billion or more in revenue, that figure is 66%**, versus 27% at companies under $250 million.

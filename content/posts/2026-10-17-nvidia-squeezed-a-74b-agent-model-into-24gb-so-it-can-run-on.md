@@ -4,7 +4,7 @@ date: 2026-10-17
 description: "Nemotron 3.5 Bolt 74B-A9B uses 2-bit quantization to fit a mixture-of-experts agent model in 24GB and beats Qwen and Gemma on agent benchmarks — plus a 120B vision-language model and a 4GB device model."
 image: /images/covers/2026-10-17-nvidia-squeezed-a-74b-agent-model-into-24gb-so-it-can-run-on.svg
 tags: ["AI", "AI Models", "Agents", "Performance", "DevSecOps"]
-draft: true
+draft: false
 ---
 
 A 74-billion-parameter model in 24 gigabytes of memory is not a rounding error. It is a *category* — the difference between "runs on a datacenter GPU you lease" and "runs on the laptop you already have." That is the claim behind Nvidia's new **Nemotron 3.5 Bolt** models, and it is the part of the release worth paying attention to, because the rest of the family (a **120B** vision-language model and a **4B** device model) is table stakes.

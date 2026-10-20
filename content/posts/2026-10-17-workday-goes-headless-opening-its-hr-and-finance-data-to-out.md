@@ -4,7 +4,7 @@ date: 2026-10-17
 description: "Workday's MCP server, SQL access, and a shared agent runtime are now GA — outside agents read and write HR and finance data under the same user permissions, approvals, and audit trail as the person behind them."
 image: /images/covers/2026-10-17-workday-goes-headless-opening-its-hr-and-finance-data-to-out.svg
 tags: ["AI", "AI Agents", "MCP", "DevSecOps", "Data"]
-draft: true
+draft: false
 ---
 
 For a decade, the way to get an AI agent at your HR and finance data was to copy the data somewhere the agent could reach — a data lake, a service account, a nightly batch export. Workday's pitch at its **Rising** conference in Las Vegas is that this is the wrong architecture. The agent should talk to Workday *directly*, and inherit **the user's** permissions, approvals, and audit trail.

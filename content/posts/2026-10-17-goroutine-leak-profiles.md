@@ -4,7 +4,7 @@ date: 2026-10-17
 description: "Go 1.27 adds a goroutine-leak profiler that piggybacks on the GC to find permanently-blocked goroutines in production, not just in unit tests."
 image: /images/covers/2026-10-17-goroutine-leak-profiles.svg
 tags: ["Go", "Concurrency", "GC"]
-draft: true
+draft: false
 ---
 
 A goroutine that is **blocked forever on a channel or a lock** is a goroutine leak: it will never run again, it holds its stack, its locals, and every object they reference, and it keeps costing the garbage collector work. These leaks are the slow killer of long-lived Go services — the process does not crash, the logs stay clean, and the memory graph just climbs, one leaked goroutine at a time. Until now the only reliable ways to catch them were **goleak** in unit tests and **synctest** for controlled concurrency, both of which test the code you wrote, not the code that runs in production.

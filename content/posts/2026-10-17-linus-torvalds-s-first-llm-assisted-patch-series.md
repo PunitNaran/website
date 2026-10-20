@@ -4,7 +4,7 @@ date: 2026-10-17
 description: "Linus Torvalds used an LLM to build a ten-patch series that makes hot folios eligible for RCU-deferred release, collapsing the refcount off the read fast path for an order-of-magnitude gain."
 image: /images/covers/2026-10-17-linus-torvalds-s-first-llm-assisted-patch-series.svg
 tags: ["Linux kernel", "RCU", "AI"]
-draft: true
+draft: false
 ---
 
 The person who has spent thirty years telling the kernel community to read the code, think about the invariants, and stop sending him patches that don't compile — just posted his first LLM-assisted patch series. At the 2026 Maintainers Summit, Linus Torvalds said he had been using a large language model to work on a patch series that addresses a longstanding problem, and LWN confirmed the series is now up for review. Ten patches, short, and they do one thing well: they let the kernel **keep hot pages pinned by an RCU grace period instead of a refcount**, and that single change buys an **order-of-magnitude speedup on read-heavy workloads**.
